@@ -39,14 +39,14 @@ export class HomePage {
     atacante.especial = { nombre: "Psíquico", puntos_dano: 100, segundos_enfriamiento: 35 };
 
     let defensor = new AvatarModel();
-    defensor.nombre = "Bulbasur";
-    defensor.nivel = 17;
-    defensor.salud = 90;
-    defensor.propiedades = { ataque: 118, defensa: 118 };
-    defensor.ataque = { nombre: "Mirada Cuqui", puntos_dano: 5, segundos_enfriamiento: 2 };
-    defensor.especial = { nombre: "Bomba Lodo", puntos_dano: 80, segundos_enfriamiento: 22 };
+    defensor.nombre = "Blissey";
+    defensor.nivel = 30;
+    defensor.salud = 510;
+    defensor.propiedades = { ataque: 129, defensa: 229 };
+    defensor.ataque = { nombre: "Destructor", puntos_dano: 7, segundos_enfriamiento: 5 };
+    defensor.especial = { nombre: "Hiperrayo", puntos_dano: 150, segundos_enfriamiento: 28 };
 
-    let resultado_ataque = this.battleService.calcularDano(defensor, atacante);
+    let resultado_ataque = this.battleService.calcularDano(defensor, atacante, false);
 
     console.log("Resultado ataque " + defensor.ataque.nombre + " de " + defensor.nombre + " a " + atacante.nombre + ": " + resultado_ataque);
   }

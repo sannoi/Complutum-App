@@ -15,10 +15,28 @@ export class PlayerServiceProvider {
   loadPlayer() {
     return this.storage.get('player').then(res => {
       if (res) {
+        res = this.preparePlayer(res);
         this.player = res;
       }
       return res;
     });
+  }
+
+  preparePlayer(player: any) {
+    let mascotas = new Array<AvatarModel>();
+    for (var i = 0; i < player.mascotas.length; i++) {
+      let mascota_nueva = new AvatarModel();
+      mascota_nueva.nombre = player.mascotas[i].nombre;
+      mascota_nueva.icono = player.mascotas[i].icono;
+      mascota_nueva.salud = player.mascotas[i].salud;
+      mascota_nueva.propiedades = { ataque: player.mascotas[i].propiedades.ataque, defensa: player.mascotas[i].propiedades.defensa };
+      mascota_nueva.ataque = { nombre: player.mascotas[i].ataque.nombre, puntos_dano: player.mascotas[i].ataque.puntos_dano, segundos_enfriamiento: player.mascotas[i].ataque.segundos_enfriamiento };
+      mascota_nueva.especial = { nombre: player.mascotas[i].especial.nombre, puntos_dano: player.mascotas[i].especial.puntos_dano, segundos_enfriamiento: player.mascotas[i].especial.segundos_enfriamiento };
+      mascota_nueva.nivel = player.mascotas[i].nivel;
+      mascotas.push(mascota_nueva);
+    }
+    player.mascotas = mascotas;
+    return player;
   }
 
   setPlayer(player: PlayerModel) {

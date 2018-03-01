@@ -37,7 +37,6 @@ export class MyApp {
         this.openNewPlayer();
       } else {
         console.log('Datos de jugador cargados');
-        console.log(res);
       }
     });
   }

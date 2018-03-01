@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { AvatarModel } from '../../models/avatar.model';
 
 @IonicPage()
 @Component({
@@ -9,7 +10,7 @@ import { PlayerServiceProvider } from '../../providers/player-service/player-ser
 })
 export class FightersListPage {
 
-  luchadores: any;
+  luchadores: Array<AvatarModel>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private playerService: PlayerServiceProvider) {
   }
