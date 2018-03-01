@@ -4,6 +4,7 @@ import * as leaflet from 'leaflet';
 import 'leaflet-realtime';
 import { Geolocation } from '@ionic-native/geolocation';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
+import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { AvatarModel } from '../../models/avatar.model'
 
 @Component({
@@ -19,7 +20,8 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     private geolocation: Geolocation,
-    private battleService: BattleServiceProvider) {
+    private battleService: BattleServiceProvider,
+    private configService: ConfigServiceProvider) {
 
   }
 
@@ -40,19 +42,28 @@ export class HomePage {
 
     let defensor = new AvatarModel();
     defensor.nombre = "Blissey";
-    defensor.nivel = 30;
+    defensor.nivel = 10;
     defensor.salud = 510;
     defensor.propiedades = { ataque: 129, defensa: 229 };
     defensor.ataque = { nombre: "Destructor", puntos_dano: 7, segundos_enfriamiento: 5 };
     defensor.especial = { nombre: "Hiperrayo", puntos_dano: 150, segundos_enfriamiento: 28 };
 
-    let resultado_ataque = this.battleService.calcularDano(defensor, atacante, false);
+    let resultado_ataque = this.battleService.calcularDano(defensor, atacante, true);
 
     console.log("Resultado ataque " + defensor.ataque.nombre + " de " + defensor.nombre + " a " + atacante.nombre + ": " + resultado_ataque);
   }
 
+  comenzarBatalla(luchadorIdx: number, luchadorNivel: number) {
+    let enemigoRef = this.configService.luchadores[luchadorIdx];
+    if (enemigoRef) {
+      let enemigo = new AvatarModel();
+      enemigo = enemigo.parse_reference(enemigoRef, luchadorNivel);
+      this.navCtrl.push('BattleDefaultPage', { enemigo: enemigo });
+    }
+  }
+
   ionViewCanLeave() {
-    document.getElementById("map").outerHTML = "";
+    //document.getElementById("map").outerHTML = "";
 
     if (this.realtime) {
       this.realtime.stop();

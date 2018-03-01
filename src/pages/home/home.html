@@ -6,4 +6,11 @@
 
 <ion-content no-padding>
   <div id="map" style="width:100%; height:100%;"></div>
+
+  <ion-fab left bottom>
+    <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+    <ion-fab-list side="right">
+      <button ion-fab color="secondary" (click)="comenzarBatalla(2,25)"><ion-icon name="bug"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

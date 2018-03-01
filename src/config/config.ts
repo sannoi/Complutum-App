@@ -3,6 +3,7 @@ export let config = {
     nombre: 'Complutum'
   },
   jugador: {
-    mascotas_iniciales: [0,1]
+    nivel_mascotas_iniciales: 40,
+    mascotas_iniciales: [0,1,2,3,4,5]
   }
 };

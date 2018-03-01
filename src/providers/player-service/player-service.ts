@@ -71,23 +71,15 @@ export class PlayerServiceProvider {
 
   mascotasIniciales() {
     let mascotas_iniciales = new Array<AvatarModel> ();
-
     if (this.configService.config.jugador.mascotas_iniciales && this.configService.config.jugador.mascotas_iniciales.length > 0) {
       for (var i = 0; i < this.configService.config.jugador.mascotas_iniciales.length; i++) {
         if (this.configService.luchadores[i]) {
           let mascota_nueva = new AvatarModel();
-          mascota_nueva.nombre = this.configService.luchadores[i].nombre;
-          mascota_nueva.icono = this.configService.luchadores[i].icono;
-          mascota_nueva.salud = this.configService.luchadores[i].salud;
-          mascota_nueva.propiedades = { ataque: this.configService.luchadores[i].propiedades.ataque, defensa: this.configService.luchadores[i].propiedades.defensa };
-          mascota_nueva.ataque = this.configService.luchadores[i].ataques[Math.floor(Math.random()*this.configService.luchadores[i].ataques.length)];
-          mascota_nueva.especial = this.configService.luchadores[i].especiales[Math.floor(Math.random()*this.configService.luchadores[i].especiales.length)];
-          mascota_nueva.nivel = 1;
+          mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[i],this.configService.config.jugador.nivel_mascotas_iniciales);
           mascotas_iniciales.push(mascota_nueva);
         }
       }
     }
-
     return mascotas_iniciales;
   }
 
