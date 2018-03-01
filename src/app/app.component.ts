@@ -42,7 +42,9 @@ export class MyApp {
   }
 
   openNewPlayer() {
-    let modal = this.modalCtrl.create('PlayerNewPage');
+    let modal = this.modalCtrl.create('PlayerNewPage', {}, {
+      enableBackdropDismiss: false
+    });
     modal.present();
 
     modal.onDidDismiss(data => {
