@@ -18,7 +18,7 @@ export class BattleServiceProvider {
 
 		//var puntosDanoCalculado = 0.01 * bonus * efectivity * perc_ataque * ( ( ((0.2 * atacante.nivel + 1) * atacante.propiedades.ataque * atacante.ataque.puntos_dano) / ( 25 * defensor.propiedades.defensa ) ) + 2 );
 
-    return parseInt(puntosDanoCalculado);
+    return parseInt(puntosDanoCalculado.toString());
   }
 
   randomIntFromInterval(min,max)

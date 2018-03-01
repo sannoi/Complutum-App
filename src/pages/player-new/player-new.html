@@ -1,0 +1,22 @@
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>Nuevo Jugador</ion-title>
+  </ion-navbar>
+</ion-header>
+
+  <ion-content>
+    <form id="newPlayerForm" [formGroup]="playerData" (ngSubmit)="savePlayer()" type="application/x-www-form-urlencoded" method="post">
+    <ion-list>
+      <ion-item>
+        <ion-label fixed>Tu nombre</ion-label>
+        <ion-input type="text" name="nombre" formControlName="nombre"></ion-input>
+      </ion-item>
+    </ion-list>
+    </form>
+  </ion-content>
+  <ion-footer>
+    <div padding>
+      <button ion-button color="primary" block form="newPlayerForm" [disabled]="!playerData.valid">CREAR JUGADOR</button>
+    </div>
+  </ion-footer>

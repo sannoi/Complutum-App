@@ -35,18 +35,20 @@ export class HomePage {
     atacante.nivel = 30;
     atacante.salud = 193;
     atacante.propiedades = { ataque: 300, defensa: 182 };
-    atacante.ataque = { nombre: "Psíquico", puntos_dano: 100, segundos_enfriamiento: 35 };
+    atacante.ataque = { nombre: "Golpe", puntos_dano: 10, segundos_enfriamiento: 5 };
+    atacante.especial = { nombre: "Psíquico", puntos_dano: 100, segundos_enfriamiento: 35 };
 
     let defensor = new AvatarModel();
     defensor.nombre = "Bulbasur";
     defensor.nivel = 17;
     defensor.salud = 90;
     defensor.propiedades = { ataque: 118, defensa: 118 };
-    defensor.ataque = { nombre: "Bomba Lodo", puntos_dano: 80, segundos_enfriamiento: 22 };
+    defensor.ataque = { nombre: "Mirada Cuqui", puntos_dano: 5, segundos_enfriamiento: 2 };
+    defensor.especial = { nombre: "Bomba Lodo", puntos_dano: 80, segundos_enfriamiento: 22 };
 
     let resultado_ataque = this.battleService.calcularDano(defensor, atacante);
 
-    console.log("Resultado ataque de " + defensor.nombre + " a " + atacante.nombre + ": " + resultado_ataque);
+    console.log("Resultado ataque " + defensor.ataque.nombre + " de " + defensor.nombre + " a " + atacante.nombre + ": " + resultado_ataque);
   }
 
   ionViewCanLeave() {
