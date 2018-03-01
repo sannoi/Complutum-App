@@ -1,6 +1,6 @@
 {
   "name": "Complutum-App",
-  "app_id": "",
+  "app_id": "es.mideas.complutum",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
