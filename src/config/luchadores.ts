@@ -2,7 +2,7 @@ export let luchadores = [
   {
     id: 'bulbasaur',
     nombre: 'Bulbassaur',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_001_00.png',
     salud: 90,
     propiedades: {
       ataque: 118,
@@ -20,7 +20,7 @@ export let luchadores = [
   {
     id: 'ivysaur',
     nombre: 'Ivysaur',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_002_00.png',
     salud: 120,
     propiedades: {
       ataque: 151,
@@ -38,7 +38,7 @@ export let luchadores = [
   {
     id: 'venusaur',
     nombre: 'Venusaur',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_003_00.png',
     salud: 160,
     propiedades: {
       ataque: 198,
@@ -56,7 +56,7 @@ export let luchadores = [
   {
     id: 'charmander',
     nombre: 'Charmander',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_004_00.png',
     salud: 78,
     propiedades: {
       ataque: 116,
@@ -74,7 +74,7 @@ export let luchadores = [
   {
     id: 'charmeleon',
     nombre: 'Charmeleon',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_005_00.png',
     salud: 116,
     propiedades: {
       ataque: 158,
@@ -92,7 +92,7 @@ export let luchadores = [
   {
     id: 'charizard',
     nombre: 'Charizard',
-    icono: '/assets/imgs/avatar_default.jpg',
+    icono: 'assets/imgs/fighters/pokemon_icon_006_00.png',
     salud: 156,
     propiedades: {
       ataque: 223,

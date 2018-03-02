@@ -17,9 +17,9 @@
   <progress-bar [progress]="saludEnemigo" [color]="configService.config.colores.salud"></progress-bar>
   <ion-item text-center>
     <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel().salud}}</ion-note>
-    <ion-avatar class="big">
+    <ion-thumbnail class="big">
       <img [src]="enemigo.icono">
-    </ion-avatar>
+    </ion-thumbnail>
   </ion-item>
   <!--<ion-fab left bottom>
     <button ion-fab color="primary" (click)="comenzarBatalla()" [disabled]="batalla_iniciada"><ion-icon name="alarm"></ion-icon></button>
@@ -33,10 +33,10 @@
 </ion-content>
 <ion-footer>
   <ion-item>
-    <div item-start>
-    <ion-avatar>
+    <div item-start text-center>
+    <ion-thumbnail>
       <img [src]="luchador.icono">
-    </ion-avatar>
+    </ion-thumbnail>
     <small>{{luchador.nombre}}</small>
   </div>
   <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud"></progress-bar>

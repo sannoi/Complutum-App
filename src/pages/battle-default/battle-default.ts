@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/observable/timer'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/take'
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/timer';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/take';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
@@ -32,12 +33,23 @@ export class BattleDefaultPage {
   countdown_debil;
   countdown_fuerte;
 
+  enfriamiento_debil_enemigo: boolean = false;
+  enfriamiento_fuerte_enemigo: boolean = false;
+  especial_cargado_enemigo: boolean = false;
+
+  segundos_debil_enemigo: any;
+  segundos_fuerte_enemigo: any;
+  countdown_debil_enemigo;
+  countdown_fuerte_enemigo;
+  timer_rutina_enemigo;
+
   luchador: AvatarModel;
   enemigo: AvatarModel;
 
   luchador_idx: number = 0;
 
   saludEnemigo: number = 0;
+  energiaEnemigo: number = 0;
   saludLuchador: number = 0;
   energiaLuchador: number = 0;
 
@@ -53,7 +65,10 @@ export class BattleDefaultPage {
     this.enemigo = navParams.get('enemigo');
     this.segundos_batalla = this.configService.config.batalla.tiempo_batalla;
     if (this.enemigo) {
+      this.segundos_debil_enemigo = this.enemigo.ataque.segundos_enfriamiento;
+      this.segundos_fuerte_enemigo = this.enemigo.especial.segundos_enfriamiento;
       this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel().salud) * 100;
+      this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
     }
     if (!this.luchador) {
       //Seleccion aleatoria de avatar
@@ -103,6 +118,7 @@ export class BattleDefaultPage {
 
   comenzarBatalla() {
     this.batalla_iniciada = true;
+    this.rutinaEnemigoBatalla();
     this.segundos_batalla = this.configService.config.batalla.tiempo_batalla;
     this.countdown = Observable.timer(0, 1000)
       .take(this.segundos_batalla)
@@ -192,6 +208,112 @@ export class BattleDefaultPage {
       });
   }
 
+  /* Acciones de enemigo */
+
+  rutinaEnemigoBatalla() {
+    console.log("rutina de enemigo");
+    this.timer_rutina_enemigo = Observable.timer(0, 10)
+      .take(this.segundos_batalla * 100)
+      .subscribe(() => {
+        if (this.batalla_iniciada && !this.batalla_ganada && !this.batalla_perdida && !this.batalla_tiempo_agotado) {
+          if (!this.enfriamiento_fuerte_enemigo && this.especial_cargado_enemigo) {
+            this.ataqueFuerteEnemigo();
+          } else if (!this.enfriamiento_debil_enemigo) {
+            this.ataqueDebilEnemigo();
+          }
+        }
+      });
+  }
+
+  ataqueDebilEnemigo() {
+    let resultado_ataque = this.battleService.calcularDano(this.enemigo, this.luchador, false);
+    this.luchador.salud_actual -= resultado_ataque;
+    this.enemigo.energia += this.enemigo.ataque.incremento_energia;
+    if (this.enemigo.energia > this.configService.config.avatares.energia_maxima) {
+      this.enemigo.energia = this.configService.config.avatares.energia_maxima;
+    }
+    console.log("Ataque debil enemigo: " + resultado_ataque + " " + this.enemigo.energia);
+    this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
+    if (this.enemigo.energia < this.enemigo.especial.gasto_energia) {
+      this.especial_cargado_enemigo = false;
+    } else {
+      this.especial_cargado_enemigo = true;
+    }
+    this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
+    this.playerService.savePlayer();
+    if (this.luchador.salud_actual <= 0) {
+      this.luchador.salud_actual = 0;
+      this.batallaPerdida();
+      console.log(this.luchador.nombre + " muerto");
+    }
+    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+    this.enfriamientoDebilEnemigo();
+  }
+
+  ataqueFuerteEnemigo() {
+    let resultado_ataque = this.battleService.calcularDano(this.enemigo, this.luchador, true);
+    this.luchador.salud_actual -= resultado_ataque;
+    this.enemigo.energia -= this.enemigo.especial.gasto_energia;
+    if (this.enemigo.energia < 0) {
+      this.enemigo.energia = 0;
+    }
+    console.log("Ataque fuerte enemigo: " + resultado_ataque + " " + this.enemigo.energia);
+    this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
+    if (this.enemigo.energia < this.enemigo.especial.gasto_energia) {
+      this.especial_cargado_enemigo = false;
+    } else {
+      this.especial_cargado_enemigo = true;
+    }
+    this.toastService.push(this.enemigo.nombre + " ha usado " + this.enemigo.especial.nombre);
+
+    if (this.enemigo.salud_actual <= 0) {
+      this.enemigo.salud_actual = 0;
+      this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
+      this.playerService.savePlayer();
+      this.batallaPerdida();
+      console.log(this.luchador.nombre + " muerto");
+    }
+    this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
+    this.playerService.savePlayer();
+    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+    this.enfriamientoFuerteEnemigo();
+  }
+
+  enfriamientoDebilEnemigo() {
+    this.enfriamiento_debil_enemigo = true;
+    this.segundos_debil_enemigo = parseInt((this.enemigo.ataque.segundos_enfriamiento * 100).toString());
+
+    this.countdown_debil_enemigo = Observable.timer(0, 10)
+      .take(this.segundos_debil_enemigo)
+      .subscribe(() => {
+        if (this.enfriamiento_debil_enemigo) {
+          --this.segundos_debil_enemigo;
+          if (this.segundos_debil_enemigo <= 0) {
+            this.enfriamiento_debil_enemigo = false;
+            this.countdown_debil_enemigo.unsubscribe();
+          }
+        }
+      });
+  }
+
+  enfriamientoFuerteEnemigo() {
+    this.enfriamiento_fuerte_enemigo = true;
+    this.segundos_fuerte_enemigo = parseInt((this.enemigo.especial.segundos_enfriamiento * 100).toString());
+    this.countdown_fuerte_enemigo = Observable.timer(0, 10)
+      .take(this.segundos_fuerte_enemigo)
+      .subscribe(() => {
+        if (this.enfriamiento_fuerte_enemigo) {
+          --this.segundos_fuerte_enemigo;
+          if (this.segundos_fuerte_enemigo <= 0) {
+            this.enfriamiento_fuerte_enemigo = false;
+            this.countdown_fuerte_enemigo.unsubscribe();
+          }
+        }
+      });
+  }
+
+  /* Eventos de batalla */
+
   batallaGanada() {
     this.batalla_iniciada = false;
     this.batalla_ganada = true;
@@ -205,7 +327,28 @@ export class BattleDefaultPage {
           text: 'OK',
           handler: () => {
             this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana);
-            this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo });
+            this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  batallaPerdida() {
+    this.batalla_perdida = true;
+    this.batalla_iniciada = false;
+
+    let alert = this.alertCtrl.create({
+      title: '¡Has perdido!',
+      subTitle: 'Tu ' + this.luchador.nombre + ' se ha rendido y has perdido la pelea.',
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Otra vez será',
+          handler: () => {
+            this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde);
+            this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
           }
         }
       ]
@@ -226,7 +369,7 @@ export class BattleDefaultPage {
           text: 'OK',
           handler: () => {
             this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado);
-            this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo });
+            this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
           }
         }
       ]

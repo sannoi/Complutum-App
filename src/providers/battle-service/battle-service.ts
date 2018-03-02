@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import 'rxjs/add/observable/timer'
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/take'
 import { AvatarModel } from '../../models/avatar.model'
 
 @Injectable()

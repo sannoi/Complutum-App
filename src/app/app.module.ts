@@ -7,6 +7,7 @@ import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
+import { InventoryPage } from '../pages/inventory/inventory';
 import { FightersListPage } from '../pages/fighters-list/fighters-list';
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -25,6 +26,7 @@ import { ToastServiceProvider } from '../providers/toast-service/toast-service';
     AboutPage,
     ContactPage,
     HomePage,
+    InventoryPage,
     FightersListPage,
     TabsPage
   ],
@@ -41,6 +43,7 @@ import { ToastServiceProvider } from '../providers/toast-service/toast-service';
     AboutPage,
     ContactPage,
     HomePage,
+    InventoryPage,
     FightersListPage,
     TabsPage
   ],

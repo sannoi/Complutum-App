@@ -3,7 +3,7 @@ export let config = {
     nombre: 'Complutum'
   },
   jugador: {
-    nivel_mascotas_iniciales: 1,
+    nivel_mascotas_iniciales: 5,
     mascotas_iniciales: [0,1,2,3,4,5],
     niveles_xp: [
       { id: 1, xp_necesaria: 1000 },
