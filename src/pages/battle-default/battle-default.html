@@ -1,23 +1,45 @@
 <ion-header *ngIf="enemigo">
   <ion-navbar>
     <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder()}} | N {{enemigo.nivel}})</ion-title>
+
+    <ion-buttons start>
+      <button ion-button (click)="huir()">
+                <span ion-text color="primary">Huir</span>
+            </button>
+    </ion-buttons>
+
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <h2>{{countdown | async}}{{countdown_debil | async}}{{countdown_fuerte | async}}</h2>
   <h2 text-center>{{segundos_batalla}}</h2>
-<progress-bar [progress]="loadProgress"></progress-bar>
-<div text-center>
-  <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel().salud}}</ion-note>
-</div>
-<ion-fab left bottom>
-  <button ion-fab color="primary" (click)="comenzarBatalla()" [disabled]="batalla_iniciada"><ion-icon name="alarm"></ion-icon></button>
-</ion-fab>
-<ion-fab right bottom>
-  <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon name="flash"></ion-icon></button>
-</ion-fab>
-<ion-fab right bottom style="bottom: 76px;">
-  <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_fuerte" (click)="ataqueFuerte()"><ion-icon name="flame"></ion-icon></button>
-</ion-fab>
+  <progress-bar [progress]="saludEnemigo" [color]="configService.config.colores.salud"></progress-bar>
+  <ion-item text-center>
+    <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel().salud}}</ion-note>
+    <ion-avatar class="big">
+      <img [src]="enemigo.icono">
+    </ion-avatar>
+  </ion-item>
+  <ion-fab left bottom>
+    <button ion-fab color="primary" (click)="comenzarBatalla()" [disabled]="batalla_iniciada"><ion-icon name="alarm"></ion-icon></button>
+  </ion-fab>
+  <ion-fab right bottom>
+    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon name="flash"></ion-icon></button>
+  </ion-fab>
+  <ion-fab right bottom style="bottom: 76px;">
+    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_fuerte || !especial_cargado" (click)="ataqueFuerte()"><ion-icon name="flame"></ion-icon></button>
+  </ion-fab>
 </ion-content>
+<ion-footer>
+  <ion-item>
+    <div item-start>
+    <ion-avatar>
+      <img [src]="luchador.icono">
+    </ion-avatar>
+    <small>{{luchador.nombre}}</small>
+  </div>
+  <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud"></progress-bar>
+  <progress-bar [progress]="energiaLuchador" [color]="configService.config.colores.energia"></progress-bar>
+</ion-item>
+</ion-footer>

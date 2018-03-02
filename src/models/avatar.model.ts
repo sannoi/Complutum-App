@@ -1,23 +1,27 @@
 export class AvatarModel {
   public nombre: string;
   public icono: string = 'assets/imgs/avatar_default.png';
+  public xp: number;
   public nivel: number;
   public salud: number;
   public salud_actual: number;
+  public energia: number = 0;
   public propiedades: { ataque: number, defensa: number  };
-  public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number };
-  public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number };
+  public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
+  public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
 
   public parse(avatar: any) {
     let mascota_nueva = new AvatarModel();
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
+    mascota_nueva.xp = avatar.xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
-    mascota_nueva.ataque = { nombre: avatar.ataque.nombre, puntos_dano: avatar.ataque.puntos_dano, segundos_enfriamiento: avatar.ataque.segundos_enfriamiento };
-    mascota_nueva.especial = { nombre: avatar.especial.nombre, puntos_dano: avatar.especial.puntos_dano, segundos_enfriamiento: avatar.especial.segundos_enfriamiento };
+    mascota_nueva.ataque = { nombre: avatar.ataque.nombre, puntos_dano: avatar.ataque.puntos_dano, segundos_enfriamiento: avatar.ataque.segundos_enfriamiento, incremento_energia: avatar.ataque.incremento_energia };
+    mascota_nueva.especial = { nombre: avatar.especial.nombre, puntos_dano: avatar.especial.puntos_dano, segundos_enfriamiento: avatar.especial.segundos_enfriamiento, gasto_energia: avatar.especial.gasto_energia };
     mascota_nueva.nivel = avatar.nivel;
     mascota_nueva.salud_actual = avatar.salud_actual;
+    mascota_nueva.energia = avatar.energia;
     return mascota_nueva;
   }
 
@@ -25,12 +29,14 @@ export class AvatarModel {
     let mascota_nueva = new AvatarModel();
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
+    mascota_nueva.xp = 0;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
     mascota_nueva.ataque = avatar.ataques[Math.floor(Math.random()*avatar.ataques.length)];
     mascota_nueva.especial = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
     mascota_nueva.nivel = nivel;
     mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel().salud;
+    mascota_nueva.energia = 0;
     return mascota_nueva;
   }
 

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ModalController } from 'ionic-angular';
 import * as leaflet from 'leaflet';
 import 'leaflet-realtime';
 import { Geolocation } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model'
 
 @Component({
@@ -18,8 +19,10 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController,
+    public modalCtrl: ModalController,
     private geolocation: Geolocation,
-    private configService: ConfigServiceProvider) {
+    private configService: ConfigServiceProvider,
+    private playerService: PlayerServiceProvider) {
 
   }
 
@@ -33,13 +36,26 @@ export class HomePage {
     if (enemigoRef) {
       let enemigo = new AvatarModel();
       enemigo = enemigo.parse_reference(enemigoRef, luchadorNivel);
-      this.navCtrl.push('BattleDefaultPage', { enemigo: enemigo });
+      let modal = this.modalCtrl.create('BattleDefaultPage', { enemigo: enemigo }, {
+        enableBackdropDismiss: false
+      });
+      modal.present();
+
+      modal.onDidDismiss(data => {
+        if (data) {
+          console.log(data);
+        }
+      });
+      //this.navCtrl.push('BattleDefaultPage', { enemigo: enemigo });
     }
   }
 
   comenzarBatallaRandom() {
     let idx = Math.floor(Math.random()*this.configService.luchadores.length);
-    let nivel = Math.floor(Math.random()*40);
+    let nivel = Math.floor(Math.random()*this.playerService.player.nivel);
+    if (nivel <= 0){
+      nivel = 1;
+    }
     this.comenzarBatalla(idx,nivel);
   }
 

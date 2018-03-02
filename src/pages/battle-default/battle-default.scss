@@ -1,3 +1,11 @@
 page-battle-default {
-
+  ion-avatar.big {
+    display: block;
+    margin-top: 20px;
+  }
+  ion-avatar.big img {
+    width: 120px;
+    height: 120px;
+    display: inline-block;
+  }
 }

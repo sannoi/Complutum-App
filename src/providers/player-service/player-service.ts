@@ -22,6 +22,12 @@ export class PlayerServiceProvider {
     });
   }
 
+  savePlayer() {
+    return this.storage.set('player', this.player).then(res => {
+      return res;
+    });
+  }
+
   preparePlayer(player: any) {
     let mascotas = new Array<AvatarModel>();
     for (var i = 0; i < player.mascotas.length; i++) {
@@ -52,6 +58,11 @@ export class PlayerServiceProvider {
         player.xp = data.xp;
       } else {
         player.xp = 0;
+      }
+      if (data.nivel) {
+        player.nivel = data.nivel;
+      } else {
+        player.nivel = 1;
       }
       if (data.mascotas) {
         player.mascotas = data.mascotas;
