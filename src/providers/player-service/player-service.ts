@@ -12,6 +12,17 @@ export class PlayerServiceProvider {
   constructor(private storage: Storage, private configService: ConfigServiceProvider) {
   }
 
+  public addXp(xp:number) {
+    this.player.xp += xp;
+    let nivel_actual = this.player.nivel;
+    let nivel_calculado = this.configService.nivelXp(this.player.xp);
+    if (nivel_calculado > nivel_actual) {
+      console.log(this.player.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
+      this.player.nivel = nivel_calculado;
+      this.savePlayer();
+    }
+  }
+
   loadPlayer() {
     return this.storage.get('player').then(res => {
       if (res) {
@@ -74,9 +85,10 @@ export class PlayerServiceProvider {
     let mascotas_iniciales = new Array<AvatarModel> ();
     if (this.configService.config.jugador.mascotas_iniciales && this.configService.config.jugador.mascotas_iniciales.length > 0) {
       for (var i = 0; i < this.configService.config.jugador.mascotas_iniciales.length; i++) {
-        if (this.configService.luchadores[i]) {
+        var idx = this.configService.config.jugador.mascotas_iniciales[i];
+        if (this.configService.luchadores[idx]) {
           let mascota_nueva = new AvatarModel();
-          mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[i],this.configService.config.jugador.nivel_mascotas_iniciales);
+          mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[idx],this.configService.config.jugador.nivel_mascotas_iniciales);
           mascotas_iniciales.push(mascota_nueva);
         }
       }

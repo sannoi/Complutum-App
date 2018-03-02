@@ -1,3 +1,5 @@
+import { ConfigServiceProvider } from '../providers/config-service/config-service';
+
 export class AvatarModel {
   public nombre: string;
   public icono: string = 'assets/imgs/avatar_default.png';
@@ -10,6 +12,12 @@ export class AvatarModel {
   public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
   public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
 
+  private configService: ConfigServiceProvider;
+
+  constructor() {
+      this.configService = new ConfigServiceProvider();
+  }
+
   public parse(avatar: any) {
     let mascota_nueva = new AvatarModel();
     mascota_nueva.nombre = avatar.nombre;
@@ -19,7 +27,7 @@ export class AvatarModel {
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
     mascota_nueva.ataque = { nombre: avatar.ataque.nombre, puntos_dano: avatar.ataque.puntos_dano, segundos_enfriamiento: avatar.ataque.segundos_enfriamiento, incremento_energia: avatar.ataque.incremento_energia };
     mascota_nueva.especial = { nombre: avatar.especial.nombre, puntos_dano: avatar.especial.puntos_dano, segundos_enfriamiento: avatar.especial.segundos_enfriamiento, gasto_energia: avatar.especial.gasto_energia };
-    mascota_nueva.nivel = avatar.nivel;
+    mascota_nueva.nivel = this.configService.nivelXp(avatar.xp);
     mascota_nueva.salud_actual = avatar.salud_actual;
     mascota_nueva.energia = avatar.energia;
     return mascota_nueva;
@@ -42,6 +50,12 @@ export class AvatarModel {
 
   public addXp(xp:number) {
     this.xp += xp;
+    let nivel_actual = this.nivel;
+    let nivel_calculado = this.configService.nivelXp(this.xp);
+    if (nivel_calculado > nivel_actual) {
+      console.log(this.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
+      this.nivel = nivel_calculado;
+    }
   }
 
   public propiedades_nivel() {

@@ -212,7 +212,7 @@ export class BattleDefaultPage {
 
   rutinaEnemigoBatalla() {
     console.log("rutina de enemigo");
-    this.timer_rutina_enemigo = Observable.timer(0, 10)
+    this.timer_rutina_enemigo = Observable.timer(1000, 10)
       .take(this.segundos_batalla * 100)
       .subscribe(() => {
         if (this.batalla_iniciada && !this.batalla_ganada && !this.batalla_perdida && !this.batalla_tiempo_agotado) {
@@ -379,7 +379,7 @@ export class BattleDefaultPage {
 
   addXp(xp_avatar: number, xp_player: number) {
     if (xp_player && xp_player > 0) {
-      this.playerService.player.addXp(xp_player);
+      this.playerService.addXp(xp_player);
       this.toastService.push('+' + xp_player + ' XP ' + this.playerService.player.nombre);
     }
     if (xp_avatar && xp_avatar > 0) {

@@ -3,14 +3,14 @@ export let config = {
     nombre: 'Complutum'
   },
   jugador: {
-    nivel_mascotas_iniciales: 5,
-    mascotas_iniciales: [0,1,2,3,4,5],
+    nivel_mascotas_iniciales: 3,
+    mascotas_iniciales: [2,5],
     niveles_xp: [
-      { id: 1, xp_necesaria: 1000 },
-      { id: 2, xp_necesaria: 2000 },
-      { id: 3, xp_necesaria: 3000 },
-      { id: 4, xp_necesaria: 4000 },
-      { id: 5, xp_necesaria: 5000 }
+      { id: 1, xp_necesaria: 200 },
+      { id: 2, xp_necesaria: 500 },
+      { id: 3, xp_necesaria: 1000 },
+      { id: 4, xp_necesaria: 2000 },
+      { id: 5, xp_necesaria: 4000 }
     ]
   },
   avatares: {

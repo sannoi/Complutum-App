@@ -1,3 +1,4 @@
+import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { AvatarModel } from './avatar.model';
 
 export class PlayerModel {
@@ -8,8 +9,10 @@ export class PlayerModel {
   public mascotas: Array<AvatarModel>;
   public mascota_seleccionada_idx: number;
 
-  public addXp(xp:number) {
-    this.xp += xp;
+  private configService: ConfigServiceProvider;
+
+  constructor() {
+      this.configService = new ConfigServiceProvider();
   }
 
   public parse(player: any) {
@@ -17,7 +20,7 @@ export class PlayerModel {
     player_nuevo.nombre = player.nombre;
     player_nuevo.icono = player.icono;
     player_nuevo.xp = player.xp;
-    player_nuevo.nivel = player.nivel;
+    player_nuevo.nivel = this.configService.nivelXp(player.xp);
     player_nuevo.mascota_seleccionada_idx = player.mascota_seleccionada_idx;
     let mascotas = new Array<AvatarModel>();
     for (var i = 0; i < player.mascotas.length; i++) {
