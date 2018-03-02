@@ -70,11 +70,12 @@ export class HomePage {
   loadmap() {
     this.map = leaflet.map("map", {
       center: this.center,
-      zoom: 13
+      zoom: 18
     });
     leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
       attribution: '',
-      maxZoom: 18
+      maxZoom: 22,
+      minZoom: 12
     }).addTo(this.map);
 
     /*if (!this.realtime && this.authService.getUsr()) {
@@ -125,7 +126,7 @@ export class HomePage {
 	this.marker.bindPopup("<p>Tu localización</p>");
 
 	this.geolocation.getCurrentPosition().then((resp) => {
-		this.map.setView(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude), 15);
+		this.map.setView(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude));
 		this.marker.setLatLng(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude));
 	}).catch((error) => {
 	  console.log('Error getting location', error);
@@ -133,6 +134,7 @@ export class HomePage {
 
 	let watch = this.geolocation.watchPosition();
 	watch.subscribe((data) => {
+    this.map.setView(new leaflet.LatLng(data.coords.latitude, data.coords.longitude));
 		this.marker.setLatLng(new leaflet.LatLng(data.coords.latitude, data.coords.longitude));
 		console.log("View setted: " + data.coords);
 	});

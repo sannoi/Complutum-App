@@ -7,4 +7,25 @@ export class PlayerModel {
   public nivel: number;
   public mascotas: Array<AvatarModel>;
   public mascota_seleccionada_idx: number;
+
+  public addXp(xp:number) {
+    this.xp += xp;
+  }
+
+  public parse(player: any) {
+    let player_nuevo = new PlayerModel();
+    player_nuevo.nombre = player.nombre;
+    player_nuevo.icono = player.icono;
+    player_nuevo.xp = player.xp;
+    player_nuevo.nivel = player.nivel;
+    player_nuevo.mascota_seleccionada_idx = player.mascota_seleccionada_idx;
+    let mascotas = new Array<AvatarModel>();
+    for (var i = 0; i < player.mascotas.length; i++) {
+      let mascota_nueva = new AvatarModel();
+      mascota_nueva = mascota_nueva.parse(player.mascotas[i]);
+      mascotas.push(mascota_nueva);
+    }
+    player_nuevo.mascotas = mascotas;
+    return player_nuevo;
+  }
 }

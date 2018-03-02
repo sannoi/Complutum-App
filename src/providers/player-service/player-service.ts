@@ -15,7 +15,8 @@ export class PlayerServiceProvider {
   loadPlayer() {
     return this.storage.get('player').then(res => {
       if (res) {
-        res = this.preparePlayer(res);
+        let player_nuevo = new PlayerModel();
+        res = player_nuevo.parse(res);
         this.player = res;
       }
       return res;
@@ -26,17 +27,6 @@ export class PlayerServiceProvider {
     return this.storage.set('player', this.player).then(res => {
       return res;
     });
-  }
-
-  preparePlayer(player: any) {
-    let mascotas = new Array<AvatarModel>();
-    for (var i = 0; i < player.mascotas.length; i++) {
-      let mascota_nueva = new AvatarModel();
-      mascota_nueva = mascota_nueva.parse(player.mascotas[i]);
-      mascotas.push(mascota_nueva);
-    }
-    player.mascotas = mascotas;
-    return player;
   }
 
   setPlayer(player: PlayerModel) {

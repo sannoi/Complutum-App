@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, AlertController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/timer'
 import 'rxjs/add/operator/map'
@@ -7,6 +7,7 @@ import 'rxjs/add/operator/take'
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { AvatarModel } from '../../models/avatar.model';
 
 @IonicPage()
@@ -45,7 +46,7 @@ export class BattleDefaultPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
-    public toastCtrl: ToastController,
+    public toastService: ToastServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
     public playerService: PlayerServiceProvider) {
@@ -67,6 +68,37 @@ export class BattleDefaultPage {
 
   ionViewDidLoad() {
     console.log('Batalla contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel);
+
+    if (this.luchador && this.enemigo) {
+      let alert = this.alertCtrl.create({
+        title: 'Pelear contra ' + this.enemigo.nombre,
+        message: 'Vas a luchar contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel + ' con tu ' + this.luchador.nombre + ' de nivel ' + this.luchador.nivel + '. ¿Qué quieres hacer?',
+        enableBackdropDismiss: false,
+        buttons: [
+          {
+            text: 'Huir',
+            role: 'cancel',
+            handler: () => {
+              this.huir();
+            }
+          },
+          {
+            text: 'Cambiar luchador',
+            handler: () => {
+              console.log('Cambiar luchador click!');
+              //this.huir();
+            }
+          },
+          {
+            text: '¡Pelear!',
+            handler: () => {
+              this.comenzarBatalla();
+            }
+          }
+        ]
+      });
+      alert.present();
+    }
   }
 
   comenzarBatalla() {
@@ -121,7 +153,7 @@ export class BattleDefaultPage {
     } else {
       this.especial_cargado = true;
     }
-    this.toastMsg(this.luchador.nombre + " ha usado " + this.luchador.especial.nombre);
+    this.toastService.push(this.luchador.nombre + " ha usado " + this.luchador.especial.nombre);
     this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
     this.playerService.savePlayer();
     if (this.enemigo.salud_actual <= 0) {
@@ -167,10 +199,12 @@ export class BattleDefaultPage {
     let alert = this.alertCtrl.create({
       title: '¡Victoria!',
       subTitle: '¡Enhorabuena! Has derrotado a ' + this.enemigo.nombre + '!',
+      enableBackdropDismiss: false,
       buttons: [
         {
           text: 'OK',
           handler: () => {
+            this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana);
             this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo });
           }
         }
@@ -186,10 +220,12 @@ export class BattleDefaultPage {
     let alert = this.alertCtrl.create({
       title: 'Tiempo agotado!',
       subTitle: 'Se ha agotado el tiempo de la batalla',
+      enableBackdropDismiss: false,
       buttons: [
         {
           text: 'OK',
           handler: () => {
+            this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado);
             this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo });
           }
         }
@@ -198,13 +234,19 @@ export class BattleDefaultPage {
     alert.present();
   }
 
-  toastMsg(msg: string) {
-    let toast = this.toastCtrl.create({
-      message: msg,
-      duration: 3000,
-      position: 'middle'
-    });
-    toast.present();
+  addXp(xp_avatar: number, xp_player: number) {
+    if (xp_player && xp_player > 0) {
+      this.playerService.player.addXp(xp_player);
+      this.toastService.push('+' + xp_player + ' XP ' + this.playerService.player.nombre);
+    }
+    if (xp_avatar && xp_avatar > 0) {
+      this.luchador.addXp(xp_avatar);
+      this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
+      this.toastService.push('+' + xp_avatar + ' XP ' + this.luchador.nombre);
+    }
+    if (xp_player || xp_avatar) {
+      this.playerService.savePlayer();
+    }
   }
 
   huir() {

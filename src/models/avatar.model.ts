@@ -40,6 +40,10 @@ export class AvatarModel {
     return mascota_nueva;
   }
 
+  public addXp(xp:number) {
+    this.xp += xp;
+  }
+
   public propiedades_nivel() {
     let modifier = parseFloat((this.nivel / 30).toString());
     return { salud: parseInt((this.salud * modifier).toString()) + 10, ataque: parseInt((this.propiedades.ataque * modifier).toString()), defensa: parseInt((this.propiedades.defensa * modifier).toString()) };

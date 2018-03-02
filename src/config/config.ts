@@ -17,7 +17,13 @@ export let config = {
     energia_maxima: 100
   },
   batalla: {
-    tiempo_batalla: 90
+    tiempo_batalla: 90,
+    xp_avatar_gana: 100,
+    xp_avatar_pierde: 10,
+    xp_avatar_tiempo_agotado: 0,
+    xp_player_gana: 25,
+    xp_player_pierde: 5,
+    xp_player_tiempo_agotado: 0
   },
   colores: {
     salud: '#32db64',

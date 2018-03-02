@@ -21,9 +21,9 @@
       <img [src]="enemigo.icono">
     </ion-avatar>
   </ion-item>
-  <ion-fab left bottom>
+  <!--<ion-fab left bottom>
     <button ion-fab color="primary" (click)="comenzarBatalla()" [disabled]="batalla_iniciada"><ion-icon name="alarm"></ion-icon></button>
-  </ion-fab>
+  </ion-fab>-->
   <ion-fab right bottom>
     <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon name="flash"></ion-icon></button>
   </ion-fab>

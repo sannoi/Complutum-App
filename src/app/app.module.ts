@@ -17,6 +17,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { BattleServiceProvider } from '../providers/battle-service/battle-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
+import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ConfigServiceProvider } from '../providers/config-service/config-servic
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BattleServiceProvider,
     PlayerServiceProvider,
-    ConfigServiceProvider
+    ConfigServiceProvider,
+    ToastServiceProvider
   ]
 })
 export class AppModule {}

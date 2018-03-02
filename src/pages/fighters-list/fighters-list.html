@@ -10,7 +10,7 @@
         <img [src]="luchador.icono">
       </ion-avatar>
       <h2>{{luchador.nombre}}</h2>
-      <p>P: {{luchador.puntos_poder()}} | S: {{luchador.propiedades_nivel().salud}} | A: {{luchador.propiedades_nivel().ataque}} | D: {{luchador.propiedades_nivel().defensa}}</p>
+      <p><ion-badge>N {{luchador.nivel}}</ion-badge> <ion-badge color="danger">P {{luchador.puntos_poder()}}</ion-badge> <ion-badge color="secondary">S {{luchador.salud_actual}}/{{luchador.propiedades_nivel().salud}}</ion-badge></p>
     </ion-item>
   </ion-list>
 </ion-content>
