@@ -1,12 +1,23 @@
 <ion-header *ngIf="enemigo">
-
   <ion-navbar>
-    <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder()}})</ion-title>
+    <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder()}} | N {{enemigo.nivel}})</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-
+  <h2>{{countdown | async}}{{countdown_debil | async}}{{countdown_fuerte | async}}</h2>
+  <h2 text-center>{{segundos_batalla}}</h2>
+<progress-bar [progress]="loadProgress"></progress-bar>
+<div text-center>
+  <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel().salud}}</ion-note>
+</div>
+<ion-fab left bottom>
+  <button ion-fab color="primary" (click)="comenzarBatalla()" [disabled]="batalla_iniciada"><ion-icon name="alarm"></ion-icon></button>
+</ion-fab>
+<ion-fab right bottom>
+  <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon name="flash"></ion-icon></button>
+</ion-fab>
+<ion-fab right bottom style="bottom: 76px;">
+  <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_fuerte" (click)="ataqueFuerte()"><ion-icon name="flame"></ion-icon></button>
+</ion-fab>
 </ion-content>

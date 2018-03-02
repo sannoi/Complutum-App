@@ -46,7 +46,7 @@ import { ConfigServiceProvider } from '../providers/config-service/config-servic
   providers: [
     StatusBar,
     SplashScreen,
-	Geolocation,
+	  Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BattleServiceProvider,
     PlayerServiceProvider,

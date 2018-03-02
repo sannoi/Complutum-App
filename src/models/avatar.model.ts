@@ -3,6 +3,7 @@ export class AvatarModel {
   public icono: string = 'assets/imgs/avatar_default.png';
   public nivel: number;
   public salud: number;
+  public salud_actual: number;
   public propiedades: { ataque: number, defensa: number  };
   public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number };
   public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number };
@@ -16,6 +17,7 @@ export class AvatarModel {
     mascota_nueva.ataque = { nombre: avatar.ataque.nombre, puntos_dano: avatar.ataque.puntos_dano, segundos_enfriamiento: avatar.ataque.segundos_enfriamiento };
     mascota_nueva.especial = { nombre: avatar.especial.nombre, puntos_dano: avatar.especial.puntos_dano, segundos_enfriamiento: avatar.especial.segundos_enfriamiento };
     mascota_nueva.nivel = avatar.nivel;
+    mascota_nueva.salud_actual = avatar.salud_actual;
     return mascota_nueva;
   }
 
@@ -28,19 +30,20 @@ export class AvatarModel {
     mascota_nueva.ataque = avatar.ataques[Math.floor(Math.random()*avatar.ataques.length)];
     mascota_nueva.especial = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
     mascota_nueva.nivel = nivel;
+    mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel().salud;
     return mascota_nueva;
   }
 
   public propiedades_nivel() {
-    let modifier = this.nivel / 30;
-    return { salud: parseInt(parseInt(this.salud) * modifier) + 10, ataque: parseInt(parseInt(this.propiedades.ataque) * modifier), defensa: parseInt(parseInt(this.propiedades.defensa) * modifier) };
+    let modifier = parseFloat((this.nivel / 30).toString());
+    return { salud: parseInt((this.salud * modifier).toString()) + 10, ataque: parseInt((this.propiedades.ataque * modifier).toString()), defensa: parseInt((this.propiedades.defensa * modifier).toString()) };
   }
 
   public puntos_poder() {
-    var multiplier = 0.095 * Math.sqrt(parseInt(this.nivel) * 2);
-    var bAtaque = 2 * parseInt(this.propiedades.ataque) * multiplier;
-    var bDefensa = 2 * parseInt(this.propiedades.defensa) * multiplier;
-    var bSalud = 2 * parseInt(this.salud) * multiplier;
+    var multiplier = 0.095 * Math.sqrt(parseInt(this.nivel.toString()) * 2);
+    var bAtaque = 2 * parseInt(this.propiedades.ataque.toString()) * multiplier;
+    var bDefensa = 2 * parseInt(this.propiedades.defensa.toString()) * multiplier;
+    var bSalud = 2 * parseInt(this.salud.toString()) * multiplier;
     return Math.max(10, Math.floor( (Math.pow(bSalud, 0.5) * bAtaque * Math.pow(bDefensa, 0.5)) / 40));
   }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { BattleDefaultPage } from './battle-default';
+import { ComponentsModule } from '../../components/components.module';
 
 @NgModule({
   declarations: [
@@ -8,6 +9,7 @@ import { BattleDefaultPage } from './battle-default';
   ],
   imports: [
     IonicPageModule.forChild(BattleDefaultPage),
+    ComponentsModule
   ],
 })
 export class BattleDefaultPageModule {}
