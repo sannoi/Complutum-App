@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
 import { PlayerModel } from '../../models/player.model';
 import { AvatarModel } from '../../models/avatar.model';
 import { ConfigServiceProvider } from '../config-service/config-service';
@@ -9,7 +10,7 @@ export class PlayerServiceProvider {
 
   public player: PlayerModel;
 
-  constructor(private storage: Storage, private configService: ConfigServiceProvider) {
+  constructor(private storage: Storage, public events: Events, private configService: ConfigServiceProvider) {
   }
 
   public addXp(xp:number) {
@@ -19,8 +20,23 @@ export class PlayerServiceProvider {
     if (nivel_calculado > nivel_actual) {
       console.log(this.player.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
       this.player.nivel = nivel_calculado;
-      this.savePlayer();
+      this.savePlayer().then(res => {
+        this.events.publish('player:nivel_conseguido', { player: this.player, nivel: nivel_calculado });
+      });
     }
+  }
+
+  public avatarAddXp(xp:number, avatar: AvatarModel) {
+    avatar.xp += xp;
+    let nivel_actual = avatar.nivel;
+    let nivel_calculado = this.configService.nivelXp(avatar.xp);
+    if (nivel_calculado > nivel_actual) {
+      console.log(avatar.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
+      avatar.nivel = nivel_calculado;
+      this.events.publish('avatar:nivel_conseguido', { avatar: avatar, nivel: nivel_calculado });
+    }
+
+    return avatar;
   }
 
   loadPlayer() {
@@ -88,7 +104,7 @@ export class PlayerServiceProvider {
         var idx = this.configService.config.jugador.mascotas_iniciales[i];
         if (this.configService.luchadores[idx]) {
           let mascota_nueva = new AvatarModel();
-          mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[idx],this.configService.config.jugador.nivel_mascotas_iniciales);
+          mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[idx],this.configService.config.jugador.xp_mascotas_iniciales);
           mascotas_iniciales.push(mascota_nueva);
         }
       }

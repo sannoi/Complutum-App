@@ -106,5 +106,113 @@ export let luchadores = [
       { nombre: 'Erupción Volcánica', puntos_dano: 80, segundos_enfriamiento: 12, gasto_energia: 33 },
       { nombre: 'Lluvia de Fuego', puntos_dano: 150, segundos_enfriamiento: 30, gasto_energia: 100 }
     ]
+  },
+  {
+    id: 'squirtle',
+    nombre: 'Squirtle',
+    icono: 'assets/imgs/fighters/pokemon_icon_007_00.png',
+    salud: 88,
+    propiedades: {
+      ataque: 94,
+      defensa: 122
+    },
+    ataques: [
+      { nombre: 'Pistola de Agua', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 5 },
+      { nombre: 'Mordisquito', puntos_dano: 6, segundos_enfriamiento: 0.5, incremento_energia: 4 }
+    ],
+    especiales: [
+      { nombre: 'Hidro Bomba', puntos_dano: 130, segundos_enfriamiento: 3.3, gasto_energia: 100 },
+      { nombre: 'Golpe Helado', puntos_dano: 90, segundos_enfriamiento: 3.1, gasto_energia: 50 }
+    ]
+  },
+  {
+    id: 'wartortle',
+    nombre: 'Wartortle',
+    icono: 'assets/imgs/fighters/pokemon_icon_008_00.png',
+    salud: 118,
+    propiedades: {
+      ataque: 126,
+      defensa: 155
+    },
+    ataques: [
+      { nombre: 'Pistola de Agua', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 5 },
+      { nombre: 'Mordisquito', puntos_dano: 6, segundos_enfriamiento: 0.5, incremento_energia: 4 }
+    ],
+    especiales: [
+      { nombre: 'Hidro Bomba', puntos_dano: 130, segundos_enfriamiento: 3.3, gasto_energia: 100 },
+      { nombre: 'Golpe Helado', puntos_dano: 90, segundos_enfriamiento: 3.1, gasto_energia: 50 }
+    ]
+  },
+  {
+    id: 'blastoise',
+    nombre: 'Blastoise',
+    icono: 'assets/imgs/fighters/pokemon_icon_009_00.png',
+    salud: 158,
+    propiedades: {
+      ataque: 171,
+      defensa: 210
+    },
+    ataques: [
+      { nombre: 'Pistola de Agua', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 5 },
+      { nombre: 'Mordisquito', puntos_dano: 6, segundos_enfriamiento: 0.5, incremento_energia: 4 }
+    ],
+    especiales: [
+      { nombre: 'Hidro Bomba', puntos_dano: 130, segundos_enfriamiento: 3.3, gasto_energia: 100 },
+      { nombre: 'Golpe Helado', puntos_dano: 90, segundos_enfriamiento: 3.1, gasto_energia: 50 }
+    ]
+  },
+  {
+    id: 'raichu',
+    nombre: 'Raichu',
+    icono: 'assets/imgs/fighters/pokemon_icon_026_00.png',
+    salud: 120,
+    propiedades: {
+      ataque: 193,
+      defensa: 165
+    },
+    ataques: [
+      { nombre: 'Chispa', puntos_dano: 6, segundos_enfriamiento: 0.7, incremento_energia: 9 },
+      { nombre: 'Voltiazo', puntos_dano: 20, segundos_enfriamiento: 2.3, incremento_energia: 25 }
+    ],
+    especiales: [
+      { nombre: 'Carga Total', puntos_dano: 90, segundos_enfriamiento: 2.6, gasto_energia: 50 },
+      { nombre: 'Puño de Trueno', puntos_dano: 45, segundos_enfriamiento: 1.8, gasto_energia: 33 }
+    ]
+  },
+  {
+    id: 'nidoqueen',
+    nombre: 'Nidoqueen',
+    icono: 'assets/imgs/fighters/pokemon_icon_031_00.png',
+    salud: 180,
+    propiedades: {
+      ataque: 180,
+      defensa: 174
+    },
+    ataques: [
+      { nombre: 'Puya Venenosa', puntos_dano: 10, segundos_enfriamiento: 0.8, incremento_energia: 7 },
+      { nombre: 'Mordisquito', puntos_dano: 6, segundos_enfriamiento: 0.5, incremento_energia: 4 }
+    ],
+    especiales: [
+      { nombre: 'Terremoto', puntos_dano: 120, segundos_enfriamiento: 3.6, gasto_energia: 100 },
+      { nombre: 'Onda de Choque', puntos_dano: 110, segundos_enfriamiento: 3.2, gasto_energia: 100 }
+    ]
+  },
+  {
+    id: 'nidoking',
+    nombre: 'Nidoking',
+    icono: 'assets/imgs/fighters/pokemon_icon_034_00.png',
+    salud: 162,
+    propiedades: {
+      ataque: 204,
+      defensa: 157
+    },
+    ataques: [
+      { nombre: 'Puya Venenosa', puntos_dano: 10, segundos_enfriamiento: 0.8, incremento_energia: 7 },
+      { nombre: 'Cola de Acero', puntos_dano: 15, segundos_enfriamiento: 1.1, incremento_energia: 7 }
+    ],
+    especiales: [
+      { nombre: 'Terremoto', puntos_dano: 120, segundos_enfriamiento: 3.6, gasto_energia: 100 },
+      { nombre: 'Onda de Choque', puntos_dano: 110, segundos_enfriamiento: 3.2, gasto_energia: 100 }
+    ]
   }
 ];

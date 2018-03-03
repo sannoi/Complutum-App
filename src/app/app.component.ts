@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { Platform, ModalController, AlertController } from 'ionic-angular';
+import { Platform, ModalController, AlertController, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 
 import { TabsPage } from '../pages/tabs/tabs';
@@ -17,9 +18,12 @@ export class MyApp {
     platform: Platform,
     statusBar: StatusBar,
     splashScreen: SplashScreen,
+    public events: Events,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
+    private toastService: ToastServiceProvider,
     private playerService: PlayerServiceProvider) {
+    this.checkEvents();
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -27,6 +31,23 @@ export class MyApp {
       splashScreen.hide();
 
       this.checkPlayer();
+    });
+  }
+
+  checkEvents() {
+    this.events.subscribe('player:nivel_conseguido', (data) => {
+      let alert = this.alertCtrl.create({
+        title: '¡Has subido de nivel!',
+        subTitle: '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel,
+        buttons: ['Continuar']
+      });
+      alert.present();
+      console.log('Evento player nivel conseguido', data);
+    });
+
+    this.events.subscribe('avatar:nivel_conseguido', (data) => {
+      this.toastService.push(data.avatar.nombre + ' ha alcanzado el nivel ' + data.nivel);
+      console.log('Evento avatar nivel conseguido', data);
     });
   }
 

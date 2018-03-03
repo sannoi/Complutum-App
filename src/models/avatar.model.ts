@@ -33,29 +33,19 @@ export class AvatarModel {
     return mascota_nueva;
   }
 
-  public parse_reference(avatar: any, nivel: number) {
+  public parse_reference(avatar: any, xp: number) {
     let mascota_nueva = new AvatarModel();
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
-    mascota_nueva.xp = 0;
+    mascota_nueva.xp = xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
     mascota_nueva.ataque = avatar.ataques[Math.floor(Math.random()*avatar.ataques.length)];
     mascota_nueva.especial = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
-    mascota_nueva.nivel = nivel;
+    mascota_nueva.nivel = this.configService.nivelXp(xp);
     mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel().salud;
     mascota_nueva.energia = 0;
     return mascota_nueva;
-  }
-
-  public addXp(xp:number) {
-    this.xp += xp;
-    let nivel_actual = this.nivel;
-    let nivel_calculado = this.configService.nivelXp(this.xp);
-    if (nivel_calculado > nivel_actual) {
-      console.log(this.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
-      this.nivel = nivel_calculado;
-    }
   }
 
   public propiedades_nivel() {

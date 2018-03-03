@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/interval';
@@ -58,6 +58,7 @@ export class BattleDefaultPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
     public toastService: ToastServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
@@ -85,35 +86,59 @@ export class BattleDefaultPage {
     console.log('Batalla contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel);
 
     if (this.luchador && this.enemigo) {
-      let alert = this.alertCtrl.create({
-        title: 'Pelear contra ' + this.enemigo.nombre,
-        message: 'Vas a luchar contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel + ' con tu ' + this.luchador.nombre + ' de nivel ' + this.luchador.nivel + '. ¿Qué quieres hacer?',
-        enableBackdropDismiss: false,
-        buttons: [
-          {
-            text: 'Huir',
-            role: 'cancel',
-            handler: () => {
-              this.huir();
-            }
-          },
-          {
-            text: 'Cambiar luchador',
-            handler: () => {
-              console.log('Cambiar luchador click!');
-              //this.huir();
-            }
-          },
-          {
-            text: '¡Pelear!',
-            handler: () => {
-              this.comenzarBatalla();
-            }
-          }
-        ]
-      });
-      alert.present();
+      this.alertaInicial();
     }
+  }
+
+  alertaInicial() {
+    let alert = this.alertCtrl.create({
+      title: 'Pelear contra ' + this.enemigo.nombre,
+      message: 'Vas a luchar contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel + ' con tu ' + this.luchador.nombre + ' de nivel ' + this.luchador.nivel + '. ¿Qué quieres hacer?',
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Huir',
+          role: 'cancel',
+          handler: () => {
+            this.huir();
+          }
+        },
+        {
+          text: 'Cambiar luchador',
+          handler: () => {
+            this.cambiarLuchador();
+          }
+        },
+        {
+          text: '¡Pelear!',
+          handler: () => {
+            this.comenzarBatalla();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  cambiarLuchador() {
+    let modal = this.modalCtrl.create('FightersSelectPage', {}, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
+
+    modal.onDidDismiss(data => {
+      if (data && data.avatar && data.avatar_idx >= 0) {
+        this.luchador_idx = data.avatar_idx;
+        this.luchador = this.playerService.player.mascotas[this.luchador_idx];
+        this.segundos_debil = this.luchador.ataque.segundos_enfriamiento;
+        this.segundos_fuerte = this.luchador.especial.segundos_enfriamiento;
+        this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+        this.energiaLuchador = (this.luchador.energia / this.configService.config.avatares.energia_maxima) * 100;
+        this.alertaInicial();
+      } else {
+        this.alertaInicial();
+      }
+    });
   }
 
   comenzarBatalla() {
@@ -383,7 +408,7 @@ export class BattleDefaultPage {
       this.toastService.push('+' + xp_player + ' XP ' + this.playerService.player.nombre);
     }
     if (xp_avatar && xp_avatar > 0) {
-      this.luchador.addXp(xp_avatar);
+      this.luchador = this.playerService.avatarAddXp(xp_avatar, this.luchador);
       this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
       this.toastService.push('+' + xp_avatar + ' XP ' + this.luchador.nombre);
     }

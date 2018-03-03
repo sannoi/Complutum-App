@@ -17,5 +17,6 @@ progress-bar {
         padding: 5px;
         border-radius: 20px;
         background-color: map-get($colors, primary);
+        transition: all 1s;
     }
 }
