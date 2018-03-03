@@ -1,5 +1,6 @@
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { AvatarModel } from './avatar.model';
+import { ItemModel } from './item.model';
 
 export class PlayerModel {
   public nombre: string;
@@ -8,6 +9,7 @@ export class PlayerModel {
   public nivel: number;
   public mascotas: Array<AvatarModel>;
   public mascota_seleccionada_idx: number;
+  public items: Array<ItemModel>;
 
   private configService: ConfigServiceProvider;
 
@@ -29,6 +31,13 @@ export class PlayerModel {
       mascotas.push(mascota_nueva);
     }
     player_nuevo.mascotas = mascotas;
+    let items = new Array<ItemModel>();
+    for (var z = 0; z < player.items.length; z++) {
+      let item_nuevo = new ItemModel();
+      item_nuevo = item_nuevo.parse(player.items[z]);
+      items.push(item_nuevo);
+    }
+    player_nuevo.items = items;
     return player_nuevo;
   }
 }

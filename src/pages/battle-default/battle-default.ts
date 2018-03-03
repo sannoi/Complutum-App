@@ -208,7 +208,6 @@ export class BattleDefaultPage {
 
   enfriamientoDebil() {
     this.enfriamiento_debil = true;
-    console.log(this.luchador.ataque.segundos_enfriamiento);
     this.segundos_debil = parseInt((this.luchador.ataque.segundos_enfriamiento * 100).toString());
     this.countdown_debil = Observable.timer(0, 10)
       .take(this.segundos_debil)
@@ -257,7 +256,7 @@ export class BattleDefaultPage {
     if (this.enemigo.energia > this.configService.config.avatares.energia_maxima) {
       this.enemigo.energia = this.configService.config.avatares.energia_maxima;
     }
-    console.log("Ataque debil enemigo: " + resultado_ataque + " " + this.enemigo.energia);
+    console.log("Ataque debil enemigo: Daño -> " + resultado_ataque + " | Ataque -> " + this.enemigo.ataque.nombre + " | Energia total -> " + this.enemigo.energia);
     this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
     if (this.enemigo.energia < this.enemigo.especial.gasto_energia) {
       this.especial_cargado_enemigo = false;
@@ -269,7 +268,7 @@ export class BattleDefaultPage {
     if (this.luchador.salud_actual <= 0) {
       this.luchador.salud_actual = 0;
       this.batallaPerdida();
-      console.log(this.luchador.nombre + " muerto");
+      console.log(this.luchador.nombre + " ha muerto");
     }
     this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
     this.enfriamientoDebilEnemigo();
@@ -282,7 +281,7 @@ export class BattleDefaultPage {
     if (this.enemigo.energia < 0) {
       this.enemigo.energia = 0;
     }
-    console.log("Ataque fuerte enemigo: " + resultado_ataque + " " + this.enemigo.energia);
+    console.log("Ataque fuerte enemigo: Daño -> " + resultado_ataque + " | Ataque -> " + this.enemigo.especial.nombre + " | Energia total -> " + this.enemigo.energia);
     this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
     if (this.enemigo.energia < this.enemigo.especial.gasto_energia) {
       this.especial_cargado_enemigo = false;
@@ -296,7 +295,7 @@ export class BattleDefaultPage {
       this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
       this.playerService.savePlayer();
       this.batallaPerdida();
-      console.log(this.luchador.nombre + " muerto");
+      console.log(this.luchador.nombre + " ha muerto");
     }
     this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
     this.playerService.savePlayer();
@@ -408,7 +407,7 @@ export class BattleDefaultPage {
       this.toastService.push('+' + xp_player + ' XP ' + this.playerService.player.nombre);
     }
     if (xp_avatar && xp_avatar > 0) {
-      this.luchador = this.playerService.avatarAddXp(xp_avatar, this.luchador);
+      this.luchador = this.playerService.avatarAddXp(xp_avatar, this.luchador, this.luchador_idx);
       this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
       this.toastService.push('+' + xp_avatar + ' XP ' + this.luchador.nombre);
     }

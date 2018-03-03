@@ -5,6 +5,8 @@ import 'leaflet-realtime';
 import { Geolocation } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { ItemsServiceProvider } from '../../providers/items-service/items-service';
+import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { AvatarModel } from '../../models/avatar.model'
 
 @Component({
@@ -22,7 +24,9 @@ export class HomePage {
     public modalCtrl: ModalController,
     private geolocation: Geolocation,
     private configService: ConfigServiceProvider,
-    private playerService: PlayerServiceProvider) {
+    private playerService: PlayerServiceProvider,
+    private itemsService: ItemsServiceProvider,
+    private toastService: ToastServiceProvider) {
 
   }
 
@@ -31,11 +35,11 @@ export class HomePage {
     this.loadmap();
   }
 
-  comenzarBatalla(luchadorIdx: number, luchadorNivel: number) {
+  comenzarBatalla(luchadorIdx: number, luchadorXp: number) {
     let enemigoRef = this.configService.luchadores[luchadorIdx];
     if (enemigoRef) {
       let enemigo = new AvatarModel();
-      enemigo = enemigo.parse_reference(enemigoRef, luchadorNivel);
+      enemigo = enemigo.parse_reference(enemigoRef, luchadorXp);
       let modal = this.modalCtrl.create('BattleDefaultPage', { enemigo: enemigo }, {
         enableBackdropDismiss: false
       });
@@ -46,17 +50,38 @@ export class HomePage {
           console.log(data);
         }
       });
-      //this.navCtrl.push('BattleDefaultPage', { enemigo: enemigo });
     }
   }
 
   comenzarBatallaRandom() {
-    let idx = Math.floor(Math.random()*this.configService.luchadores.length);
-    let nivel = Math.floor(Math.random()*this.playerService.player.nivel);
-    if (nivel <= 0){
-      nivel = 1;
+    var idx = Math.floor(Math.random() * this.configService.luchadores.length);
+    var xp = this.getRandomInt(1, this.playerService.player.xp);
+    if (xp <= 0) {
+      xp = 1;
     }
-    this.comenzarBatalla(idx,nivel);
+    console.log("Comenzar Batalla Random: " + idx + " " + xp);
+    this.comenzarBatalla(idx, xp);
+  }
+
+  recogerItemRandom() {
+    var idx = Math.floor(Math.random() * this.configService.items.length);
+    var cantidad = this.getRandomInt(1, 10);
+    if (cantidad <= 0) {
+      cantidad = 1;
+    }
+    this.itemsService.playerAnadirItem(this.configService.items[idx], cantidad).then(res => {
+      if (res) {
+        this.toastService.push('+' + cantidad + ' ' + this.configService.items[idx].nombre);
+      }
+    });
+  }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  ionViewWillEnter() {
+    this.actualizarRealtime();
   }
 
   ionViewCanLeave() {
@@ -78,74 +103,75 @@ export class HomePage {
       minZoom: 12
     }).addTo(this.map);
 
-    /*if (!this.realtime && this.authService.getUsr()) {
-      this.realtime = leaflet.realtime({
-        url: this.configService.apiUrl() + '/shop/pedido/realtimePedidos.json/?solo_usuario_actual=1&solo_disponibles=0&usuario_id=' + this.authService.getUsr().id,
-        crossOrigin: true,
-        type: 'json'
-      }, {
-          interval: 15 * 1000,
+    this.playerService.loadPlayer().then(res => {
+      if (res) {
+        var redIcon = leaflet.icon({
+          //iconUrl: 'assets/imgs/marker-icon2.png',
+          iconUrl: res.icono,
+          shadowUrl: 'assets/imgs/marker-shadow.png',
+          iconSize: [50, 50],
+          iconAnchor: [25, 49],
+          popupAnchor: [0, -47],
+          className: 'player-icon'
+        });
+
+        this.marker = new leaflet.Marker(this.center, { icon: redIcon });
+        this.map.addLayer(this.marker);
+
+        this.marker.bindPopup("<h6>" + res.nombre + "</h6><p><span ion-text color='primary'>N " + res.nivel + " (" + res.xp + " XP)</span></p>");
+
+        this.geolocation.getCurrentPosition().then((resp) => {
+          this.center = new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude);
+          this.map.setView(this.center);
+          this.marker.setLatLng(this.center);
+          this.actualizarRealtime();
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
+
+        let watch = this.geolocation.watchPosition();
+        watch.subscribe((data) => {
+          this.center = new leaflet.LatLng(data.coords.latitude, data.coords.longitude);
+          this.map.setView(this.center);
+          this.marker.setLatLng(this.center);
+          this.actualizarRealtime();
+          console.log("View setted", data.coords);
+        });
+      }
+    });
+  }
+
+  test() {
+    console.log("Funciona!");
+  }
+
+  actualizarRealtime() {
+    if (!this.realtime) {
+      this.realtime = leaflet.realtime(
+        {
+          url: this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lon=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision,
+          crossOrigin: true,
+          type: 'json'
+        }, {
+          interval: 60 * 1000,
           onEachFeature: function(feature, layer) {
             console.log(feature);
-            layer.bindPopup(feature['properties'].content);
+            var extra_content = '<div><button ion-button block color="primary" [(click)]="test()">TEST</button></div>';
+            layer.bindPopup(feature['properties'].content + extra_content);
           }
         }).addTo(this.map);
 
-      var map1 = this.map;
-      var rt = this.realtime;
-      var loc = this.locationService;
-      var geo_ext_opt = this.configService.cfg.extensions.geolocation.active;
-
       this.realtime.on('update', function() {
-        if (geo_ext_opt) {
-          let result = loc.GPSStatus();
-          if (result == true) {
-            console.log("Realtime geolocation true");
-          } else if (rt.features && rt.features.length > 0) {
-            map1.fitBounds(rt.getBounds());
-          }
-        } else {
-          map1.fitBounds(rt.getBounds());
-        }
+        console.log('realtime actualizado');
       });
     } else if (this.realtime) {
-      this.realtime.start();
-    }*/
-
-	var redIcon = leaflet.icon({
-	  iconUrl: 'assets/imgs/marker-icon2.png',
-	  shadowUrl: 'assets/imgs/marker-shadow.png',
-	  iconSize: [25, 41],
-	  iconAnchor: [12, 40],
-	  popupAnchor: [0, -38]
-	});
-
-	this.marker = new leaflet.Marker(this.center, { icon: redIcon });
-	this.map.addLayer(this.marker);
-
-	this.marker.bindPopup("<p>Tu localización</p>");
-
-	this.geolocation.getCurrentPosition().then((resp) => {
-		this.map.setView(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude));
-		this.marker.setLatLng(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude));
-	}).catch((error) => {
-	  console.log('Error getting location', error);
-	});
-
-	let watch = this.geolocation.watchPosition();
-	watch.subscribe((data) => {
-    this.map.setView(new leaflet.LatLng(data.coords.latitude, data.coords.longitude));
-		this.marker.setLatLng(new leaflet.LatLng(data.coords.latitude, data.coords.longitude));
-		console.log("View setted: " + data.coords);
-	});
-
-    /*if (this.configService.cfg.extensions.geolocation.active) {
-      let result = this.locationService.GPSStatus();
-      this.gps = result;
-      if (result == true) {
-
-      }
-    }*/
+      console.log("_url de realtime", this.realtime);
+      this.realtime.setUrl(this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lon=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision),
+      //if (!this.realtime.isRunning()) {
+        this.realtime.start();
+      //}
+      console.log("Cambiado _url de realtime", this.realtime);
+    }
   }
 
 }

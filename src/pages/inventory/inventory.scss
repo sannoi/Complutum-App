@@ -1,3 +1,10 @@
 page-inventory {
-
+  button ion-thumbnail {
+    position: relative;
+  }
+  button ion-thumbnail ion-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }

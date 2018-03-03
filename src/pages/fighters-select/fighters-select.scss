@@ -1,4 +1,7 @@
 page-fighters-select {
+  ion-col button {
+    background-color: color($colors, light);
+  }
   ion-col h2 {
     font-size: 1.3rem;
     margin-top: 0;

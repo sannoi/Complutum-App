@@ -1,10 +1,13 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Elige un luchador</ion-title>
     <ion-buttons start>
       <button ion-button icon-only (click)="toggleSearchBar()">
                 <ion-icon name="search"></ion-icon>
             </button>
+    </ion-buttons>
+    <ion-title>Elige un luchador</ion-title>
+
+    <ion-buttons end>
       <button ion-button (click)="dismiss()">
                 <span ion-text color="primary">Cancelar</span>
             </button>
@@ -16,7 +19,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-4 *ngFor="let luchador of luchadores" text-center>
-        <a (click)="elegirLuchador(luchador)">
+        <button (click)="elegirLuchador(luchador)" color="light">
           <ion-thumbnail>
             <img [src]="luchador.icono">
           </ion-thumbnail>
@@ -26,7 +29,7 @@
             <ion-badge color="danger">P {{luchador.puntos_poder()}}</ion-badge>
             <ion-badge color="secondary">S {{luchador.salud_actual}}/{{luchador.propiedades_nivel().salud}}</ion-badge>
           </p>
-        </a>
+        </button>
       </ion-col>
     </ion-row>
   </ion-grid>

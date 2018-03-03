@@ -1,12 +1,23 @@
 <ion-header>
-
   <ion-navbar>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="toggleSearchBar()">
+                <ion-icon name="search"></ion-icon>
+            </button>
+    </ion-buttons>
     <ion-title>Inventario</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
 <ion-content>
-
+  <ion-searchbar *ngIf="searchbar_visible" placeholder="Buscar..." (ionInput)="filtrarItems($event)"></ion-searchbar>
+  <ion-list>
+    <button ion-item *ngFor="let item of items">
+      <ion-thumbnail item-start>
+        <img [src]="item.icono">
+        <ion-badge bottom right>x{{item.cantidad}}</ion-badge>
+      </ion-thumbnail>
+      <h2>{{item.nombre}}</h2>
+      <p>{{item.descripcion}}</p>
+    </button>
+  </ion-list>
 </ion-content>

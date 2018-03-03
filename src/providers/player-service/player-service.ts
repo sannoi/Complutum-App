@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { PlayerModel } from '../../models/player.model';
 import { AvatarModel } from '../../models/avatar.model';
+import { ItemModel } from '../../models/item.model';
 import { ConfigServiceProvider } from '../config-service/config-service';
 
 @Injectable()
@@ -26,17 +27,29 @@ export class PlayerServiceProvider {
     }
   }
 
-  public avatarAddXp(xp:number, avatar: AvatarModel) {
+  public avatarAddXp(xp:number, avatar: AvatarModel, idx_avatar: number) {
     avatar.xp += xp;
     let nivel_actual = avatar.nivel;
     let nivel_calculado = this.configService.nivelXp(avatar.xp);
     if (nivel_calculado > nivel_actual) {
       console.log(avatar.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
       avatar.nivel = nivel_calculado;
+      avatar.salud_actual = avatar.propiedades_nivel().salud;
       this.events.publish('avatar:nivel_conseguido', { avatar: avatar, nivel: nivel_calculado });
     }
+    this.player.mascotas[idx_avatar] = avatar;
 
     return avatar;
+  }
+
+  getPlayer() {
+    if (!this.player) {
+      return this.loadPlayer();
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(this.player);
+      });
+    }
   }
 
   loadPlayer() {
@@ -91,6 +104,11 @@ export class PlayerServiceProvider {
       } else {
         player.mascota_seleccionada_idx = 0;
       }
+      if (data.items) {
+        player.items = data.items;
+      } else {
+        player.items = this.itemsIniciales();
+      }
       return this.storage.set('player', player).then(res => {
         return res;
       });
@@ -110,6 +128,22 @@ export class PlayerServiceProvider {
       }
     }
     return mascotas_iniciales;
+  }
+
+  itemsIniciales() {
+    let items_iniciales = new Array<ItemModel> ();
+    if (this.configService.config.jugador.items_iniciales && this.configService.config.jugador.items_iniciales.length > 0) {
+      for (var i = 0; i < this.configService.config.jugador.items_iniciales.length; i++) {
+        var idx = this.configService.config.jugador.items_iniciales[i].item;
+        var cantidad = this.configService.config.jugador.items_iniciales[i].cantidad;
+        if (this.configService.items[idx]) {
+          let item_nuevo = new ItemModel();
+          item_nuevo = item_nuevo.parse_reference(this.configService.items[idx],cantidad);
+          items_iniciales.push(item_nuevo);
+        }
+      }
+    }
+    return items_iniciales;
   }
 
 }

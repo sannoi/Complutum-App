@@ -19,6 +19,7 @@ import { BattleServiceProvider } from '../providers/battle-service/battle-servic
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
+import { ItemsServiceProvider } from '../providers/items-service/items-service';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ToastServiceProvider } from '../providers/toast-service/toast-service';
     BattleServiceProvider,
     PlayerServiceProvider,
     ConfigServiceProvider,
-    ToastServiceProvider
+    ToastServiceProvider,
+    ItemsServiceProvider
   ]
 })
 export class AppModule {}
