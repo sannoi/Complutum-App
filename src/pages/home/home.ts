@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, Events } from 'ionic-angular';
 import * as leaflet from 'leaflet';
 import 'leaflet-realtime';
 import { Geolocation } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { AvatarModel } from '../../models/avatar.model'
@@ -18,16 +19,23 @@ export class HomePage {
   marker: any;
   center: any;
   realtime: any;
+  markers_enemigos: Array<any>;
+
+  loading: any;
 
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
+    public events: Events,
     private geolocation: Geolocation,
     private configService: ConfigServiceProvider,
     private playerService: PlayerServiceProvider,
+    private mapService: MapServiceProvider,
     private itemsService: ItemsServiceProvider,
     private toastService: ToastServiceProvider) {
-
+    this.markers_enemigos = new Array<any>();
+    this.checkEvents();
   }
 
   ionViewDidLoad() {
@@ -35,11 +43,57 @@ export class HomePage {
     this.loadmap();
   }
 
+  ionViewWillEnter() {
+    this.actualizarRealtime();
+  }
+
+  ionViewCanLeave() {
+    //document.getElementById("map").outerHTML = "";
+    this.mapService.pararObservableEnemigos();
+
+    if (this.realtime) {
+      this.realtime.stop();
+    }
+  }
+
+  checkEvents() {
+    this.events.subscribe('mapa:nuevos_enemigos', (data) => {
+      if (data && data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+          this.anadirEnemigoMapa(data[i]);
+        }
+      }
+      console.log('Nuevos enemigos', data);
+    });
+  }
+
+  anadirEnemigoMapa(feature: any) {
+    var _avatar = this.configService.encontrarLuchador(feature.properties.id);
+    if (_avatar) {
+      var avatarIcon = leaflet.icon({
+        //iconUrl: 'assets/imgs/marker-icon2.png',
+        iconUrl: _avatar.icono,
+        iconSize: [80, 80], // size of the icon
+        iconAnchor: [40, 79], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, -78], // point from which the popup should open relative to the iconAnchor
+        className: 'bot-icon'
+      });
+      var este = this;
+      var enemigo_marker = new leaflet.Marker(new leaflet.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { icon: avatarIcon });
+      enemigo_marker.on('click', function(e) {
+        este.abrirFeature(feature);
+      });
+      this.map.addLayer(enemigo_marker);
+      this.markers_enemigos.push(enemigo_marker);
+    }
+  }
+
   comenzarBatalla(luchadorId: any, luchadorXp: number) {
     let enemigoRef = this.configService.encontrarLuchador(luchadorId);
     if (enemigoRef) {
       let enemigo = new AvatarModel(this.configService);
       enemigo = enemigo.parse_reference(enemigoRef, luchadorXp);
+      this.loading.dismiss();
       let modal = this.modalCtrl.create('BattleDefaultPage', { enemigo: enemigo }, {
         enableBackdropDismiss: false
       });
@@ -71,18 +125,6 @@ export class HomePage {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  ionViewWillEnter() {
-    this.actualizarRealtime();
-  }
-
-  ionViewCanLeave() {
-    //document.getElementById("map").outerHTML = "";
-
-    if (this.realtime) {
-      this.realtime.stop();
-    }
-  }
-
   loadmap() {
     this.map = leaflet.map("map", {
       center: this.center,
@@ -96,6 +138,8 @@ export class HomePage {
 
     this.playerService.loadPlayer().then(res => {
       if (res) {
+        this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
+        this.mapService.iniciarObservableEnemigos();
         var redIcon = leaflet.icon({
           //iconUrl: 'assets/imgs/marker-icon2.png',
           iconUrl: res.icono,
@@ -113,9 +157,10 @@ export class HomePage {
 
         this.geolocation.getCurrentPosition().then((resp) => {
           this.center = new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude);
+          this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
-          this.actualizarRealtime();
+          //this.actualizarRealtime();
         }).catch((error) => {
           console.log('Error getting location', error);
         });
@@ -123,9 +168,10 @@ export class HomePage {
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data) => {
           this.center = new leaflet.LatLng(data.coords.latitude, data.coords.longitude);
+          this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
-          this.actualizarRealtime();
+          //this.actualizarRealtime();
           console.log("View setted", data.coords);
         });
       }
@@ -133,6 +179,8 @@ export class HomePage {
   }
 
   abrirFeature(feature: any) {
+    this.loading = this.loadingCtrl.create();
+    this.loading.present();
     if (feature && feature.properties) {
       if (feature.properties.tipo == 'Bot') {
         var xp = this.getRandomInt(1, this.playerService.player.xp);
@@ -140,12 +188,16 @@ export class HomePage {
           xp = 1;
         }
         this.comenzarBatalla(feature.properties.id, xp);
+      } else {
+        this.loading.dismiss();
       }
+    } else {
+      this.loading.dismiss();
     }
   }
 
   actualizarRealtime() {
-    var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lng=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision;
+    /*var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lng=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision;
     if (this.playerService.player && this.playerService.player.nivel) {
       _url += '&nivel=' + this.playerService.player.nivel;
     }
@@ -157,7 +209,7 @@ export class HomePage {
           crossOrigin: true,
           type: 'json'
         }, {
-          interval: 60 * 1000,
+          interval: 15 * 1000,
           pointToLayer: function(feature, latlng) {
             var _avatar = este.configService.encontrarLuchador(feature.properties.id);
             return leaflet.marker(latlng, {
@@ -171,9 +223,6 @@ export class HomePage {
             });
           },
           onEachFeature: function(feature, layer) {
-            console.log(feature);
-            //var extra_content = '<div><button ion-button block color="primary" [(click)]="test()">TEST</button></div>';
-            //layer.bindPopup(feature['properties'].content + extra_content);
             layer.on('click', function(e) {
               este.abrirFeature(feature);
             });
@@ -185,7 +234,7 @@ export class HomePage {
       });
     } else if (this.realtime) {
       this.realtime.setUrl(_url);
-    }
+    }*/
   }
 
 }

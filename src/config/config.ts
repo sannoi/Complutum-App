@@ -6,18 +6,44 @@ export let config = {
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json'
   },
   jugador: {
-    xp_mascotas_iniciales: 260,
+    xp_inicial: 260000,
+    xp_mascotas_iniciales: 260000,
     mascotas_iniciales: [2,5,8,9,10,11,12,13],
     items_iniciales: [
       { item: 0, cantidad: 5 },
       { item: 1, cantidad: 10 }
     ],
     niveles_xp: [
-      { id: 1, xp_necesaria: 250 },
-      { id: 2, xp_necesaria: 500 },
-      { id: 3, xp_necesaria: 1000 },
-      { id: 4, xp_necesaria: 2000 },
-      { id: 5, xp_necesaria: 4000 }
+      { id: 1, xp_necesaria: 1000 },
+      { id: 2, xp_necesaria: 2000 },
+      { id: 3, xp_necesaria: 3000 },
+      { id: 4, xp_necesaria: 4000 },
+      { id: 5, xp_necesaria: 5000 },
+      { id: 6, xp_necesaria: 6000 },
+      { id: 7, xp_necesaria: 7000 },
+      { id: 8, xp_necesaria: 8000 },
+      { id: 9, xp_necesaria: 9000 },
+      { id: 10, xp_necesaria: 10000 },
+      { id: 11, xp_necesaria: 10000 },
+      { id: 12, xp_necesaria: 10000 },
+      { id: 13, xp_necesaria: 10000 },
+      { id: 14, xp_necesaria: 15000 },
+      { id: 15, xp_necesaria: 20000 },
+      { id: 16, xp_necesaria: 20000 },
+      { id: 17, xp_necesaria: 20000 },
+      { id: 18, xp_necesaria: 25000 },
+      { id: 19, xp_necesaria: 25000 },
+      { id: 20, xp_necesaria: 50000 },
+      { id: 21, xp_necesaria: 75000 },
+      { id: 22, xp_necesaria: 100000 },
+      { id: 23, xp_necesaria: 125000 },
+      { id: 24, xp_necesaria: 150000 },
+      { id: 25, xp_necesaria: 190000 },
+      { id: 26, xp_necesaria: 200000 },
+      { id: 27, xp_necesaria: 250000 },
+      { id: 28, xp_necesaria: 300000 },
+      { id: 29, xp_necesaria: 350000 },
+      { id: 30, xp_necesaria: 500000 }
     ],
     inventario: {
       max_items: 200
@@ -27,6 +53,7 @@ export let config = {
     energia_maxima: 100
   },
   mapa: {
+    localizacion_defecto: { lat: 40.5, lng: -3.2 },
     radio_vision: 0.8,
     radio_interaccion: 0.2
   },

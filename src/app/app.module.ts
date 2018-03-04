@@ -2,6 +2,8 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MyApp } from './app.component';
 
 import { AboutPage } from '../pages/about/about';
@@ -20,6 +22,7 @@ import { PlayerServiceProvider } from '../providers/player-service/player-servic
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { ItemsServiceProvider } from '../providers/items-service/items-service';
+import { MapServiceProvider } from '../providers/map-service/map-service';
 
 @NgModule({
   declarations: [
@@ -33,6 +36,8 @@ import { ItemsServiceProvider } from '../providers/items-service/items-service';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot({
       name: '__ComplutumApp'
@@ -57,7 +62,8 @@ import { ItemsServiceProvider } from '../providers/items-service/items-service';
     PlayerServiceProvider,
     ConfigServiceProvider,
     ToastServiceProvider,
-    ItemsServiceProvider
+    ItemsServiceProvider,
+    MapServiceProvider
   ]
 })
 export class AppModule {}

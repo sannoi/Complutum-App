@@ -86,13 +86,15 @@ export class PlayerServiceProvider {
       }
       if (data.xp) {
         player.xp = data.xp;
+      } else if (this.configService.config.jugador.xp_inicial > 0) {
+        player.xp = this.configService.config.jugador.xp_inicial;
       } else {
         player.xp = 0;
       }
       if (data.nivel) {
         player.nivel = data.nivel;
       } else {
-        player.nivel = 1;
+        player.nivel = this.configService.nivelXp(player.xp);
       }
       if (data.mascotas) {
         player.mascotas = data.mascotas;
