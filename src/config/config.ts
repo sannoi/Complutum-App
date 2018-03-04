@@ -11,7 +11,8 @@ export let config = {
     mascotas_iniciales: [2,5,8,9,10,11,12,13],
     items_iniciales: [
       { item: 0, cantidad: 5 },
-      { item: 1, cantidad: 10 }
+      { item: 1, cantidad: 10 },
+      { item: 2, cantidad: 1 }
     ],
     niveles_xp: [
       { id: 1, xp_necesaria: 1000 },

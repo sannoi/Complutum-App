@@ -18,5 +18,13 @@ export let items = [
     propiedades: {
       restaurar_salud: 25
     }
+  },
+  {
+    id: "camara-fotos",
+    nombre: "Cámara de Fotos",
+    descripcion: "Úsala para tomar fotos de tus luchadores",
+    icono: "assets/imgs/items/Item_0801.png",
+    tipo: "defecto",
+    propiedades: { }
   }
 ];

@@ -1,0 +1,25 @@
+page-inventory-select {
+  ion-col button {
+    background-color: color($colors, light);
+  }
+  ion-col h2 {
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  ion-col ion-badge {
+    font-size: 1.2rem;
+  }
+  ion-col p {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  button ion-thumbnail {
+    position: relative;
+  }
+  button ion-thumbnail ion-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}

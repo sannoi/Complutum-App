@@ -4,6 +4,8 @@ export class ItemModel {
   public descripcion: string;
   public icono: string = 'assets/imgs/items/Item_0701.png';
   public cantidad: number;
+  public tipo: string;
+  public propiedades: any;
 
   constructor() { }
 
@@ -14,6 +16,8 @@ export class ItemModel {
     item_nuevo.descripcion = item.descripcion;
     item_nuevo.icono = item.icono;
     item_nuevo.cantidad = item.cantidad;
+    item_nuevo.tipo = item.tipo;
+    item_nuevo.propiedades = item.propiedades;
     return item_nuevo;
   }
 
@@ -27,6 +31,8 @@ export class ItemModel {
     item_nuevo.descripcion = item.descripcion;
     item_nuevo.icono = item.icono;
     item_nuevo.cantidad = cantidad;
+    item_nuevo.tipo = item.tipo;
+    item_nuevo.propiedades = item.propiedades;
     return item_nuevo;
   }
 
