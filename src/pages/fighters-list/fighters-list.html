@@ -14,12 +14,12 @@
 <ion-content>
   <ion-searchbar *ngIf="searchbar_visible" placeholder="Buscar..." (ionInput)="filtrarLuchadores($event)"></ion-searchbar>
   <ion-list>
-    <button ion-item *ngFor="let luchador of luchadores">
+    <button ion-item *ngFor="let luchador of luchadores" (click)="detalleLuchador(luchador)">
       <ion-thumbnail item-start>
         <img [src]="luchador.icono">
       </ion-thumbnail>
       <h2>{{luchador.nombre}}</h2>
-      <p><ion-badge>N {{luchador.nivel}}</ion-badge> <ion-badge color="danger">P {{luchador.puntos_poder()}}</ion-badge> <ion-badge color="secondary">S {{luchador.salud_actual}}/{{luchador.propiedades_nivel().salud}}</ion-badge></p>
+      <p><ion-badge>N {{luchador.nivel}}</ion-badge> <ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge> <ion-badge color="secondary">S {{luchador.salud_actual}}/{{luchador.propiedades_nivel.salud}}</ion-badge></p>
     </button>
   </ion-list>
 </ion-content>

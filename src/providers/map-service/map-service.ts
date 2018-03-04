@@ -22,22 +22,12 @@ export class MapServiceProvider {
   }
 
   public iniciarObservableEnemigos() {
-    let pos = this.coordenadas;
-    this.origen = Observable.of(pos).flatMap(
-      coordenadas => {
-        let delay: number = 10000;
+    // Busqueda inicial
+    this.encontrarNuevosEnemigos().then(resultado => {
+      this.events.publish('mapa:nuevos_enemigos', resultado);
+    });
 
-        if (delay <= 0) {
-          delay = 1;
-        }
-        // Use the delay in a timer to
-        // run the refresh at the proper time
-        return Observable.interval(delay);
-      });
-
-    // Once the delay time from above is
-    // reached, get a new JWT and schedule
-    // additional refreshes
+    this.origen = Observable.interval(this.configService.config.mapa.tiempo_aparicion_enemigos * 1000);
     this.suscripcion = this.origen.subscribe(() => {
       this.encontrarNuevosEnemigos().then(resultado => {
         this.events.publish('mapa:nuevos_enemigos', resultado);
@@ -53,16 +43,16 @@ export class MapServiceProvider {
 
   encontrarNuevosEnemigos() {
     if (this.coordenadas) {
-      var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng + '&radio=' + this.configService.config.mapa.radio_vision;
+      var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng + '&radio=' + this.configService.config.mapa.radio_interaccion;
       if (this.playerService.player && this.playerService.player.nivel) {
         _url += '&nivel=' + this.playerService.player.nivel;
       }
       return this.http.get(_url)
         .toPromise()
         .then(respuesta => {
-          //let res_json = respuesta.json();
-          if (respuesta.features && respuesta.features.length > 0) {
-            return respuesta.features;
+          console.log(respuesta);
+          if (respuesta && respuesta['features'] && respuesta['features'].length > 0) {
+            return respuesta['features'];
           } else {
             return false;
           }

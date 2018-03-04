@@ -63,7 +63,6 @@ export class HomePage {
           this.anadirEnemigoMapa(data[i]);
         }
       }
-      console.log('Nuevos enemigos', data);
     });
   }
 
@@ -83,16 +82,26 @@ export class HomePage {
       enemigo_marker.on('click', function(e) {
         este.abrirFeature(feature);
       });
-      this.map.addLayer(enemigo_marker);
-      this.markers_enemigos.push(enemigo_marker);
+      var _marker = { id: feature.id, marker: enemigo_marker };
+      this.markers_enemigos.push(_marker);
+      var _added_marker = this.markers_enemigos.find(function(x) {
+        return x.id === feature.id;
+      });
+      this.map.addLayer(_added_marker.marker);
+
+      setTimeout(function() {
+        este.borrarMarkerEnemigo(feature.id);
+      }, this.configService.config.mapa.tiempo_desaparicion_enemigos * 1000);
+
     }
   }
 
-  comenzarBatalla(luchadorId: any, luchadorXp: number) {
+  comenzarBatalla(luchadorId: any, luchadorXp: number, luchadorIdMarker: any) {
     let enemigoRef = this.configService.encontrarLuchador(luchadorId);
     if (enemigoRef) {
       let enemigo = new AvatarModel(this.configService);
       enemigo = enemigo.parse_reference(enemigoRef, luchadorXp);
+      enemigo.id_marker = luchadorIdMarker;
       this.loading.dismiss();
       let modal = this.modalCtrl.create('BattleDefaultPage', { enemigo: enemigo }, {
         enableBackdropDismiss: false
@@ -101,11 +110,51 @@ export class HomePage {
 
       modal.onDidDismiss(data => {
         if (data) {
-          console.log(data);
-          this.actualizarRealtime();
+          if (data.resultado && data.resultado == 'ganador' && data.enemigo && data.enemigo.id_marker) {
+            this.borrarMarkerEnemigo(data.enemigo.id_marker);
+          }
         }
       });
     }
+  }
+
+  borrarMarkerEnemigo(id: any) {
+    var _added_marker = this.markers_enemigos.find(function(x) {
+      return x.id === id;
+    });
+    if (_added_marker) {
+      var _idx_marker = this.markers_enemigos.indexOf(_added_marker);
+      if (_added_marker) {
+        this.map.removeLayer(_added_marker.marker);
+      }
+      if (_idx_marker > -1) {
+          this.markers_enemigos.splice(_idx_marker, 1);
+      }
+    }
+  }
+
+  comprobarDistanciaEnemigos() {
+    var _player_coords = this.mapService.coordenadas;
+    for (var i = 0; i < this.markers_enemigos.length; i++) {
+      var _latlng_marker = this.markers_enemigos[i].marker.getLatLng();
+      var dist = this.calcularDistancia(_player_coords.lat, _latlng_marker.lat, _player_coords.lng, _latlng_marker.lng);
+
+      if (dist > this.configService.config.mapa.radio_interaccion) {
+        console.log('Avatar lejando borrado');
+        if (this.markers_enemigos[i].marker) {
+          this.map.removeLayer(this.markers_enemigos[i].marker);
+        }
+        this.markers_enemigos.splice(i, 1);
+      }
+    }
+  }
+
+  calcularDistancia(lat1:number,lat2:number,long1:number,long2:number){
+    let p = 0.017453292519943295;    // Math.PI / 180
+    let c = Math.cos;
+    let a = 0.5 - c((lat1-lat2) * p) / 2 + c(lat2 * p) *c((lat1) * p) * (1 - c(((long1- long2) * p))) / 2;
+    let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
+    return dis;
   }
 
   recogerItemRandom() {
@@ -160,6 +209,7 @@ export class HomePage {
           this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
+          this.comprobarDistanciaEnemigos();
           //this.actualizarRealtime();
         }).catch((error) => {
           console.log('Error getting location', error);
@@ -171,6 +221,7 @@ export class HomePage {
           this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
+          this.comprobarDistanciaEnemigos();
           //this.actualizarRealtime();
           console.log("View setted", data.coords);
         });
@@ -187,7 +238,7 @@ export class HomePage {
         if (xp <= 0) {
           xp = 1;
         }
-        this.comenzarBatalla(feature.properties.id, xp);
+        this.comenzarBatalla(feature.properties.id, xp, feature.id);
       } else {
         this.loading.dismiss();
       }

@@ -68,7 +68,7 @@ export class BattleDefaultPage {
     if (this.enemigo) {
       this.segundos_debil_enemigo = this.enemigo.ataque.segundos_enfriamiento;
       this.segundos_fuerte_enemigo = this.enemigo.especial.segundos_enfriamiento;
-      this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel().salud) * 100;
+      this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
       this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
     }
     if (!this.luchador) {
@@ -77,7 +77,7 @@ export class BattleDefaultPage {
       this.luchador = this.playerService.player.mascotas[this.luchador_idx];
       this.segundos_debil = this.luchador.ataque.segundos_enfriamiento;
       this.segundos_fuerte = this.luchador.especial.segundos_enfriamiento;
-      this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+      this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
       this.energiaLuchador = (this.luchador.energia / this.configService.config.avatares.energia_maxima) * 100;
     }
   }
@@ -132,7 +132,7 @@ export class BattleDefaultPage {
         this.luchador = this.playerService.player.mascotas[this.luchador_idx];
         this.segundos_debil = this.luchador.ataque.segundos_enfriamiento;
         this.segundos_fuerte = this.luchador.especial.segundos_enfriamiento;
-        this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+        this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
         this.energiaLuchador = (this.luchador.energia / this.configService.config.avatares.energia_maxima) * 100;
         this.alertaInicial();
       } else {
@@ -177,7 +177,7 @@ export class BattleDefaultPage {
       this.batallaGanada();
       console.log(this.enemigo.nombre + " muerto");
     }
-    this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel().salud) * 100;
+    this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
     this.enfriamientoDebil();
   }
 
@@ -202,7 +202,7 @@ export class BattleDefaultPage {
       this.batallaGanada();
       console.log(this.enemigo.nombre + " muerto");
     }
-    this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel().salud) * 100;
+    this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
     this.enfriamientoFuerte();
   }
 
@@ -270,7 +270,7 @@ export class BattleDefaultPage {
       this.batallaPerdida();
       console.log(this.luchador.nombre + " ha muerto");
     }
-    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
     this.enfriamientoDebilEnemigo();
   }
 
@@ -299,7 +299,7 @@ export class BattleDefaultPage {
     }
     this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
     this.playerService.savePlayer();
-    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel().salud) * 100;
+    this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
     this.enfriamientoFuerteEnemigo();
   }
 

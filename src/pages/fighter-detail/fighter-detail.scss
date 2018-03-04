@@ -1,0 +1,22 @@
+page-fighter-detail {
+  .avatar-img {
+    background-color: color($colors, primary);
+  }
+  .avatar-img img {
+    margin-top: 2rem;
+  }
+  .avatar-poder ion-badge {
+    font-size: 2rem;
+  }
+  .avatar-salud-pb {
+    position: absolute;
+    width: 100%;
+    top: 10px;
+  }
+  .avatar-salud-pb .inner-salud {
+    width: 200px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

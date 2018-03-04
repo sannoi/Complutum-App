@@ -10,10 +10,13 @@ export class AvatarModel {
   public salud: number;
   public salud_actual: number;
   public energia: number = 0;
+  public puntos_poder: number;
   public propiedades: { ataque: number, defensa: number  };
+  public propiedades_nivel: { ataque: number, defensa: number, salud: number };
   public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
   public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
   public fecha?: string;
+  public id_marker?: any;
 
   //private configService: ConfigServiceProvider;
 
@@ -39,6 +42,8 @@ export class AvatarModel {
     } else {
       mascota_nueva.fecha = this.getDateTime();
     }
+    mascota_nueva.propiedades_nivel = mascota_nueva.calc_propiedades_nivel();
+    mascota_nueva.puntos_poder = mascota_nueva.calc_puntos_poder();
     return mascota_nueva;
   }
 
@@ -56,18 +61,25 @@ export class AvatarModel {
     var _especial_id = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
     mascota_nueva.especial = this.configService.encontrarAtaque(_especial_id,'fuerte');
     mascota_nueva.nivel = this.configService.nivelXp(xp);
-    mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel().salud;
     mascota_nueva.energia = 0;
     mascota_nueva.fecha = this.getDateTime();
+    mascota_nueva.propiedades_nivel = mascota_nueva.calc_propiedades_nivel();
+    mascota_nueva.puntos_poder = mascota_nueva.calc_puntos_poder();
+    mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel.salud;
     return mascota_nueva;
   }
 
-  public propiedades_nivel() {
+  public recalcular_nuevo_nivel() {
+    this.propiedades_nivel = this.calc_propiedades_nivel();
+    this.puntos_poder = this.calc_puntos_poder();
+  }
+
+  public calc_propiedades_nivel() {
     let modifier = parseFloat((this.nivel / 30).toString());
     return { salud: parseInt((this.salud * modifier).toString()) + 10, ataque: parseInt((this.propiedades.ataque * modifier).toString()), defensa: parseInt((this.propiedades.defensa * modifier).toString()) };
   }
 
-  public puntos_poder() {
+  public calc_puntos_poder() {
     var multiplier = 0.095 * Math.sqrt(parseInt(this.nivel.toString()) * 2);
     var bAtaque = 2 * parseInt(this.propiedades.ataque.toString()) * multiplier;
     var bDefensa = 2 * parseInt(this.propiedades.defensa.toString()) * multiplier;

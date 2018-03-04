@@ -54,6 +54,8 @@ export let config = {
   },
   mapa: {
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
+    tiempo_aparicion_enemigos: 15,
+    tiempo_desaparicion_enemigos: 45,
     radio_vision: 0.8,
     radio_interaccion: 0.2
   },

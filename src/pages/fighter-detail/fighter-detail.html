@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar *ngIf="luchador">
+    <ion-title>{{luchador.nombre}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="avatar-header" text-center *ngIf="luchador">
+    <div class="avatar-salud-pb">
+      <div class="inner-salud">
+        <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud" [text]="saludText()"></progress-bar>
+      </div>
+    </div>
+    <div class="avatar-img" [style.background-color]="luchador.tipo.color">
+      <img [src]="luchador.icono">
+    </div>
+    <ion-toolbar class="avatar-poder"><ion-badge>N {{luchador.nivel}}</ion-badge> <ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge></ion-toolbar>
+  </div>
+  <ion-fab right bottom>
+    <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+    <ion-fab-list side="left">
+      <button ion-fab color="secondary"><ion-icon name="cube"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

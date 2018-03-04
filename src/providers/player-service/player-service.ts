@@ -34,7 +34,8 @@ export class PlayerServiceProvider {
     if (nivel_calculado > nivel_actual) {
       console.log(avatar.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
       avatar.nivel = nivel_calculado;
-      avatar.salud_actual = avatar.propiedades_nivel().salud;
+      avatar.salud_actual = avatar.propiedades_nivel.salud;
+      avatar.recalcular_nuevo_nivel();
       this.events.publish('avatar:nivel_conseguido', { avatar: avatar, nivel: nivel_calculado });
     }
     this.player.mascotas[idx_avatar] = avatar;

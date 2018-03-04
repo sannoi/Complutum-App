@@ -51,6 +51,10 @@ export class FightersListPage {
     }
   }
 
+  detalleLuchador(luchador: AvatarModel) {
+    this.navCtrl.push('FighterDetailPage', { luchador: luchador });
+  }
+
   filtrarLuchadores(ev: any) {
     // Reset items back to all of the items
     let _luchadores = this.playerService.player.mascotas;
@@ -77,15 +81,18 @@ export class FightersListPage {
   ordenarLuchadores() {
     var order = this.orden;
     var order_dir = this.dir_orden;
+    var este = this;
     this.luchadores.sort(function(a, b) {
-      if (a[order] > b[order]) {
+      let aDeep = este.goDeep(a, order);
+      let bDeep = este.goDeep(b, order);
+      if (aDeep > bDeep) {
         if (order_dir == 'DESC') {
           return -1;
         } else {
           return 1;
         }
       }
-      if (a[order] < b[order]) {
+      if (aDeep < bDeep) {
         if (order_dir == 'DESC') {
           return 1;
         } else {
@@ -94,6 +101,12 @@ export class FightersListPage {
       }
       return 0;
     });
+  }
+
+  goDeep(obj, desc) {
+    var arr = desc.split(".");
+    while (arr.length && (obj = obj[arr.shift()]));
+    return obj;
   }
 
 }

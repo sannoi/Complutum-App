@@ -1,6 +1,6 @@
 <ion-header *ngIf="enemigo">
   <ion-navbar>
-    <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder()}} | N {{enemigo.nivel}})</ion-title>
+    <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder}} | N {{enemigo.nivel}})</ion-title>
 
     <ion-buttons start>
       <button ion-button (click)="huir()">
@@ -16,7 +16,7 @@
   <h2 text-center>{{segundos_batalla}}</h2>
   <progress-bar [progress]="saludEnemigo" [color]="configService.config.colores.salud"></progress-bar>
   <ion-item text-center>
-    <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel().salud}}</ion-note>
+    <ion-note>{{enemigo.salud_actual}}/{{enemigo.propiedades_nivel.salud}}</ion-note>
     <ion-thumbnail class="big">
       <img [src]="enemigo.icono">
     </ion-thumbnail>
