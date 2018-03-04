@@ -11,14 +11,13 @@ export class PlayerModel {
   public mascota_seleccionada_idx: number;
   public items: Array<ItemModel>;
 
-  private configService: ConfigServiceProvider;
+  //private configService: ConfigServiceProvider;
 
-  constructor() {
-      this.configService = new ConfigServiceProvider();
+  constructor(private configService: ConfigServiceProvider) {
   }
 
   public parse(player: any) {
-    let player_nuevo = new PlayerModel();
+    let player_nuevo = new PlayerModel(this.configService);
     player_nuevo.nombre = player.nombre;
     player_nuevo.icono = player.icono;
     player_nuevo.xp = player.xp;
@@ -26,7 +25,7 @@ export class PlayerModel {
     player_nuevo.mascota_seleccionada_idx = player.mascota_seleccionada_idx;
     let mascotas = new Array<AvatarModel>();
     for (var i = 0; i < player.mascotas.length; i++) {
-      let mascota_nueva = new AvatarModel();
+      let mascota_nueva = new AvatarModel(this.configService);
       mascota_nueva = mascota_nueva.parse(player.mascotas[i]);
       mascotas.push(mascota_nueva);
     }

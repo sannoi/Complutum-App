@@ -35,10 +35,10 @@ export class HomePage {
     this.loadmap();
   }
 
-  comenzarBatalla(luchadorIdx: number, luchadorXp: number) {
-    let enemigoRef = this.configService.luchadores[luchadorIdx];
+  comenzarBatalla(luchadorId: any, luchadorXp: number) {
+    let enemigoRef = this.configService.encontrarLuchador(luchadorId);
     if (enemigoRef) {
-      let enemigo = new AvatarModel();
+      let enemigo = new AvatarModel(this.configService);
       enemigo = enemigo.parse_reference(enemigoRef, luchadorXp);
       let modal = this.modalCtrl.create('BattleDefaultPage', { enemigo: enemigo }, {
         enableBackdropDismiss: false
@@ -48,19 +48,10 @@ export class HomePage {
       modal.onDidDismiss(data => {
         if (data) {
           console.log(data);
+          this.actualizarRealtime();
         }
       });
     }
-  }
-
-  comenzarBatallaRandom() {
-    var idx = Math.floor(Math.random() * this.configService.luchadores.length);
-    var xp = this.getRandomInt(1, this.playerService.player.xp);
-    if (xp <= 0) {
-      xp = 1;
-    }
-    console.log("Comenzar Batalla Random: " + idx + " " + xp);
-    this.comenzarBatalla(idx, xp);
   }
 
   recogerItemRandom() {
@@ -141,23 +132,51 @@ export class HomePage {
     });
   }
 
-  test() {
-    console.log("Funciona!");
+  abrirFeature(feature: any) {
+    if (feature && feature.properties) {
+      if (feature.properties.tipo == 'Bot') {
+        var xp = this.getRandomInt(1, this.playerService.player.xp);
+        if (xp <= 0) {
+          xp = 1;
+        }
+        this.comenzarBatalla(feature.properties.id, xp);
+      }
+    }
   }
 
   actualizarRealtime() {
+    var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lng=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision;
+    if (this.playerService.player && this.playerService.player.nivel) {
+      _url += '&nivel=' + this.playerService.player.nivel;
+    }
     if (!this.realtime) {
+      var este = this;
       this.realtime = leaflet.realtime(
         {
-          url: this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lon=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision,
+          url: _url,
           crossOrigin: true,
           type: 'json'
         }, {
           interval: 60 * 1000,
+          pointToLayer: function(feature, latlng) {
+            var _avatar = este.configService.encontrarLuchador(feature.properties.id);
+            return leaflet.marker(latlng, {
+                'icon': leaflet.icon({
+                    iconUrl:      _avatar.icono,
+                    iconSize:     [80, 80], // size of the icon
+                    iconAnchor:   [40, 79], // point of the icon which will correspond to marker's location
+                    popupAnchor:  [0, -78], // point from which the popup should open relative to the iconAnchor
+                    className:    'bot-icon'
+                })
+            });
+          },
           onEachFeature: function(feature, layer) {
             console.log(feature);
-            var extra_content = '<div><button ion-button block color="primary" [(click)]="test()">TEST</button></div>';
-            layer.bindPopup(feature['properties'].content + extra_content);
+            //var extra_content = '<div><button ion-button block color="primary" [(click)]="test()">TEST</button></div>';
+            //layer.bindPopup(feature['properties'].content + extra_content);
+            layer.on('click', function(e) {
+              este.abrirFeature(feature);
+            });
           }
         }).addTo(this.map);
 
@@ -165,12 +184,7 @@ export class HomePage {
         console.log('realtime actualizado');
       });
     } else if (this.realtime) {
-      console.log("_url de realtime", this.realtime);
-      this.realtime.setUrl(this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.center.lat + '&lon=' + this.center.lng + '&radio=' + this.configService.config.mapa.radio_vision),
-      //if (!this.realtime.isRunning()) {
-        this.realtime.start();
-      //}
-      console.log("Cambiado _url de realtime", this.realtime);
+      this.realtime.setUrl(_url);
     }
   }
 

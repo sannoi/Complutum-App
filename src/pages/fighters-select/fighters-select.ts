@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, PopoverController  } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model';
 
@@ -12,17 +12,36 @@ export class FightersSelectPage {
 
   luchadores: Array<AvatarModel>;
 
+  orden: any;
+  dir_orden: any;
+
   searchbar_visible: boolean = false;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private playerService: PlayerServiceProvider,
-    public viewCtrl: ViewController) {
+    public viewCtrl: ViewController,
+    public popoverCtrl: PopoverController) {
+      this.orden = 'fecha';
+      this.dir_orden = 'DESC';
   }
 
   ionViewWillEnter() {
     this.luchadores = this.playerService.player.mascotas;
+    this.ordenarLuchadores();
+  }
+
+  presentPopover(myEvent) {
+    let popover = this.popoverCtrl.create('OrderFightersPage');
+    popover.present({
+      ev: myEvent
+    });
+    popover.onDidDismiss(data => {
+      if (data && data.orden && data.dir_orden) {
+        this.cambiarOrden(data.orden, data.dir_orden);
+      }
+    });
   }
 
   toggleSearchBar() {
@@ -44,10 +63,40 @@ export class FightersSelectPage {
     if (val && val.trim() != '') {
       this.luchadores = _luchadores.filter((item) => {
         return (item.nombre.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+      });
+      this.ordenarLuchadores();
     } else {
+      this.ordenarLuchadores();
       return this.luchadores;
     }
+  }
+
+  cambiarOrden(orden: any, dir_orden: any) {
+    this.orden = orden;
+    this.dir_orden = dir_orden;
+    this.ordenarLuchadores();
+  }
+
+  ordenarLuchadores() {
+    var order = this.orden;
+    var order_dir = this.dir_orden;
+    this.luchadores.sort(function(a, b) {
+      if (a[order] > b[order]) {
+        if (order_dir == 'DESC') {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (a[order] < b[order]) {
+        if (order_dir == 'DESC') {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+      return 0;
+    });
   }
 
   dismiss() {

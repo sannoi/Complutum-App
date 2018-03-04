@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model';
 
@@ -12,13 +12,35 @@ export class FightersListPage {
 
   luchadores: Array<AvatarModel>;
 
+  orden: any;
+  dir_orden: any;
+
   searchbar_visible: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private playerService: PlayerServiceProvider) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private playerService: PlayerServiceProvider,
+    public popoverCtrl: PopoverController) {
+      this.orden = 'fecha';
+      this.dir_orden = 'DESC';
   }
 
   ionViewWillEnter() {
     this.luchadores = this.playerService.player.mascotas;
+    this.ordenarLuchadores();
+  }
+
+  presentPopover(myEvent) {
+    let popover = this.popoverCtrl.create('OrderFightersPage');
+    popover.present({
+      ev: myEvent
+    });
+    popover.onDidDismiss(data => {
+      if (data && data.orden && data.dir_orden) {
+        this.cambiarOrden(data.orden, data.dir_orden);
+      }
+    });
   }
 
   toggleSearchBar() {
@@ -44,6 +66,34 @@ export class FightersListPage {
     } else {
       return this.luchadores;
     }
+  }
+
+  cambiarOrden(orden: any, dir_orden: any) {
+    this.orden = orden;
+    this.dir_orden = dir_orden;
+    this.ordenarLuchadores();
+  }
+
+  ordenarLuchadores() {
+    var order = this.orden;
+    var order_dir = this.dir_orden;
+    this.luchadores.sort(function(a, b) {
+      if (a[order] > b[order]) {
+        if (order_dir == 'DESC') {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (a[order] < b[order]) {
+        if (order_dir == 'DESC') {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+      return 0;
+    });
   }
 
 }

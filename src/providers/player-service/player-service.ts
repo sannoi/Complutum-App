@@ -55,7 +55,7 @@ export class PlayerServiceProvider {
   loadPlayer() {
     return this.storage.get('player').then(res => {
       if (res) {
-        let player_nuevo = new PlayerModel();
+        let player_nuevo = new PlayerModel(this.configService);
         res = player_nuevo.parse(res);
         this.player = res;
       }
@@ -74,7 +74,7 @@ export class PlayerServiceProvider {
   }
 
   newPlayer(data: any) {
-    let player = new PlayerModel();
+    let player = new PlayerModel(this.configService);
     if (!data || !data.nombre || data.nombre.trim() == '') {
       return new Promise<boolean>((resolve, reject) => {
         resolve(false);
@@ -121,7 +121,7 @@ export class PlayerServiceProvider {
       for (var i = 0; i < this.configService.config.jugador.mascotas_iniciales.length; i++) {
         var idx = this.configService.config.jugador.mascotas_iniciales[i];
         if (this.configService.luchadores[idx]) {
-          let mascota_nueva = new AvatarModel();
+          let mascota_nueva = new AvatarModel(this.configService);
           mascota_nueva = mascota_nueva.parse_reference(this.configService.luchadores[idx],this.configService.config.jugador.xp_mascotas_iniciales);
           mascotas_iniciales.push(mascota_nueva);
         }

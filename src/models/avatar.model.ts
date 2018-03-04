@@ -1,8 +1,10 @@
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 
 export class AvatarModel {
+  public id: string;
   public nombre: string;
   public icono: string = 'assets/imgs/avatar_default.png';
+  public tipo: any;
   public xp: number;
   public nivel: number;
   public salud: number;
@@ -11,40 +13,52 @@ export class AvatarModel {
   public propiedades: { ataque: number, defensa: number  };
   public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
   public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
+  public fecha?: string;
 
-  private configService: ConfigServiceProvider;
+  //private configService: ConfigServiceProvider;
 
-  constructor() {
-      this.configService = new ConfigServiceProvider();
+  constructor(private configService: ConfigServiceProvider) {
   }
 
   public parse(avatar: any) {
-    let mascota_nueva = new AvatarModel();
+    let mascota_nueva = new AvatarModel(this.configService);
+    mascota_nueva.id = avatar.id;
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
+    mascota_nueva.tipo = avatar.tipo;
     mascota_nueva.xp = avatar.xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
-    mascota_nueva.ataque = { nombre: avatar.ataque.nombre, puntos_dano: avatar.ataque.puntos_dano, segundos_enfriamiento: avatar.ataque.segundos_enfriamiento, incremento_energia: avatar.ataque.incremento_energia };
-    mascota_nueva.especial = { nombre: avatar.especial.nombre, puntos_dano: avatar.especial.puntos_dano, segundos_enfriamiento: avatar.especial.segundos_enfriamiento, gasto_energia: avatar.especial.gasto_energia };
+    mascota_nueva.ataque = this.configService.encontrarAtaque(avatar.ataque.id,'debil');
+    mascota_nueva.especial = this.configService.encontrarAtaque(avatar.especial.id,'fuerte');
     mascota_nueva.nivel = this.configService.nivelXp(avatar.xp);
     mascota_nueva.salud_actual = avatar.salud_actual;
     mascota_nueva.energia = avatar.energia;
+    if (avatar.fecha) {
+      mascota_nueva.fecha = avatar.fecha;
+    } else {
+      mascota_nueva.fecha = this.getDateTime();
+    }
     return mascota_nueva;
   }
 
   public parse_reference(avatar: any, xp: number) {
-    let mascota_nueva = new AvatarModel();
+    let mascota_nueva = new AvatarModel(this.configService);
+    mascota_nueva.id = this.generateId();
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
+    mascota_nueva.tipo = this.configService.encontrarTipo(avatar.tipo);
     mascota_nueva.xp = xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
-    mascota_nueva.ataque = avatar.ataques[Math.floor(Math.random()*avatar.ataques.length)];
-    mascota_nueva.especial = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
+    var _ataque_id = avatar.ataques[Math.floor(Math.random()*avatar.ataques.length)];
+    mascota_nueva.ataque = this.configService.encontrarAtaque(_ataque_id,'debil');
+    var _especial_id = avatar.especiales[Math.floor(Math.random()*avatar.especiales.length)];
+    mascota_nueva.especial = this.configService.encontrarAtaque(_especial_id,'fuerte');
     mascota_nueva.nivel = this.configService.nivelXp(xp);
     mascota_nueva.salud_actual = mascota_nueva.propiedades_nivel().salud;
     mascota_nueva.energia = 0;
+    mascota_nueva.fecha = this.getDateTime();
     return mascota_nueva;
   }
 
@@ -59,5 +73,36 @@ export class AvatarModel {
     var bDefensa = 2 * parseInt(this.propiedades.defensa.toString()) * multiplier;
     var bSalud = 2 * parseInt(this.salud.toString()) * multiplier;
     return Math.max(10, Math.floor( (Math.pow(bSalud, 0.5) * bAtaque * Math.pow(bDefensa, 0.5)) / 40));
+  }
+
+  generateId() {
+    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 8)).toUpperCase();
+  }
+
+  getDateTime() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = (now.getMonth() + 1).toString();
+    var day = now.getDate().toString();
+    var hour = now.getHours().toString();
+    var minute = now.getMinutes().toString();
+    var second = now.getSeconds().toString();
+    if (month.toString().length == 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length == 1) {
+      day = '0' + day;
+    }
+    if (hour.toString().length == 1) {
+      hour = '0' + hour;
+    }
+    if (minute.toString().length == 1) {
+      minute = '0' + minute;
+    }
+    if (second.toString().length == 1) {
+      second = '0' + second;
+    }
+    var dateTime = year + '/' + month + '/' + day + ' ' + hour + ':' + minute + ':' + second;
+    return dateTime;
   }
 }

@@ -2,12 +2,12 @@ export let config = {
   juego: {
     nombre: 'Complutum',
     url_base: 'https://web.mideas.es/mideas_devel',
-    url_realtime: '/api/sitios/sitio/realtime.json',
+    url_realtime: '/api/mplay/usuario/usuariosCercanos.json',
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json'
   },
   jugador: {
     xp_mascotas_iniciales: 260,
-    mascotas_iniciales: [2,5,8,9,10,11],
+    mascotas_iniciales: [2,5,8,9,10,11,12,13],
     items_iniciales: [
       { item: 0, cantidad: 5 },
       { item: 1, cantidad: 10 }
@@ -27,7 +27,7 @@ export let config = {
     energia_maxima: 100
   },
   mapa: {
-    radio_vision: 1.2,
+    radio_vision: 0.8,
     radio_interaccion: 0.2
   },
   batalla: {
