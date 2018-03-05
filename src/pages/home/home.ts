@@ -157,6 +157,15 @@ export class HomePage {
     return dis;
   }
 
+  anadirMascotaRandom() {
+    var idx = Math.floor(Math.random() * this.configService.luchadores.length);
+    var xp = this.getRandomInt(1, this.playerService.player.xp);
+    if (xp <= 0) {
+      xp = 1;
+    }
+    this.playerService.anadirMascota(this.configService.luchadores[idx].id, xp);
+  }
+
   recogerItemRandom() {
     var idx = Math.floor(Math.random() * this.configService.items.length);
     var cantidad = this.getRandomInt(1, 10);

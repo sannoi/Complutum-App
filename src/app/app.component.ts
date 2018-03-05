@@ -49,6 +49,15 @@ export class MyApp {
       this.toastService.push(data.avatar.nombre + ' ha alcanzado el nivel ' + data.nivel);
       console.log('Evento avatar nivel conseguido', data);
     });
+
+    this.events.subscribe('player:nueva_mascota', (data) => {
+      if (data && data.mascota) {
+        let modal = this.modalCtrl.create('FighterDetailPage', { luchador: data.mascota, modal: true, titulo_custom: '¡Has conseguido un ' + data.mascota.nombre + '!' }, {
+          enableBackdropDismiss: false
+        });
+        modal.present();
+      }
+    });
   }
 
   checkPlayer() {

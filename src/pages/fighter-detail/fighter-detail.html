@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar *ngIf="luchador">
-    <ion-title>{{luchador.nombre}}</ion-title>
+    <ion-title>{{tituloPagina()}}</ion-title>
+    <ion-buttons start *ngIf="esModal">
+      <button ion-button (click)="dismiss()">
+                <span ion-text color="primary">Cerrar</span>
+            </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 

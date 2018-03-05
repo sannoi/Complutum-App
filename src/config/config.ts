@@ -6,11 +6,11 @@ export let config = {
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json'
   },
   jugador: {
-    xp_inicial: 260000,
-    xp_mascotas_iniciales: 260000,
-    mascotas_iniciales: [2,5,8,9,10,11,12,13],
+    xp_inicial: 0,
+    xp_mascotas_iniciales: 1500,
+    mascotas_iniciales: [9],
     items_iniciales: [
-      { item: 0, cantidad: 5 },
+      { item: 0, cantidad: 15 },
       { item: 1, cantidad: 10 },
       { item: 2, cantidad: 1 }
     ],

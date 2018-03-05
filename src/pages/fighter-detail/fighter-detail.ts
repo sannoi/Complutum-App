@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model';
@@ -14,17 +14,33 @@ export class FighterDetailPage {
   luchador: AvatarModel;
   saludLuchador: any;
 
+  esModal: boolean;
+
+  titulo_custom: string;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
+    public viewCtrl: ViewController,
     private configService: ConfigServiceProvider,
     private playerService: PlayerServiceProvider) {
       this.luchador = navParams.get('luchador');
+      this.esModal = navParams.get('modal');
+      if (navParams.get('titulo_custom')) {
+        this.titulo_custom = navParams.get('titulo_custom');
+      }
       if (this.luchador) {
         this.saludLuchador = (this.luchador.salud_actual/this.luchador.propiedades_nivel.salud) * 100;
       }
-      console.log(this.luchador);
+  }
+
+  tituloPagina() {
+    if (this.titulo_custom) {
+      return this.titulo_custom;
+    } else {
+      return this.luchador.nombre;
+    }
   }
 
   saludText() {
@@ -60,6 +76,10 @@ export class FighterDetailPage {
         }
       }
     });
+  }
+
+  dismiss() {
+    this.viewCtrl.dismiss();
   }
 
 }
