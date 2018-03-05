@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, ModalController, LoadingController, Events } from 'ionic-angular';
-import * as leaflet from 'leaflet';
+import * as L from 'leaflet';
 import 'leaflet-realtime';
+import 'mapbox-gl-leaflet/leaflet-mapbox-gl.js';
 import { Geolocation } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
@@ -16,6 +17,7 @@ import { AvatarModel } from '../../models/avatar.model'
 })
 export class HomePage {
   map: any;
+  map_gl: any;
   marker: any;
   center: any;
   realtime: any;
@@ -39,7 +41,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    this.center = new leaflet.LatLng(40.5, -3.2);
+    this.center = new L.LatLng(40.5, -3.2);
     this.loadmap();
   }
 
@@ -69,7 +71,7 @@ export class HomePage {
   anadirEnemigoMapa(feature: any) {
     var _avatar = this.configService.encontrarLuchador(feature.properties.id);
     if (_avatar) {
-      var avatarIcon = leaflet.icon({
+      var avatarIcon = L.icon({
         //iconUrl: 'assets/imgs/marker-icon2.png',
         iconUrl: _avatar.icono,
         iconSize: [80, 80], // size of the icon
@@ -78,7 +80,7 @@ export class HomePage {
         className: 'bot-icon'
       });
       var este = this;
-      var enemigo_marker = new leaflet.Marker(new leaflet.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { icon: avatarIcon });
+      var enemigo_marker = new L.Marker(new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { icon: avatarIcon });
       enemigo_marker.on('click', function(e) {
         este.abrirFeature(feature);
       });
@@ -184,18 +186,20 @@ export class HomePage {
   }
 
   loadmap() {
-    this.map = leaflet.map("map", {
+    this.map = L.map("map", {
       center: this.center,
       zoom: 18
     });
-    leaflet.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+
+    /*L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
       attribution: '',
       maxZoom: 22,
       minZoom: 12
-    }).addTo(this.map);
+    }).addTo(this.map);*/
+
 
     this.playerService.loadPlayer().then(res => {
-      var redIcon = leaflet.icon({
+      var redIcon = L.icon({
         //iconUrl: 'assets/imgs/marker-icon2.png',
         iconUrl: 'assets/imgs/player_default.png',
         shadowUrl: 'assets/imgs/marker-shadow.png',
@@ -205,7 +209,7 @@ export class HomePage {
         className: 'player-icon'
       });
       if (res) {
-        redIcon = leaflet.icon({
+        redIcon = L.icon({
           //iconUrl: 'assets/imgs/marker-icon2.png',
           iconUrl: res.icono,
           shadowUrl: 'assets/imgs/marker-shadow.png',
@@ -218,13 +222,13 @@ export class HomePage {
 
       this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
 
-        this.marker = new leaflet.Marker(this.center, { icon: redIcon });
+        this.marker = new L.Marker(this.center, { icon: redIcon });
         this.map.addLayer(this.marker);
 
         //this.marker.bindPopup("<h6>" + res.nombre + "</h6><p><span ion-text color='primary'>N " + res.nivel + " (" + res.xp + " XP)</span></p>");
 
         this.geolocation.getCurrentPosition().then((resp) => {
-          this.center = new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude);
+          this.center = new L.LatLng(resp.coords.latitude, resp.coords.longitude);
           this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
@@ -237,7 +241,7 @@ export class HomePage {
 
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data) => {
-          this.center = new leaflet.LatLng(data.coords.latitude, data.coords.longitude);
+          this.center = new L.LatLng(data.coords.latitude, data.coords.longitude);
           this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
@@ -245,6 +249,14 @@ export class HomePage {
           //this.actualizarRealtime();
           console.log("View setted", data.coords);
         });
+
+        this.map_gl = L.mapboxGL({
+            accessToken: 'pk.eyJ1Ijoic2Fubm9pIiwiYSI6ImNpeTgwcnBmeTAwMXgycXI3bTA5ZHZ0MjIifQ.4_oblhduvDc6UKdrdioMMQ',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            pitch: 45,
+            bearing: -17.6,
+            hash: true
+        }).addTo(this.map);
 
     });
   }
@@ -274,7 +286,7 @@ export class HomePage {
     }
     if (!this.realtime) {
       var este = this;
-      this.realtime = leaflet.realtime(
+      this.realtime = L.realtime(
         {
           url: _url,
           crossOrigin: true,
@@ -283,8 +295,8 @@ export class HomePage {
           interval: 15 * 1000,
           pointToLayer: function(feature, latlng) {
             var _avatar = este.configService.encontrarLuchador(feature.properties.id);
-            return leaflet.marker(latlng, {
-                'icon': leaflet.icon({
+            return L.marker(latlng, {
+                'icon': L.icon({
                     iconUrl:      _avatar.icono,
                     iconSize:     [80, 80], // size of the icon
                     iconAnchor:   [40, 79], // point of the icon which will correspond to marker's location
