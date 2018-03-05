@@ -9,4 +9,45 @@ page-battle-default {
     max-width: 100%;
     display: inline-block;
   }
+  .texto_efectividad {
+    position: absolute;
+    right: 80px;
+    top: 16px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 20px;
+    min-width: 145px;
+    text-align: center;
+    transition: all 0.5s;
+  }
+  .efectividad_enemigo .texto_efectividad {
+    position: absolute;
+    right: 10px;
+    left: 10px;
+    top: 16px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 20px;
+    min-width: 145px;
+    text-align: center;
+    transition: all 0.5s;
+  }
+  .texto_efectividad.ataque_efectivo {
+    background-color: #0000ff;
+    color: white;
+  }
+  .texto_efectividad.ataque_muy_efectivo {
+    background-color: #00ff00;
+    color: white;
+  }
+  .texto_efectividad.ataque_poco_efectivo {
+    background-color: #ff0000;
+    color: white;
+  }
+  .texto_efectividad.ataque_muy_poco_efectivo {
+    background-color: #ff0000;
+    color: white;
+  }
 }

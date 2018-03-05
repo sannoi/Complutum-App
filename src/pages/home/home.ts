@@ -186,10 +186,17 @@ export class HomePage {
     }).addTo(this.map);
 
     this.playerService.loadPlayer().then(res => {
+      var redIcon = leaflet.icon({
+        //iconUrl: 'assets/imgs/marker-icon2.png',
+        iconUrl: 'assets/imgs/player_default.png',
+        shadowUrl: 'assets/imgs/marker-shadow.png',
+        iconSize: [50, 50],
+        iconAnchor: [25, 49],
+        popupAnchor: [0, -47],
+        className: 'player-icon'
+      });
       if (res) {
-        this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
-        this.mapService.iniciarObservableEnemigos();
-        var redIcon = leaflet.icon({
+        redIcon = leaflet.icon({
           //iconUrl: 'assets/imgs/marker-icon2.png',
           iconUrl: res.icono,
           shadowUrl: 'assets/imgs/marker-shadow.png',
@@ -198,11 +205,14 @@ export class HomePage {
           popupAnchor: [0, -47],
           className: 'player-icon'
         });
+      }
+
+      this.mapService.establecerCoordenadas({ lat: this.center.lat, lng: this.center.lng });
 
         this.marker = new leaflet.Marker(this.center, { icon: redIcon });
         this.map.addLayer(this.marker);
 
-        this.marker.bindPopup("<h6>" + res.nombre + "</h6><p><span ion-text color='primary'>N " + res.nivel + " (" + res.xp + " XP)</span></p>");
+        //this.marker.bindPopup("<h6>" + res.nombre + "</h6><p><span ion-text color='primary'>N " + res.nivel + " (" + res.xp + " XP)</span></p>");
 
         this.geolocation.getCurrentPosition().then((resp) => {
           this.center = new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -210,6 +220,7 @@ export class HomePage {
           this.map.setView(this.center);
           this.marker.setLatLng(this.center);
           this.comprobarDistanciaEnemigos();
+          this.mapService.iniciarObservableEnemigos();
           //this.actualizarRealtime();
         }).catch((error) => {
           console.log('Error getting location', error);
@@ -225,7 +236,7 @@ export class HomePage {
           //this.actualizarRealtime();
           console.log("View setted", data.coords);
         });
-      }
+
     });
   }
 

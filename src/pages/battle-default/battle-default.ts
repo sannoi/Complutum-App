@@ -49,9 +49,16 @@ export class BattleDefaultPage {
   luchador_idx: number = 0;
 
   saludEnemigo: number = 0;
+  saludEnemigoText: string;
   energiaEnemigo: number = 0;
   saludLuchador: number = 0;
   energiaLuchador: number = 0;
+
+  efectividad_ataque: any;
+  efectividad_especial: any;
+
+  efectividad_ataque_enemigo: any;
+  efectividad_especial_enemigo: any;
 
   constructor(
     public navCtrl: NavController,
@@ -69,6 +76,7 @@ export class BattleDefaultPage {
       this.segundos_debil_enemigo = this.enemigo.ataque.segundos_enfriamiento;
       this.segundos_fuerte_enemigo = this.enemigo.especial.segundos_enfriamiento;
       this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
+      this.saludEnemigoText = this.enemigo.salud_actual.toString() + "/" + this.enemigo.propiedades_nivel.salud.toString();
       this.energiaEnemigo = (this.enemigo.energia / this.configService.config.avatares.energia_maxima) * 100;
     }
     if (!this.luchador) {
@@ -157,8 +165,41 @@ export class BattleDefaultPage {
       });
   }
 
+  ataqueEfectividad() {
+    this.efectividad_ataque = this.battleService.tipoEfectividad(this.luchador, this.enemigo, false);
+    var este = this;
+    setTimeout(function(){
+      este.efectividad_ataque = 0;
+    }, 500);
+  }
+
+  especialEfectividad() {
+    this.efectividad_especial = this.battleService.tipoEfectividad(this.luchador, this.enemigo, true);
+    var este = this;
+    setTimeout(function(){
+      este.efectividad_especial = 0;
+    }, 1000);
+  }
+
+  ataqueEfectividadEnemigo() {
+    this.efectividad_ataque_enemigo = this.battleService.tipoEfectividad(this.enemigo, this.luchador, false);
+    var este = this;
+    setTimeout(function(){
+      este.efectividad_ataque_enemigo = 0;
+    }, 500);
+  }
+
+  especialEfectividadEnemigo() {
+    this.efectividad_especial_enemigo = this.battleService.tipoEfectividad(this.enemigo, this.luchador, true);
+    var este = this;
+    setTimeout(function(){
+      este.efectividad_especial_enemigo = 0;
+    }, 1000);
+  }
+
   ataqueDebil() {
     let resultado_ataque = this.battleService.calcularDano(this.luchador, this.enemigo, false);
+    this.ataqueEfectividad();
     this.enemigo.salud_actual -= resultado_ataque;
     this.luchador.energia += this.luchador.ataque.incremento_energia;
     if (this.luchador.energia > this.configService.config.avatares.energia_maxima) {
@@ -178,11 +219,13 @@ export class BattleDefaultPage {
       console.log(this.enemigo.nombre + " muerto");
     }
     this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
+    this.saludEnemigoText = this.enemigo.salud_actual.toString() + "/" + this.enemigo.propiedades_nivel.salud.toString();
     this.enfriamientoDebil();
   }
 
   ataqueFuerte() {
     let resultado_ataque = this.battleService.calcularDano(this.luchador, this.enemigo, true);
+    this.especialEfectividad();
     this.enemigo.salud_actual -= resultado_ataque;
     this.luchador.energia -= this.luchador.especial.gasto_energia;
     if (this.luchador.energia < 0) {
@@ -203,6 +246,7 @@ export class BattleDefaultPage {
       console.log(this.enemigo.nombre + " muerto");
     }
     this.saludEnemigo = (this.enemigo.salud_actual / this.enemigo.propiedades_nivel.salud) * 100;
+    this.saludEnemigoText = this.enemigo.salud_actual.toString() + "/" + this.enemigo.propiedades_nivel.salud.toString();
     this.enfriamientoFuerte();
   }
 
@@ -251,6 +295,7 @@ export class BattleDefaultPage {
 
   ataqueDebilEnemigo() {
     let resultado_ataque = this.battleService.calcularDano(this.enemigo, this.luchador, false);
+    this.ataqueEfectividadEnemigo();
     this.luchador.salud_actual -= resultado_ataque;
     this.enemigo.energia += this.enemigo.ataque.incremento_energia;
     if (this.enemigo.energia > this.configService.config.avatares.energia_maxima) {
@@ -276,6 +321,7 @@ export class BattleDefaultPage {
 
   ataqueFuerteEnemigo() {
     let resultado_ataque = this.battleService.calcularDano(this.enemigo, this.luchador, true);
+    this.especialEfectividadEnemigo();
     this.luchador.salud_actual -= resultado_ataque;
     this.enemigo.energia -= this.enemigo.especial.gasto_energia;
     if (this.enemigo.energia < 0) {

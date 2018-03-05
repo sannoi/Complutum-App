@@ -13,8 +13,8 @@ export class AvatarModel {
   public puntos_poder: number;
   public propiedades: { ataque: number, defensa: number  };
   public propiedades_nivel: { ataque: number, defensa: number, salud: number };
-  public ataque: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
-  public especial: { nombre: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
+  public ataque: { nombre: string, icono: string, tipo: string, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
+  public especial: { nombre: string, icono: string, tipo: string, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
   public fecha?: string;
   public id_marker?: any;
 
