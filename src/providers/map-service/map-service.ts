@@ -15,11 +15,12 @@ export class MapServiceProvider {
 
   public coordenadas: any;
 
+  public entorno: any;
+
   constructor(public http: HttpClient, public events: Events, public configService: ConfigServiceProvider, public playerService: PlayerServiceProvider) { }
 
   public establecerCoordenadas(coordenadas: any) {
     this.coordenadas = coordenadas;
-    console.log(coordenadas);
   }
 
   public iniciarObservableEnemigos() {
@@ -42,6 +43,25 @@ export class MapServiceProvider {
     }
   }
 
+  public actualizarEntorno() {
+    if (this.coordenadas) {
+      var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_info_entorno + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng;
+      return this.http.get(_url)
+        .toPromise()
+        .then(respuesta => {
+          if (respuesta) {
+            return respuesta;
+          } else {
+            return false;
+          }
+        });
+    } else {
+      return new Promise((response, fail) => {
+        return response(false);
+      });
+    }
+  }
+
   encontrarNuevosEnemigos() {
     if (this.coordenadas) {
       var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_realtime + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng + '&radio=' + this.configService.config.mapa.radio_interaccion;
@@ -51,7 +71,6 @@ export class MapServiceProvider {
       return this.http.get(_url)
         .toPromise()
         .then(respuesta => {
-          console.log(respuesta);
           if (respuesta && respuesta['features'] && respuesta['features'].length > 0) {
             return respuesta['features'];
           } else {

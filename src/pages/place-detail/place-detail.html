@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title *ngIf="lugar">{{lugar.name}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="dismiss()">
+                <span ion-text color="primary">Cancelar</span>
+            </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+<div class="lugar-img" text-center>
+<img [src]="lugar.imagenes.lg">
+</div>
+<div class="lugar-desc" [innerHtml]="lugar.content" padding></div>
+</ion-content>

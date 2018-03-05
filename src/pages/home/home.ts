@@ -138,15 +138,18 @@ export class HomePage {
   comprobarDistanciaEnemigos() {
     var _player_coords = this.mapService.coordenadas;
     for (var i = 0; i < this.markers_enemigos.length; i++) {
-      var _latlng_marker = this.markers_enemigos[i].marker.getLatLng();
-      var dist = this.calcularDistancia(_player_coords.lat, _latlng_marker.lat, _player_coords.lng, _latlng_marker.lng);
+      console.log(this.markers_enemigos[i]);
+      if (this.markers_enemigos[i].marker) {
+        var _latlng_marker = this.markers_enemigos[i].marker.getLatLng();
+        var dist = this.calcularDistancia(_player_coords.lat, _latlng_marker.lat, _player_coords.lng, _latlng_marker.lng);
 
-      if (dist > this.configService.config.mapa.radio_interaccion) {
-        console.log('Avatar lejando borrado');
-        if (this.markers_enemigos[i].marker) {
-          this.map.removeLayer(this.markers_enemigos[i].marker);
+        if (dist > this.configService.config.mapa.radio_interaccion) {
+          console.log('Avatar lejando borrado');
+          if (this.markers_enemigos[i].marker) {
+            this.map.removeLayer(this.markers_enemigos[i].marker);
+          }
+          this.markers_enemigos.splice(i, 1);
         }
-        this.markers_enemigos.splice(i, 1);
       }
     }
   }

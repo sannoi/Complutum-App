@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { NavController, ModalController, LoadingController, Events } from 'ionic-angular';
-import { Geolocation, Geoposition} from '@ionic-native/geolocation';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { MapServiceProvider } from '../../providers/map-service/map-service';
@@ -17,23 +17,26 @@ import { AvatarModel } from '../../models/avatar.model'
 export class MapaPage {
 
   Coordinates: any;
-  watch: any;
   map: any;
   marker: any;
   markers_enemigos: Array<any>;
 
+  observable_iniciado: boolean = false;
+
+  url_statics: any;
+
   loading: any;
 
   constructor(public navCtrl: NavController,
-  public modalCtrl: ModalController,
-  public loadingCtrl: LoadingController,
-  public events: Events,
-  private geolocation: Geolocation,
-  private configService: ConfigServiceProvider,
-  private playerService: PlayerServiceProvider,
-  private mapService: MapServiceProvider,
-  private itemsService: ItemsServiceProvider,
-  private toastService: ToastServiceProvider) {
+    public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
+    public events: Events,
+    private geolocation: Geolocation,
+    private configService: ConfigServiceProvider,
+    private playerService: PlayerServiceProvider,
+    private mapService: MapServiceProvider,
+    private itemsService: ItemsServiceProvider,
+    private toastService: ToastServiceProvider) {
     this.markers_enemigos = new Array<any>();
     this.checkEvents();
   }
@@ -65,16 +68,16 @@ export class MapaPage {
       // create a HTML element for each feature
       var el = document.createElement('div');
       el.className = 'marker-enemigo';
-      el.style.backgroundImage = 'url('+_avatar.icono+')';
+      el.style.backgroundImage = 'url(' + _avatar.icono + ')';
 
       el.addEventListener('click', function() {
-          este.abrirFeature(feature);
+        este.abrirFeature(feature);
       });
 
       // make a marker for each feature and add to the map
       var enemigo_marker = new mapboxgl.Marker(el)
-      .setLngLat(feature.geometry.coordinates)
-      .addTo(this.map);
+        .setLngLat(feature.geometry.coordinates)
+        .addTo(this.map);
 
       var _marker = { id: feature.id, marker: enemigo_marker };
       this.markers_enemigos.push(_marker);
@@ -96,26 +99,28 @@ export class MapaPage {
         _added_marker.marker.remove();
       }
       if (_idx_marker > -1) {
-          this.markers_enemigos.splice(_idx_marker, 1);
+        this.markers_enemigos.splice(_idx_marker, 1);
       }
     }
   }
 
   abrirFeature(feature: any) {
-    this.loading = this.loadingCtrl.create();
-    this.loading.present();
     if (feature && feature.properties) {
       if (feature.properties.tipo == 'Bot') {
+        this.loading = this.loadingCtrl.create();
+        this.loading.present();
         var xp = this.getRandomInt(1, this.playerService.player.xp);
         if (xp <= 0) {
           xp = 1;
         }
         this.comenzarBatalla(feature.properties.id, xp, feature.id);
-      } else {
-        this.loading.dismiss();
+      } else if (feature.properties.tipo == 'Item') {
+        feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
+        let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: feature.geometry.coords }, {
+          enableBackdropDismiss: false
+        });
+        modal.present();
       }
-    } else {
-      this.loading.dismiss();
     }
   }
 
@@ -144,23 +149,25 @@ export class MapaPage {
   comprobarDistanciaEnemigos() {
     var _player_coords = this.mapService.coordenadas;
     for (var i = 0; i < this.markers_enemigos.length; i++) {
-      var _latlng_marker = this.markers_enemigos[i].marker.getLatLng();
-      var dist = this.calcularDistancia(_player_coords.lat, _latlng_marker.lat, _player_coords.lng, _latlng_marker.lng);
+      if (this.markers_enemigos[i].marker) {
+        var _latlng_marker = this.markers_enemigos[i].marker.getLngLat();
+        var dist = this.calcularDistancia(_player_coords.lat, _latlng_marker.lat, _player_coords.lng, _latlng_marker.lng);
 
-      if (dist > this.configService.config.mapa.radio_interaccion) {
-        console.log('Avatar lejando borrado');
-        if (this.markers_enemigos[i].marker) {
-          this.map.removeLayer(this.markers_enemigos[i].marker);
+        if (dist > this.configService.config.mapa.radio_interaccion) {
+          console.log('Avatar lejando borrado');
+          if (this.markers_enemigos[i].marker) {
+            this.markers_enemigos[i].marker.remove();
+          }
+          this.markers_enemigos.splice(i, 1);
         }
-        this.markers_enemigos.splice(i, 1);
       }
     }
   }
 
-  calcularDistancia(lat1:number,lat2:number,long1:number,long2:number){
+  calcularDistancia(lat1: number, lat2: number, long1: number, long2: number) {
     let p = 0.017453292519943295;    // Math.PI / 180
     let c = Math.cos;
-    let a = 0.5 - c((lat1-lat2) * p) / 2 + c(lat2 * p) *c((lat1) * p) * (1 - c(((long1- long2) * p))) / 2;
+    let a = 0.5 - c((lat1 - lat2) * p) / 2 + c(lat2 * p) * c((lat1) * p) * (1 - c(((long1 - long2) * p))) / 2;
     let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
     return dis;
   }
@@ -192,7 +199,7 @@ export class MapaPage {
     if (!this.map) {
       mapboxgl.accessToken = 'pk.eyJ1Ijoic2Fubm9pIiwiYSI6ImNpeTgwcnBmeTAwMXgycXI3bTA5ZHZ0MjIifQ.4_oblhduvDc6UKdrdioMMQ';
       this.map = new mapboxgl.Map({
-        style: 'mapbox://styles/mapbox/light-v9',
+        style: 'mapbox://styles/mapbox/streets-v9',
         center: [this.Coordinates.longitude, this.Coordinates.latitude],
         zoom: 16,
         pitch: 260,
@@ -207,10 +214,14 @@ export class MapaPage {
 
       // make a marker for each feature and add to the map
       this.marker = new mapboxgl.Marker(el)
-      .setLngLat([this.Coordinates.longitude, this.Coordinates.latitude])
-      .addTo(this.map);
+        .setLngLat([this.Coordinates.longitude, this.Coordinates.latitude])
+        .addTo(this.map);
 
       var este = this;
+      this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
+      if (this.playerService.player && this.playerService.player.nivel) {
+        this.url_statics += '&nivel=' + this.playerService.player.nivel;
+      }
 
       this.map.on('load', function() {
         este.map.addLayer({
@@ -221,18 +232,57 @@ export class MapaPage {
           'type': 'fill-extrusion',
           'minzoom': 15,
           'paint': {
-            'fill-extrusion-color': '#aaa',
-            'fill-extrusion-height': {
-              'type': 'identity',
-              'property': 'height'
-            },
-            'fill-extrusion-base': {
-              'type': 'identity',
-              'property': 'min_height'
-            },
-            'fill-extrusion-opacity': .6
+            'fill-extrusion-color': '#ffff00',
+            'fill-extrusion-height': [
+              "interpolate", ["linear"], ["zoom"],
+              15, 0,
+              15.05, ["get", "height"]
+            ],
+            'fill-extrusion-base': [
+              "interpolate", ["linear"], ["zoom"],
+              15, 0,
+              15.05, ["get", "min_height"]
+            ],
+            'fill-extrusion-opacity': .2
           }
         });
+
+        window.setInterval(function() {
+          este.map.getSource('drone').setData(este.url_statics);
+        }, 10000);
+
+        este.map.loadImage('assets/imgs/places/specialbox.png', function(error, image) {
+          if (error) throw error;
+          este.map.addImage('sitio', image);
+
+          este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
+          este.map.addLayer({
+            "id": "drone",
+            "type": "symbol",
+            "source": "drone",
+            "layout": {
+              "icon-image": "sitio",
+              "icon-size": 0.3
+            }
+          });
+
+          // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+          este.map.on('click', 'drone', function(e) {
+            este.map.flyTo({ center: e.features[0].geometry.coordinates });
+            este.abrirFeature(e.features[0]);
+          });
+
+          // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+          este.map.on('mouseenter', 'drone', function() {
+            este.map.getCanvas().style.cursor = 'pointer';
+          });
+
+          // Change it back to a pointer when it leaves.
+          este.map.on('mouseleave', 'drone', function() {
+            este.map.getCanvas().style.cursor = '';
+          });
+        });
+
       });
       this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
 
@@ -242,21 +292,28 @@ export class MapaPage {
         enableHighAccuracy: true
       };
 
-      //if (!this.watch) {
-      let watch = this.geolocation.watchPosition();
+      let watch = this.geolocation.watchPosition(options);
       watch.subscribe((position: Geoposition) => {
-        console.log(position);
         this.Coordinates = position.coords;
         this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
-        this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
+        //this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
+        this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
         this.marker.setLngLat([this.Coordinates.longitude, this.Coordinates.latitude]);
         this.comprobarDistanciaEnemigos();
+        if (!this.observable_iniciado) {
+          this.mapService.iniciarObservableEnemigos();
+          this.observable_iniciado = true;
+        }
+        this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
+        if (this.playerService.player && this.playerService.player.nivel) {
+          this.url_statics += '&nivel=' + this.playerService.player.nivel;
+        }
+        if (!this.mapService.entorno) {
+          this.mapService.actualizarEntorno().then(data => {
+            this.mapService.entorno = data;
+          });
+        }
       });
-      //}
-
-      this.mapService.iniciarObservableEnemigos();
-    } else {
-
     }
   }
 
