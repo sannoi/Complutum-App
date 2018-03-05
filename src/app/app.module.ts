@@ -11,6 +11,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { FightersListPage } from '../pages/fighters-list/fighters-list';
+import { MapaPage } from '../pages/mapa/mapa';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -32,6 +33,7 @@ import { MapServiceProvider } from '../providers/map-service/map-service';
     HomePage,
     InventoryPage,
     FightersListPage,
+    MapaPage,
     TabsPage
   ],
   imports: [
@@ -51,6 +53,7 @@ import { MapServiceProvider } from '../providers/map-service/map-service';
     HomePage,
     InventoryPage,
     FightersListPage,
+    MapaPage,
     TabsPage
   ],
   providers: [

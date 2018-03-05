@@ -19,6 +19,7 @@ export class MapServiceProvider {
 
   public establecerCoordenadas(coordenadas: any) {
     this.coordenadas = coordenadas;
+    console.log(coordenadas);
   }
 
   public iniciarObservableEnemigos() {
