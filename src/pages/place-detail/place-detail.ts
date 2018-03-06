@@ -4,6 +4,7 @@ import { ToastServiceProvider } from '../../providers/toast-service/toast-servic
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { MapServiceProvider } from '../../providers/map-service/map-service';
 
 @IonicPage()
 @Component({
@@ -26,7 +27,8 @@ export class PlaceDetailPage {
     public toastService: ToastServiceProvider,
     public itemsService: ItemsServiceProvider,
     public playerService: PlayerServiceProvider,
-    public configService: ConfigServiceProvider) {
+    public configService: ConfigServiceProvider,
+    public mapService: MapServiceProvider) {
     this.lugar = navParams.get('lugar');
     this.coordenadas = navParams.get('coordenadas');
     this.items = new Array(
@@ -39,7 +41,10 @@ export class PlaceDetailPage {
   }
 
   recogerItems() {
-    if (this.sin_items) {
+    var distancia = this.calcularDistancia(this.mapService.coordenadas.lat, this.coordenadas.lat, this.mapService.coordenadas.lng, this.coordenadas.lng);
+    if (distancia > this.configService.config.mapa.radio_interaccion) {
+      this.toastService.push('Acércate para interactuar con el sitio');
+    } else if (this.sin_items) {
       this.toastService.push('Inténtalo más tarde');
     } else {
       for (var i = 0; i < this.items.length; i++) {
@@ -61,6 +66,14 @@ export class PlaceDetailPage {
       }, 60 * 1000);
 
     }
+  }
+
+  calcularDistancia(lat1: number, lat2: number, long1: number, long2: number) {
+    let p = 0.017453292519943295;    // Math.PI / 180
+    let c = Math.cos;
+    let a = 0.5 - c((lat1 - lat2) * p) / 2 + c(lat2 * p) * c((lat1) * p) * (1 - c(((long1 - long2) * p))) / 2;
+    let dis = (12742 * Math.asin(Math.sqrt(a))); // 2 * R; R = 6371 km
+    return dis;
   }
 
   dismiss() {

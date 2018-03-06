@@ -6,4 +6,10 @@ page-player-detail {
     margin-top: 20px;
     border: 5px solid color($colors, secondary);
   }
+  .player-nivel-progreso {
+    width: 300px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

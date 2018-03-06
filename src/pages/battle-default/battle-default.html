@@ -1,11 +1,9 @@
 <ion-header *ngIf="enemigo">
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>{{enemigo.nombre}} (P {{enemigo.puntos_poder}} | N {{enemigo.nivel}})</ion-title>
 
     <ion-buttons start>
-      <button ion-button (click)="huir()">
-                <span ion-text color="primary">Huir</span>
-            </button>
+      <button ion-button (click)="huir()">Huir</button>
     </ion-buttons>
 
   </ion-navbar>

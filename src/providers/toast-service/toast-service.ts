@@ -12,7 +12,9 @@ export class ToastServiceProvider {
     let toast = this.toastCtrl.create({
       message: msg,
       duration: 3000,
-      position: 'top'
+      position: 'top',
+      showCloseButton: true,
+      closeButtonText: 'x'
     });
 
     toast.onDidDismiss(() => {

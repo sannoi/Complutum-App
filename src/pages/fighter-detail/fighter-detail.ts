@@ -40,12 +40,33 @@ export class FighterDetailPage {
       }
   }
 
+  dpsAtaque() {
+    return parseInt((this.luchador.ataque.puntos_dano / this.luchador.ataque.segundos_enfriamiento).toString());
+  }
+
+  dpsEspecial() {
+    return parseInt((this.luchador.especial.puntos_dano / this.luchador.especial.segundos_enfriamiento).toString());
+  }
+
   tituloPagina() {
     if (this.titulo_custom) {
       return this.titulo_custom;
     } else {
       return this.luchador.nombre;
     }
+  }
+
+  xpAvatar() {
+    var _acumulados = this.configService.xpAcumuladosNivel(this.luchador.nivel - 1);
+    var _necesarios = this.configService.xpRelativosNivel(this.luchador.nivel);
+    return ((this.luchador.xp - _acumulados) / _necesarios) * 100;
+  }
+
+  xpNivelText() {
+    var _acumulados = this.configService.xpAcumuladosNivel(this.luchador.nivel - 1);
+    var _necesarios = this.configService.xpRelativosNivel(this.luchador.nivel);
+
+    return (this.luchador.xp - _acumulados).toString() + '/' + _necesarios.toString();
   }
 
   saludText() {

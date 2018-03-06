@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar *ngIf="luchador">
+  <ion-navbar *ngIf="luchador" color="primary">
     <ion-title>{{tituloPagina()}}</ion-title>
   </ion-navbar>
 </ion-header>
@@ -14,13 +14,47 @@
     <div class="avatar-img" [style.background-color]="luchador.tipo.color">
       <img [src]="luchador.icono">
     </div>
-    <ion-toolbar class="avatar-poder"><ion-badge>N {{luchador.nivel}}</ion-badge> <ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge></ion-toolbar>
+    <ion-toolbar class="avatar-poder"><ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge> <ion-badge [style.background-color]="luchador.tipo.color" [style.color]="luchador.tipo.color_texto"><ion-icon name="{{luchador.tipo.icono}}"></ion-icon> {{luchador.tipo.nombre}}</ion-badge></ion-toolbar>
   </div>
-  <ion-fab right bottom>
+  <div class="avatar-nivel" text-center>
+    <h4>Nivel {{luchador.nivel}}</h4>
+    <div class="avatar-nivel-progreso">
+      <progress-bar [progress]="xpAvatar()" [color]="configService.config.colores.nivel" [text]="xpNivelText()"></progress-bar>
+    </div>
+  </div>
+  <div class="avatar-ataques">
+    <ion-grid>
+      <ion-row>
+        <ion-col col-6>
+          <ion-card>
+            <ion-card-header>
+              Ataque Normal
+            </ion-card-header>
+              <ion-item>
+              <b>{{luchador.ataque.nombre}}</b>
+              <ion-note item-end>{{ dpsAtaque() }} DPS</ion-note>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+        <ion-col col-6>
+          <ion-card>
+            <ion-card-header>
+              Ataque Especial
+            </ion-card-header>
+            <ion-item>
+            <b>{{luchador.especial.nombre}}</b>
+            <ion-note item-end>{{ dpsEspecial() }} DPS</ion-note>
+          </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">
-      <button ion-fab color="secondary" (click)="elegirItem()"><ion-icon name="cube"></ion-icon></button>
-      <button ion-fab color="danger" (click)="despedirMascota()"><ion-icon name="trash"></ion-icon></button>
+      <button ion-fab color="secondary" (click)="fab.close();elegirItem()"><ion-icon name="cube"></ion-icon></button>
+      <button ion-fab color="danger" (click)="fab.close();despedirMascota()"><ion-icon name="trash"></ion-icon></button>
     </ion-fab-list>
   </ion-fab>
   <ion-fab bottom center *ngIf="esModal">

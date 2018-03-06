@@ -3,7 +3,8 @@ export let tipos = [
     id: 'planta',
     nombre: 'Planta',
     color: '#00ff00',
-    icono: 'assets/imgs/tipos/planta.png',
+    color_texto: '#ffffff',
+    icono: 'leaf',
     eficaz: ['agua'],
     no_eficaz: ['veneno','fuego']
   },
@@ -11,7 +12,8 @@ export let tipos = [
     id: 'fuego',
     nombre: 'Fuego',
     color: '#ff0000',
-    icono: 'assets/imgs/tipos/fuego.png',
+    color_texto: '#ffffff',
+    icono: 'flame',
     eficaz: ['planta'],
     no_eficaz: ['agua']
   },
@@ -19,7 +21,8 @@ export let tipos = [
     id: 'agua',
     nombre: 'Agua',
     color: '#0000ff',
-    icono: 'assets/imgs/tipos/agua.png',
+    color_texto: '#ffffff',
+    icono: 'water',
     eficaz: ['fuego'],
     no_eficaz: ['electrico','planta']
   },
@@ -27,7 +30,8 @@ export let tipos = [
     id: 'electrico',
     nombre: 'Eléctrico',
     color: '#ffff00',
-    icono: 'assets/imgs/tipos/electrico.png',
+    color_texto: '#000000',
+    icono: 'flash',
     eficaz: ['agua','normal'],
     no_eficaz: ['veneno']
   },
@@ -35,7 +39,8 @@ export let tipos = [
     id: 'veneno',
     nombre: 'Veneno',
     color: '#00ffff',
-    icono: 'assets/imgs/tipos/veneno.png',
+    color_texto: '#ffffff',
+    icono: 'flask',
     eficaz: ['planta'],
     no_eficaz: ['agua']
   },
@@ -43,7 +48,8 @@ export let tipos = [
     id: 'normal',
     nombre: 'Normal',
     color: '#ffff00',
-    icono: 'assets/imgs/tipos/normal.png',
+    color_texto: '#000000',
+    icono: 'contact',
     eficaz: ['veneno'],
     no_eficaz: ['agua','planta']
   }

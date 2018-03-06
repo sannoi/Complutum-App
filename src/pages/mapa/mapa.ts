@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
-import { NavController, ModalController, LoadingController, Events, AlertController } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
@@ -126,7 +126,7 @@ export class MapaPage {
         this.comenzarBatalla(feature.properties.id, xp, feature.id);
       } else if (feature.properties.tipo == 'Item') {
         feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
-        let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: feature.geometry.coords }, {
+        let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
           enableBackdropDismiss: false
         });
         modal.present();
@@ -134,7 +134,8 @@ export class MapaPage {
     }
   }
 
-  perfilPlayer() {
+  perfilPlayer(fab: FabContainer) {
+    fab.close();
     let modal = this.modalCtrl.create('PlayerDetailPage', { }, {
       enableBackdropDismiss: false
     });
@@ -189,7 +190,8 @@ export class MapaPage {
     return dis;
   }
 
-  anadirMascotaRandom() {
+  anadirMascotaRandom(fab: FabContainer) {
+    fab.close();
     var idx = Math.floor(Math.random() * this.configService.luchadores.length);
     var xp = this.getRandomInt(1, this.playerService.player.xp);
     if (xp <= 0) {
@@ -198,7 +200,8 @@ export class MapaPage {
     this.playerService.anadirMascota(this.configService.luchadores[idx].id, xp);
   }
 
-  recogerItemRandom() {
+  recogerItemRandom(fab: FabContainer) {
+    fab.close();
     var idx = Math.floor(Math.random() * this.configService.items.length);
     var cantidad = this.getRandomInt(1, 10);
     if (cantidad <= 0) {
