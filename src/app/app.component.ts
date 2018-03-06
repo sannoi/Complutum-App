@@ -3,6 +3,7 @@ import { Platform, ModalController, AlertController, Events } from 'ionic-angula
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 
@@ -21,6 +22,7 @@ export class MyApp {
     public events: Events,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
+    private configService: ConfigServiceProvider,
     private toastService: ToastServiceProvider,
     private playerService: PlayerServiceProvider) {
     this.checkEvents();
@@ -52,7 +54,7 @@ export class MyApp {
 
     this.events.subscribe('player:nueva_mascota', (data) => {
       if (data && data.mascota) {
-        if (this.configService.config.avatares.xp_nueva_mascota > 0) {
+        if (this.configService.config.avatares.xp_nueva_mascota > 0 && this.playerService.player) {
           this.playerService.addXp(this.configService.config.avatares.xp_nueva_mascota);
           this.toastService.push('+' + this.configService.config.avatares.xp_nueva_mascota + ' XP ' + this.playerService.player.nombre);
         }

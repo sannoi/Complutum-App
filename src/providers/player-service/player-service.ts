@@ -15,15 +15,17 @@ export class PlayerServiceProvider {
   }
 
   public addXp(xp:number) {
-    this.player.xp += xp;
-    let nivel_actual = this.player.nivel;
-    let nivel_calculado = this.configService.nivelXp(this.player.xp);
-    if (nivel_calculado > nivel_actual) {
-      console.log(this.player.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
-      this.player.nivel = nivel_calculado;
-      this.savePlayer().then(res => {
-        this.events.publish('player:nivel_conseguido', { player: this.player, nivel: nivel_calculado });
-      });
+    if (this.player) {
+      this.player.xp += xp;
+      let nivel_actual = this.player.nivel;
+      let nivel_calculado = this.configService.nivelXp(this.player.xp);
+      if (nivel_calculado > nivel_actual) {
+        console.log(this.player.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
+        this.player.nivel = nivel_calculado;
+        this.savePlayer().then(res => {
+          this.events.publish('player:nivel_conseguido', { player: this.player, nivel: nivel_calculado });
+        });
+      }
     }
   }
 
