@@ -61,6 +61,10 @@ export class MapaPage {
     });
   }
 
+  toggleTabs() {
+    this.events.publish('interfaz:toggle_tabs');
+  }
+
   mostrarMeteo() {
     let alert = this.alertCtrl.create({
       title: 'Meteorología',

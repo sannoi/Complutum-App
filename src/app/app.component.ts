@@ -15,6 +15,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 export class MyApp {
   rootPage: any = TabsPage;
 
+  tabs_visible: boolean = true;
+
   constructor(
     platform: Platform,
     statusBar: StatusBar,
@@ -62,6 +64,25 @@ export class MyApp {
           enableBackdropDismiss: false
         });
         modal.present();
+      }
+    });
+
+    this.events.subscribe('interfaz:toggle_tabs', () => {
+      var scrollContent = document.querySelector(".scroll-content")['style'];
+      var fixedContent = document.querySelector(".fixed-content")['style'];
+      var tabs = document.querySelector(".tabbar")['style'];
+      var tabBarHeight = 56;
+
+      if (this.tabs_visible) {
+        tabs.display = 'none';
+        scrollContent.marginBottom = 0;
+        fixedContent.marginBottom = 0;
+        this.tabs_visible = false;
+      } else {
+        tabs.display = 'flex';
+        scrollContent.marginBottom = tabBarHeight + "px";
+        fixedContent.marginBottom = tabBarHeight + "px";
+        this.tabs_visible = true;
       }
     });
   }

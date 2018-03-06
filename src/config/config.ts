@@ -57,11 +57,11 @@ export let config = {
   },
   mapa: {
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
-    tiempo_refresco_entorno: 60,
+    tiempo_refresco_entorno: 120,
     tiempo_aparicion_enemigos: 15,
     tiempo_desaparicion_enemigos: 45,
-    radio_vision: 0.8,
-    radio_interaccion: 0.2
+    radio_vision: 1.2,
+    radio_interaccion: 0.05
   },
   sitios: {
     xp_recoger_items: 150

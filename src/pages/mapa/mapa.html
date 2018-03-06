@@ -4,6 +4,7 @@
   <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
   <ion-fab-list side="top">
     <button ion-fab color="secondary" (click)="perfilPlayer(fab)"><ion-icon name="person"></ion-icon></button>
+    <button ion-fab color="secondary" (click)="fab.close();toggleTabs()"><ion-icon name="menu"></ion-icon></button>
     <button ion-fab color="secondary" (click)="anadirMascotaRandom(fab)"><ion-icon name="bug"></ion-icon></button>
     <button ion-fab color="secondary" (click)="recogerItemRandom(fab)"><ion-icon name="cube"></ion-icon></button>
   </ion-fab-list>
