@@ -6,12 +6,6 @@
             </button>
     </ion-buttons>
     <ion-title>Elige un objeto</ion-title>
-
-    <ion-buttons end>
-      <button ion-button (click)="dismiss()">
-                <span ion-text color="primary">Cancelar</span>
-            </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -29,4 +23,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
 </ion-content>

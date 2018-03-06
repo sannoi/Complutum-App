@@ -15,6 +15,9 @@ export class MapServiceProvider {
 
   public coordenadas: any;
 
+  origen_entorno: any;
+  suscripcion_entorno: any;
+
   public entorno: any;
 
   constructor(public http: HttpClient, public events: Events, public configService: ConfigServiceProvider, public playerService: PlayerServiceProvider) { }
@@ -40,6 +43,26 @@ export class MapServiceProvider {
   public pararObservableEnemigos() {
     if (this.suscripcion) {
       this.suscripcion.unsubscribe();
+    }
+  }
+
+  public iniciarObservableEntorno() {
+    // Busqueda inicial
+    this.actualizarEntorno().then(resultado => {
+      this.entorno = resultado;
+    });
+
+    this.origen_entorno = Observable.interval(this.configService.config.mapa.tiempo_refresco_entorno * 1000);
+    this.suscripcion_entorno = this.origen_entorno.subscribe(() => {
+      this.actualizarEntorno().then(resultado => {
+        this.entorno = resultado;
+      });
+    });
+  }
+
+  public pararObservableEntorno() {
+    if (this.suscripcion_entorno) {
+      this.suscripcion_entorno.unsubscribe();
     }
   }
 

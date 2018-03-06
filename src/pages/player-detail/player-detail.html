@@ -1,0 +1,25 @@
+<ion-header>
+
+  <ion-navbar color="primary" *ngIf="player">
+    <ion-title>{{player.nombre}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content no-padding>
+  <div class="player-header" *ngIf="player" text-center>
+    <div class="player-img">
+      <img [src]="player.icono">
+    </div>
+    <div class="player-nivel">
+      <h4>Nivel {{player.nivel}}</h4>
+      <div class="player-nivel-progreso">
+        <progress-bar [progress]="xpPlayer()" [color]="configService.config.colores.nivel" [text]="xpNivelText()"></progress-bar>
+      </div>
+    </div>
+  </div>
+
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
+</ion-content>

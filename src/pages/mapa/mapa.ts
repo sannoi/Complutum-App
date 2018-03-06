@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
-import { NavController, ModalController, LoadingController, Events } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, Events, AlertController } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
@@ -29,6 +29,7 @@ export class MapaPage {
 
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
+    public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public events: Events,
     private geolocation: Geolocation,
@@ -58,6 +59,15 @@ export class MapaPage {
         }
       }
     });
+  }
+
+  mostrarMeteo() {
+    let alert = this.alertCtrl.create({
+      title: 'Meteorología',
+      subTitle: 'El tiempo atmosférico es: ' + this.mapService.entorno.meteo,
+      buttons: ['Vale']
+    });
+    alert.present();
   }
 
   anadirEnemigoMapa(feature: any) {
@@ -122,6 +132,13 @@ export class MapaPage {
         modal.present();
       }
     }
+  }
+
+  perfilPlayer() {
+    let modal = this.modalCtrl.create('PlayerDetailPage', { }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
   }
 
   comenzarBatalla(luchadorId: any, luchadorXp: number, luchadorIdMarker: any) {
@@ -308,10 +325,8 @@ export class MapaPage {
         if (this.playerService.player && this.playerService.player.nivel) {
           this.url_statics += '&nivel=' + this.playerService.player.nivel;
         }
-        if (!this.mapService.entorno) {
-          this.mapService.actualizarEntorno().then(data => {
-            this.mapService.entorno = data;
-          });
+        if (!this.mapService.origen_entorno) {
+          this.mapService.iniciarObservableEntorno();
         }
       });
     }

@@ -57,6 +57,7 @@ export let config = {
   },
   mapa: {
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
+    tiempo_refresco_entorno: 60,
     tiempo_aparicion_enemigos: 15,
     tiempo_desaparicion_enemigos: 45,
     radio_vision: 0.8,
@@ -76,6 +77,7 @@ export let config = {
   },
   colores: {
     salud: '#32db64',
-    energia: '#488aff'
+    energia: '#488aff',
+    nivel: '#488aff'
   }
 };

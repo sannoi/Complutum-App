@@ -34,6 +34,18 @@ export class ConfigServiceProvider {
     return 1;
   }
 
+  xpAcumuladosNivel(nivel: number) {
+    var acumulados = 0;
+    for (var i = 0; i < nivel; i++) {
+      acumulados += this.config.jugador.niveles_xp[i].xp_necesaria;
+    }
+    return acumulados;
+  }
+
+  xpRelativosNivel(nivel: number) {
+    return this.config.jugador.niveles_xp[nivel - 1].xp_necesaria;
+  }
+
   encontrarLuchador(id: any) {
     return this.luchadores.find(x => x.id === id);
   }

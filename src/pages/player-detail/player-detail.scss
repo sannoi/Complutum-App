@@ -1,0 +1,9 @@
+page-player-detail {
+  .player-img img {
+    border-radius: 50%;
+    width: 150px;
+    max-width: 100%;
+    margin-top: 20px;
+    border: 5px solid color($colors, secondary);
+  }
+}

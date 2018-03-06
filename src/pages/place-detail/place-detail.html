@@ -1,24 +1,20 @@
 <ion-header>
   <ion-navbar>
     <ion-title *ngIf="lugar">{{lugar.name}}</ion-title>
-    <ion-buttons end>
-      <button ion-button (click)="dismiss()">
-                <span ion-text color="primary">Cancelar</span>
-            </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
-
-
 <ion-content>
-<div class="lugar-img" text-center>
-<img [src]="lugar.imagenes.lg">
-</div>
-<div class="lugar-desc" [innerHtml]="lugar.content" padding></div>
-<ion-fab right bottom>
-  <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
-  <ion-fab-list side="left">
-    <button ion-fab color="secondary" (click)="recogerItems()"><ion-icon name="cube"></ion-icon></button>
-  </ion-fab-list>
-</ion-fab>
+  <div class="lugar-img" text-center>
+    <img [src]="lugar.imagenes.lg">
+  </div>
+  <div class="lugar-desc" [innerHtml]="lugar.content" padding></div>
+  <ion-fab right bottom>
+    <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="secondary" (click)="recogerItems()"><ion-icon name="cube"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
 </ion-content>

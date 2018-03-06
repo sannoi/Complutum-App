@@ -1,11 +1,6 @@
 <ion-header>
   <ion-navbar *ngIf="luchador">
     <ion-title>{{tituloPagina()}}</ion-title>
-    <ion-buttons start *ngIf="esModal">
-      <button ion-button (click)="dismiss()">
-                <span ion-text color="primary">Cerrar</span>
-            </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -23,9 +18,12 @@
   </div>
   <ion-fab right bottom>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
-    <ion-fab-list side="left">
+    <ion-fab-list side="top">
       <button ion-fab color="secondary" (click)="elegirItem()"><ion-icon name="cube"></ion-icon></button>
       <button ion-fab color="danger" (click)="despedirMascota()"><ion-icon name="trash"></ion-icon></button>
     </ion-fab-list>
+  </ion-fab>
+  <ion-fab bottom center *ngIf="esModal">
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
   </ion-fab>
 </ion-content>

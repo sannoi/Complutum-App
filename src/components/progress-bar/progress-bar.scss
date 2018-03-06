@@ -9,16 +9,27 @@ progress-bar {
         color: #fff;
         border-radius: 20px;
         text-shadow: 1px 1px 1px black;
+        position: relative;
     }
 
     .progress-inner {
         /*min-width: 15%;*/
         white-space: nowrap;
         overflow: hidden;
-        padding: 2px;
+        padding: 5px;
         border-radius: 20px;
         background-color: map-get($colors, primary);
         transition: all 1s;
         font-size: 1rem;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 1.3rem;
     }
 }
