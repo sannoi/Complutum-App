@@ -42,6 +42,10 @@ export class ConfigServiceProvider {
     return this.tipos.find(x => x.id === id);
   }
 
+  encontrarItem(id: any) {
+    return this.items.find(x => x.id === id);
+  }
+
   encontrarAtaque(id: any, tipo_ataque: any) {
     if (tipo_ataque === 'debil') {
       return this.ataques.debiles.find(x => x.id === id);

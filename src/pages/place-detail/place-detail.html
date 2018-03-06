@@ -15,4 +15,10 @@
 <img [src]="lugar.imagenes.lg">
 </div>
 <div class="lugar-desc" [innerHtml]="lugar.content" padding></div>
+<ion-fab right bottom>
+  <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+  <ion-fab-list side="left">
+    <button ion-fab color="secondary" (click)="recogerItems()"><ion-icon name="cube"></ion-icon></button>
+  </ion-fab-list>
+</ion-fab>
 </ion-content>

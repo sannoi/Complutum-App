@@ -128,9 +128,22 @@ export class PlayerServiceProvider {
         player.mascotas.push(mascota_nueva);
       } else {
         this.player.mascotas.push(mascota_nueva);
+        this.savePlayer();
       }
       this.events.publish("player:nueva_mascota", { mascota: mascota_nueva });
     }
+  }
+
+  borrarMascota(id: any) {
+    return new Promise((response,error) => {
+      if (id > -1 && this.player.mascotas[id]) {
+        this.player.mascotas.splice(id, 1);
+        this.savePlayer();
+        response(true);
+      } else {
+        response(false);
+      }
+    });
   }
 
   mascotasIniciales(player: any) {

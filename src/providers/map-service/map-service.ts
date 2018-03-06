@@ -50,6 +50,7 @@ export class MapServiceProvider {
         .toPromise()
         .then(respuesta => {
           if (respuesta) {
+            console.log(respuesta);
             return respuesta;
           } else {
             return false;

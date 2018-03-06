@@ -7,8 +7,8 @@ export let config = {
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json'
   },
   jugador: {
-    xp_inicial: 260000,
-    xp_mascotas_iniciales: 260000,
+    xp_inicial: 0,
+    xp_mascotas_iniciales: 1755,
     mascotas_iniciales: [9],
     items_iniciales: [
       { item: 0, cantidad: 15 },
@@ -52,7 +52,8 @@ export let config = {
     }
   },
   avatares: {
-    energia_maxima: 100
+    energia_maxima: 100,
+    xp_nueva_mascota: 500
   },
   mapa: {
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
@@ -61,14 +62,17 @@ export let config = {
     radio_vision: 0.8,
     radio_interaccion: 0.2
   },
+  sitios: {
+    xp_recoger_items: 150
+  },
   batalla: {
     tiempo_batalla: 90,
-    xp_avatar_gana: 100,
-    xp_avatar_pierde: 10,
-    xp_avatar_tiempo_agotado: 0,
-    xp_player_gana: 25,
-    xp_player_pierde: 5,
-    xp_player_tiempo_agotado: 0
+    xp_avatar_gana: 500,
+    xp_avatar_pierde: 125,
+    xp_avatar_tiempo_agotado: 10,
+    xp_player_gana: 125,
+    xp_player_pierde: 35,
+    xp_player_tiempo_agotado: 5
   },
   colores: {
     salud: '#32db64',

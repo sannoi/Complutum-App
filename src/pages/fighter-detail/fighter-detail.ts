@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, AlertController } from 'ionic-angular';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { AvatarModel } from '../../models/avatar.model';
 
 @IonicPage()
@@ -22,8 +24,11 @@ export class FighterDetailPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
+    public alertCtrl: AlertController,
     public viewCtrl: ViewController,
+    private toastService: ToastServiceProvider,
     private configService: ConfigServiceProvider,
+    private itemsService: ItemsServiceProvider,
     private playerService: PlayerServiceProvider) {
       this.luchador = navParams.get('luchador');
       this.esModal = navParams.get('modal');
@@ -65,17 +70,54 @@ export class FighterDetailPage {
                 this.luchador.salud_actual = this.luchador.propiedades_nivel.salud;
               }
               this.saludLuchador = (this.luchador.salud_actual/this.luchador.propiedades_nivel.salud) * 100;
-              this.playerService.player.items[_item_idx].cantidad -= 1;
+              /*this.playerService.player.items[_item_idx].cantidad -= 1;
               if (this.playerService.player.items[_item_idx].cantidad <= 0) {
                 this.playerService.player.items.splice(_item_idx, 1);
-              }
-              this.playerService.player.mascotas[_luchador_idx] = this.luchador;
-              this.playerService.savePlayer();
+              }*/
+              this.itemsService.playerBorrarItem(data.item.id, 1).then(res => {
+                if (res) {
+                  this.playerService.player.mascotas[_luchador_idx] = this.luchador;
+                  this.playerService.savePlayer();
+                }
+              });
+
             }
           }
         }
       }
     });
+  }
+
+  despedirMascota() {
+    let confirm = this.alertCtrl.create({
+      title: 'Despedir a ' + this.luchador.nombre,
+      message: '¿Seguro que quieres despedir a ' + this.luchador.nombre + '? No podrás deshacer esta acción',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => { }
+        },
+        {
+          text: 'Sí',
+          handler: () => {
+            var _luchador_idx = this.playerService.player.mascotas.indexOf(this.luchador);
+            if (_luchador_idx > -1) {
+              this.playerService.borrarMascota(_luchador_idx).then(res => {
+                if (res) {
+                  this.toastService.push('Has despedido a ' + this.luchador.nombre);
+                  if (this.esModal) {
+                    this.viewCtrl.dismiss();
+                  } else {
+                    this.navCtrl.pop();
+                  }
+                }
+              });
+            }
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
   dismiss() {

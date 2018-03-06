@@ -45,4 +45,27 @@ export class ItemsServiceProvider {
     });
   }
 
+  playerBorrarItem(id_item: any, cantidad: number) {
+    return this.playerService.getPlayer().then(player => {
+      var _item = player.items.find(function(x){
+        return x.id === id_item;
+      });
+
+      if (_item) {
+        var _idx_item = player.items.indexOf(_item);
+
+        if (_idx_item > -1) {
+          if (_item.cantidad <= cantidad) {
+            this.playerService.player.items.splice(_idx_item, 1);
+          } else {
+            this.playerService.player.items[_idx_item].cantidad -= cantidad;
+          }
+          this.playerService.savePlayer();
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
 }
