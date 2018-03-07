@@ -44,8 +44,16 @@ export class FighterDetailPage {
     return parseInt((this.luchador.ataque.puntos_dano / this.luchador.ataque.segundos_enfriamiento).toString());
   }
 
+  epsAtaque() {
+    return parseInt((this.luchador.ataque.incremento_energia / this.luchador.ataque.segundos_enfriamiento).toString());
+  }
+
   dpsEspecial() {
     return parseInt((this.luchador.especial.puntos_dano / this.luchador.especial.segundos_enfriamiento).toString());
+  }
+
+  epsEspecial() {
+    return parseInt((this.luchador.especial.gasto_energia / this.luchador.especial.segundos_enfriamiento).toString());
   }
 
   tituloPagina() {

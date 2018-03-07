@@ -8,7 +8,8 @@ export let config = {
   },
   jugador: {
     xp_inicial: 0,
-    xp_mascotas_iniciales: 1755,
+    monedas_iniciales: 10,
+    xp_mascotas_iniciales: 1775,
     mascotas_iniciales: [9],
     items_iniciales: [
       { item: 0, cantidad: 15 },
@@ -53,7 +54,7 @@ export let config = {
   },
   avatares: {
     energia_maxima: 100,
-    xp_nueva_mascota: 500
+    xp_nueva_mascota: 250
   },
   mapa: {
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
@@ -68,12 +69,15 @@ export let config = {
   },
   batalla: {
     tiempo_batalla: 90,
-    xp_avatar_gana: 500,
+    xp_avatar_gana: 475,
     xp_avatar_pierde: 125,
     xp_avatar_tiempo_agotado: 10,
     xp_player_gana: 125,
     xp_player_pierde: 35,
-    xp_player_tiempo_agotado: 5
+    xp_player_tiempo_agotado: 5,
+    monedas_gana: 5,
+    monedas_pierde: 1,
+    monedas_tiempo_agotado: 0
   },
   colores: {
     salud: '#32db64',

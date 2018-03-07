@@ -397,6 +397,7 @@ export class BattleDefaultPage {
           text: 'OK',
           handler: () => {
             this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana);
+            this.addCoins(this.configService.config.batalla.monedas_gana);
             this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
           }
         }
@@ -418,6 +419,7 @@ export class BattleDefaultPage {
           text: 'Otra vez será',
           handler: () => {
             this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde);
+            this.addCoins(this.configService.config.batalla.monedas_pierde);
             this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
           }
         }
@@ -439,12 +441,19 @@ export class BattleDefaultPage {
           text: 'OK',
           handler: () => {
             this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado);
+            this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
             this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
           }
         }
       ]
     });
     alert.present();
+  }
+
+  addCoins(monedas: number) {
+    if (monedas > 0) {
+      this.playerService.anadirMonedas(monedas);
+    }
   }
 
   addXp(xp_avatar: number, xp_player: number) {

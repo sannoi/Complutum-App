@@ -76,13 +76,19 @@ export class MapaPage {
 
   anadirEnemigoMapa(feature: any) {
     var _avatar = this.configService.encontrarLuchador(feature.properties.id);
-    if (_avatar) {
+    if (_avatar && this.playerService.player) {
       var este = this;
 
       // create a HTML element for each feature
       var el = document.createElement('div');
       el.className = 'marker-enemigo';
       el.style.backgroundImage = 'url(' + _avatar.icono + ')';
+
+      var xp = this.getRandomInt(1, this.playerService.player.xp);
+      if (xp <= 0) {
+        xp = 1;
+      }
+      feature.properties['xp'] = xp;
 
       el.addEventListener('click', function() {
         este.abrirFeature(feature);
@@ -123,11 +129,11 @@ export class MapaPage {
       if (feature.properties.tipo == 'Bot') {
         this.loading = this.loadingCtrl.create();
         this.loading.present();
-        var xp = this.getRandomInt(1, this.playerService.player.xp);
+        /*var xp = this.getRandomInt(1, this.playerService.player.xp);
         if (xp <= 0) {
           xp = 1;
-        }
-        this.comenzarBatalla(feature.properties.id, xp, feature.id);
+        }*/
+        this.comenzarBatalla(feature.properties.id, feature.properties.xp, feature.id);
       } else if (feature.properties.tipo == 'Item') {
         feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
         let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {

@@ -36,7 +36,7 @@ export class BattleServiceProvider {
   calcularEfectividad(atacante: AvatarModel, defensor: AvatarModel, esEspecial: boolean) {
     var tipo_atacante = atacante.tipo;
     var tipo_defensor = defensor.tipo;
-    var tipo_ataque_atacante = this.configService.encontrarTipo(atacante.ataque.tipo);
+    var tipo_ataque_atacante = atacante.ataque.tipo;
     if (esEspecial) {
       tipo_ataque_atacante = atacante.especial.tipo;
     }
@@ -62,7 +62,7 @@ export class BattleServiceProvider {
     var no_eficaces = 0;
     var tipo_atacante = atacante.tipo;
     var tipo_defensor = defensor.tipo;
-    var tipo_ataque_atacante = this.configService.encontrarTipo(atacante.ataque.tipo);
+    var tipo_ataque_atacante = atacante.ataque.tipo;
     if (esEspecial) {
       tipo_ataque_atacante = atacante.especial.tipo;
     }

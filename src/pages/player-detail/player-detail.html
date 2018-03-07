@@ -17,6 +17,11 @@
         <progress-bar [progress]="xpPlayer()" [color]="configService.config.colores.nivel" [text]="xpNivelText()"></progress-bar>
       </div>
     </div>
+
+    <div class="player-monedas">
+      <ion-icon name="cash"></ion-icon> {{player.monedas}}
+    </div>
+
   </div>
 
   <ion-fab bottom center>

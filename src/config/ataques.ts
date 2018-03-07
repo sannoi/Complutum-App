@@ -11,7 +11,11 @@ export let ataques = {
     { id: 'puya_venenosa', nombre: 'Puya Venenosa', tipo: 'veneno', icono: 'flask', puntos_dano: 10, segundos_enfriamiento: 0.8, incremento_energia: 7 },
     { id: 'destructor', nombre: 'Destructor', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 7, segundos_enfriamiento: 0.6, incremento_energia: 6 },
     { id: 'cabezazo', nombre: 'Cabezazo', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 12, segundos_enfriamiento: 1.1, incremento_energia: 10 },
-    { id: 'confusion', nombre: 'Confusión', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 20, segundos_enfriamiento: 1.6, incremento_energia: 15 }
+    { id: 'confusion', nombre: 'Confusión', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 20, segundos_enfriamiento: 1.6, incremento_energia: 15 },
+    { id: 'aliento_fuego', nombre: 'Aliento de Fuego', tipo: 'fuego', icono: 'flame', puntos_dano: 11, segundos_enfriamiento: 0.9, incremento_energia: 8 },
+    { id: 'alarido', nombre: 'Alarido', icono: 'flask', tipo: 'veneno', puntos_dano: 12, segundos_enfriamiento: 1.1, incremento_energia: 12 },
+    { id: 'burbuja', nombre: 'Burbuja', icono: 'water', tipo: 'agua', puntos_dano: 12, segundos_enfriamiento: 1.2, incremento_energia: 14 },
+    { id: 'corte', nombre: 'Corte', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 8 }
   ],
   fuertes: [
     { id: 'pucheritos', nombre: 'Pucheritos', tipo: 'planta', puntos_dano: 80, segundos_enfriamiento: 17, gasto_energia: 33 },
@@ -28,6 +32,9 @@ export let ataques = {
     { id: 'onda_choque', nombre: 'Onda de Choque', tipo: 'veneno', puntos_dano: 110, segundos_enfriamiento: 3.2, gasto_energia: 100 },
     { id: 'hiperrayo', nombre: 'Hiperrayo', tipo: 'normal', puntos_dano: 150, segundos_enfriamiento: 3.8, gasto_energia: 100 },
     { id: 'brillo_magico', nombre: 'Brillo Mágico', tipo: 'normal', puntos_dano: 100, segundos_enfriamiento: 3.5, gasto_energia: 50 },
-    { id: 'onda_certera', nombre: 'Onda Certera', tipo: 'normal', puntos_dano: 140, segundos_enfriamiento: 3.5, gasto_energia: 100 }
+    { id: 'onda_certera', nombre: 'Onda Certera', tipo: 'normal', puntos_dano: 140, segundos_enfriamiento: 3.5, gasto_energia: 100 },
+    { id: 'llamarada', nombre: 'Llamarada', tipo: 'fuego', puntos_dano: 140, segundos_enfriamiento: 4.2, gasto_energia: 100 },
+    { id: '10000_voltios', nombre: '10.000 Voltios', tipo: 'electrico', puntos_dano: 90, segundos_enfriamiento: 2.6, gasto_energia: 50 },
+    { id: 'premonicion', nombre: 'Premonición', tipo: 'normal', puntos_dano: 120, segundos_enfriamiento: 2.7, gasto_energia: 100 }
   ]
 };

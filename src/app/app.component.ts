@@ -67,6 +67,14 @@ export class MyApp {
       }
     });
 
+    this.events.subscribe('player:monedas_anadidas', (data) => {
+      this.toastService.push('+' + data.monedas + ' Monedas');
+    });
+
+    this.events.subscribe('player:monedas_borradas', (data) => {
+      this.toastService.push('-' + data.monedas + ' Monedas');
+    });
+
     this.events.subscribe('interfaz:toggle_tabs', () => {
       var scrollContent = document.querySelector(".scroll-content")['style'];
       var fixedContent = document.querySelector(".fixed-content")['style'];

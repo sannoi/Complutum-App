@@ -28,5 +28,24 @@ page-fighter-detail {
     margin-left: auto;
     margin-right: auto;
   }
+  .avatar-ataques ion-card-header {
+    font-size: 1.3rem;
+    padding: 8px;
+  }
+  .avatar-ataques ion-card-header ion-icon {
+    font-size: 1.1rem;
+  }
+  .avatar-ataques {
+    padding-bottom: 55px;
+  }
+  .avatar-ataques .label-md {
+    margin: 3px 8px 3px 0;
+  }
+  .avatar-ataques .item-md [item-end] {
+    margin: 0px 8px 0px 0;
+  }
+  .avatar-ataques .item-block {
+    min-height: 3rem;
+  }
 
 }

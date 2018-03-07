@@ -180,5 +180,70 @@ export let luchadores = [
     },
     ataques: ['destructor','confusion'],
     especiales: ['hiperrayo','onda_certera']
+  },
+  {
+    id: 'arcanine',
+    nombre: 'Arcanine',
+    icono: 'assets/imgs/fighters/pokemon_icon_059_00.png',
+    tipo: 'fuego',
+    salud: 180,
+    propiedades: {
+      ataque: 227,
+      defensa: 166
+    },
+    ataques: ['aliento_fuego','alarido'],
+    especiales: ['llamarada','10000_voltios']
+  },
+  {
+    id: 'poliwrath',
+    nombre: 'Poliwrath',
+    icono: 'assets/imgs/fighters/pokemon_icon_062_00.png',
+    tipo: 'agua',
+    salud: 180,
+    propiedades: {
+      ataque: 182,
+      defensa: 187
+    },
+    ataques: ['burbuja','puya_venenosa'],
+    especiales: ['hidro_bomba','golpe_helado']
+  },
+  {
+    id: 'alakazam',
+    nombre: 'Alakazam',
+    icono: 'assets/imgs/fighters/pokemon_icon_065_00.png',
+    tipo: 'normal',
+    salud: 110,
+    propiedades: {
+      ataque: 271,
+      defensa: 194
+    },
+    ataques: ['corte','confusion'],
+    especiales: ['premonicion','onda_certera']
+  },
+  {
+    id: 'machamp',
+    nombre: 'Machamp',
+    icono: 'assets/imgs/fighters/pokemon_icon_068_00.png',
+    tipo: 'normal',
+    salud: 180,
+    propiedades: {
+      ataque: 234,
+      defensa: 162
+    },
+    ataques: ['corte','destructor'],
+    especiales: ['premonicion','onda_certera','hiperrayo']
+  },
+  {
+    id: 'victreebel',
+    nombre: 'Victreebel',
+    icono: 'assets/imgs/fighters/pokemon_icon_071_00.png',
+    tipo: 'planta',
+    salud: 160,
+    propiedades: {
+      ataque: 207,
+      defensa: 138
+    },
+    ataques: ['mirada_cuqui','alarido'],
+    especiales: ['rayo_solar','lluvia_esporas','onda_choque']
   }
 ];

@@ -14,7 +14,11 @@
     <div class="avatar-img" [ngStyle]="{'background': 'linear-gradient(' + ConvertHexToRGBA(luchador.tipo.color, 0.75) + ', ' + ConvertHexToRGBA(luchador.tipo.color, 0.3) + ')'}">
       <img [src]="luchador.icono">
     </div>
-    <ion-toolbar class="avatar-poder"><ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge> <ion-badge [style.background-color]="luchador.tipo.color" [style.color]="luchador.tipo.color_texto"><ion-icon name="{{luchador.tipo.icono}}"></ion-icon> {{luchador.tipo.nombre}}</ion-badge></ion-toolbar>
+    <ion-toolbar class="avatar-poder">
+      <ion-badge color="danger">P {{luchador.puntos_poder}}</ion-badge>
+      <ion-badge [style.background-color]="luchador.tipo.color" [style.color]="luchador.tipo.color_texto">
+        <ion-icon name="{{luchador.tipo.icono}}"></ion-icon> {{luchador.tipo.nombre}}</ion-badge>
+    </ion-toolbar>
   </div>
   <div class="avatar-nivel" text-center>
     <h4>Nivel {{luchador.nivel}}</h4>
@@ -27,24 +31,48 @@
       <ion-row>
         <ion-col col-6>
           <ion-card>
-            <ion-card-header>
-              Ataque Normal
+            <ion-card-header text-center>
+              <ion-icon name="{{luchador.ataque.tipo.icono}}"></ion-icon> {{luchador.ataque.nombre}}
             </ion-card-header>
-              <ion-item>
-              <b>{{luchador.ataque.nombre}}</b>
-              <ion-note item-end>{{ dpsAtaque() }} DPS</ion-note>
+            <ion-item>
+              <b>{{ luchador.ataque.puntos_dano }}</b>
+              <ion-note item-end>PD</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ luchador.ataque.segundos_enfriamiento }}s</b>
+              <ion-note item-end>ENF</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ dpsAtaque() }}</b>
+              <ion-note item-end>DPS</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ epsAtaque() }}</b>
+              <ion-note item-end>EPS</ion-note>
             </ion-item>
           </ion-card>
         </ion-col>
         <ion-col col-6>
           <ion-card>
-            <ion-card-header>
-              Ataque Especial
+            <ion-card-header text-center>
+              <ion-icon name="{{luchador.especial.tipo.icono}}"></ion-icon> {{luchador.especial.nombre}}
             </ion-card-header>
             <ion-item>
-            <b>{{luchador.especial.nombre}}</b>
-            <ion-note item-end>{{ dpsEspecial() }} DPS</ion-note>
-          </ion-item>
+              <b>{{ luchador.especial.puntos_dano }}</b>
+              <ion-note item-end>PD</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ luchador.especial.segundos_enfriamiento }}s</b>
+              <ion-note item-end>ENF</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ dpsEspecial() }}</b>
+              <ion-note item-end>DPS</ion-note>
+            </ion-item>
+            <ion-item>
+              <b>{{ epsEspecial() }}</b>
+              <ion-note item-end>EPS</ion-note>
+            </ion-item>
           </ion-card>
         </ion-col>
       </ion-row>

@@ -99,6 +99,13 @@ export class PlayerServiceProvider {
       } else {
         player.nivel = this.configService.nivelXp(player.xp);
       }
+      if (data.monedas) {
+        player.monedas = data.monedas;
+      } else if (this.configService.config.jugador.monedas_iniciales > 0) {
+        player.monedas = this.configService.config.jugador.monedas_iniciales;
+      } else {
+        player.monedas = 0;
+      }
       if (data.mascotas) {
         player.mascotas = data.mascotas;
       } else {
@@ -119,6 +126,26 @@ export class PlayerServiceProvider {
         return res;
       });
     }
+  }
+
+  anadirMonedas(monedas: number) {
+    if (this.player) {
+      this.player.monedas += monedas;
+      this.events.publish('player:monedas_anadidas', { monedas: monedas });
+    }
+  }
+
+  borrarMonedas(monedas: number) {
+    return new Promise((response,error) => {
+      if (monedas > 0 && this.player && this.player.monedas >= monedas) {
+        this.player.monedas -= monedas;
+        this.savePlayer();
+        this.events.publish('player:monedas_borradas', { monedas: monedas });
+        response(true);
+      } else {
+        response(false);
+      }
+    });
   }
 
   anadirMascota(id_avatar: string, xp: any, player?: any) {

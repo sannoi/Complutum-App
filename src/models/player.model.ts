@@ -7,6 +7,7 @@ export class PlayerModel {
   public icono: string = 'assets/imgs/player_default.png';
   public xp: number;
   public nivel: number;
+  public monedas: number;
   public mascotas: Array<AvatarModel>;
   public mascota_seleccionada_idx: number;
   public items: Array<ItemModel>;
@@ -21,6 +22,7 @@ export class PlayerModel {
     player_nuevo.nombre = player.nombre;
     player_nuevo.icono = player.icono;
     player_nuevo.xp = player.xp;
+    player_nuevo.monedas = player.monedas;
     player_nuevo.nivel = this.configService.nivelXp(player.xp);
     player_nuevo.mascota_seleccionada_idx = player.mascota_seleccionada_idx;
     let mascotas = new Array<AvatarModel>();

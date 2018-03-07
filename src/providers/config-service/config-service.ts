@@ -60,9 +60,28 @@ export class ConfigServiceProvider {
 
   encontrarAtaque(id: any, tipo_ataque: any) {
     if (tipo_ataque === 'debil') {
-      return this.ataques.debiles.find(x => x.id === id);
+      var ataque = this.ataques.debiles.find(function(x) {
+         return x.id === id;
+       });
+       var id_tipo = ataque.tipo;
+       if (id_tipo['id']) {
+         id_tipo = id_tipo['id'];
+       }
+      var tipo = this.encontrarTipo(id_tipo);
+      ataque.tipo = tipo;
+
+      return ataque;
     } else if (tipo_ataque === 'fuerte') {
-      return this.ataques.fuertes.find(x => x.id === id);
+      var especial = this.ataques.fuertes.find(function(x) {
+         return x.id === id;
+       });
+       var id_tipo_especial = especial.tipo;
+       if (id_tipo_especial['id']) {
+         id_tipo_especial = id_tipo_especial['id'];
+       }
+       var tipo_especial = this.encontrarTipo(id_tipo_especial);
+       especial.tipo = tipo_especial;
+      return especial;
     } else {
       return null;
     }
