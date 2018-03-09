@@ -517,22 +517,26 @@ export class MapaPage {
 
       let watch = this.geolocation.watchPosition(options);
       watch.subscribe((position: Geoposition) => {
-        this.Coordinates = position.coords;
-        this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
-        //this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
-        this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
-        this.marker.setLngLat([this.Coordinates.longitude, this.Coordinates.latitude]);
-        this.comprobarDistanciaEnemigos();
-        if (!this.observable_iniciado) {
-          this.mapService.iniciarObservableEnemigos();
-          this.observable_iniciado = true;
-        }
-        this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
-        if (this.playerService.player && this.playerService.player.nivel) {
-          this.url_statics += '&nivel=' + this.playerService.player.nivel;
-        }
-        if (!this.mapService.origen_entorno) {
-          this.mapService.iniciarObservableEntorno();
+        if (position && position.coords) {
+          this.Coordinates = position.coords;
+          this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
+          //this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
+          this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
+          this.marker.setLngLat([this.Coordinates.longitude, this.Coordinates.latitude]);
+          this.comprobarDistanciaEnemigos();
+          if (!this.observable_iniciado) {
+            this.mapService.iniciarObservableEnemigos();
+            this.observable_iniciado = true;
+          }
+          this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
+          if (this.playerService.player && this.playerService.player.nivel) {
+            this.url_statics += '&nivel=' + this.playerService.player.nivel;
+          }
+          if (!this.mapService.origen_entorno) {
+            this.mapService.iniciarObservableEntorno();
+          }
+        } else {
+          alert("Error de geolocalización: " + JSON.stringify(position));
         }
       });
     }
