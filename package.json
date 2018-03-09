@@ -51,14 +51,14 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "cordova-plugin-geolocation": {
-        "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
-      },
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-geolocation": {
+        "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
+      }
     },
     "platforms": [
       "browser",

@@ -57,6 +57,7 @@ export let items = [
       tiempo: 10 * 60,
       rareza_minima: 70,
       rareza_maxima: 100,
+      xp: 200,
       influye: [ "meteo", "terreno" ]
     }
   },
@@ -70,6 +71,7 @@ export let items = [
       tiempo: 25 * 60,
       rareza_minima: 40,
       rareza_maxima: 70,
+      xp: 500,
       influye: [ "meteo", "terreno" ]
     }
   },
@@ -83,12 +85,13 @@ export let items = [
       tiempo: 60 * 60,
       rareza_minima: 10,
       rareza_maxima: 40,
+      xp: 1000,
       influye: [ "meteo", "terreno" ]
     }
   },
   {
     id: "trampa-xxl",
-    nombre: "Llave Interdimensional",
+    nombre: "Trampa Technie",
     descripcion: "Atrae a una mascota única tras 24 horas",
     icono: "assets/imgs/items/Item_1403.png",
     tipo: "trampa",
@@ -96,6 +99,7 @@ export let items = [
       tiempo: 24 * 60 * 60,
       rareza_minima: 1,
       rareza_maxima: 10,
+      xp: 2500,
       influye: [ "meteo", "terreno" ]
     }
   }

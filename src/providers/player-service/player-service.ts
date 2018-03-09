@@ -154,7 +154,7 @@ export class PlayerServiceProvider {
     });
   }
 
-  anadirMascota(id_avatar: string, xp: any, player?: any) {
+  anadirMascota(id_avatar: string, xp: any, player?: any, xp_player?: any) {
     let avatarRef = this.configService.encontrarLuchador(id_avatar);
     if (avatarRef) {
       let mascota_nueva = new AvatarModel(this.configService);
@@ -165,7 +165,7 @@ export class PlayerServiceProvider {
         this.player.mascotas.push(mascota_nueva);
         this.savePlayer();
       }
-      this.events.publish("player:nueva_mascota", { mascota: mascota_nueva });
+      this.events.publish("player:nueva_mascota", { mascota: mascota_nueva, xp_player: xp_player });
     }
   }
 

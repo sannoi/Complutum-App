@@ -3,7 +3,7 @@
     <name>Complutum-App</name>
     <description>GeoApp Game.</description>
     <author email="devel@mideas.es" href="http://www.mideas.es/">Mideas Games</author>
-    <content original-src="index.html" src="http://192.168.1.7:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -80,11 +80,12 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <allow-navigation href="http://192.168.1.7:8100" />
     <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
     </plugin>
-    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
-    <allow-navigation href="http://192.168.1.7:8100" />
+    <allow-navigation href="http://192.168.1.44:8100" />
     <engine name="browser" spec="5.0.3" />
     <engine name="android" spec="7.0.0" />
 </widget>

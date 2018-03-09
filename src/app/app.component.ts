@@ -56,9 +56,10 @@ export class MyApp {
 
     this.events.subscribe('player:nueva_mascota', (data) => {
       if (data && data.mascota) {
-        if (this.configService.config.avatares.xp_nueva_mascota > 0 && this.playerService.player) {
-          this.playerService.addXp(this.configService.config.avatares.xp_nueva_mascota);
-          this.toastService.push('+' + this.configService.config.avatares.xp_nueva_mascota + ' XP ' + this.playerService.player.nombre);
+        if ((this.configService.config.avatares.xp_nueva_mascota > 0 || data.xp_player) && this.playerService.player) {
+          var _xp = data.xp_player ? data.xp_player : this.configService.config.avatares.xp_nueva_mascota;
+          this.playerService.addXp(_xp);
+          this.toastService.push('+' + _xp + ' XP ' + this.playerService.player.nombre);
         }
         let modal = this.modalCtrl.create('FighterDetailPage', { luchador: data.mascota, modal: true, titulo_custom: '¡Has conseguido un ' + data.mascota.nombre + '!' }, {
           enableBackdropDismiss: false

@@ -7,8 +7,8 @@ export let tipos = [
     icono: 'leaf',
     eficaz: ['agua'],
     no_eficaz: ['veneno','fuego'],
-    meteo: [800,801,802,803,804],
-    terreno: ['landuse.grass','landuse.farmland','landuse.orchard','landuse.plant_nursery','landuse.village_green','landuse.vineyard']
+    meteo: [],
+    terreno: ['landuse.grass','landuse.farmland','landuse.orchard','landuse.plant_nursery','landuse.village_green','landuse.vineyard','leisure.park','leisure.garden']
   },
   {
     id: 'fuego',

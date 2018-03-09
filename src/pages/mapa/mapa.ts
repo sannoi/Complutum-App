@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
+import { Storage } from '@ionic/storage';
 import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
@@ -35,6 +36,7 @@ export class MapaPage {
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
+    public storage: Storage,
     public events: Events,
     private geolocation: Geolocation,
     private configService: ConfigServiceProvider,
@@ -48,8 +50,14 @@ export class MapaPage {
   }
 
   ionViewDidLoad() {
-    this.Coordinates = { latitude: 40.5, longitude: -3.2 };
-    this.executemap();
+    this.storage.get('ultima_posicion').then(pos => {
+      if (pos && pos.lat && pos.lng) {
+        this.Coordinates = { latitude: pos.lat, longitude: pos.lng };
+      } else {
+        this.Coordinates = { latitude: 40.5, longitude: -3.2 };
+      }
+      this.executemap();
+    });
   }
 
   ionViewCanLeave() {
@@ -179,7 +187,7 @@ export class MapaPage {
 
             var _idx_trampa_activa = this.playerService.player.trampas_activas.indexOf(trampa);
             if (_idx_trampa_activa > -1) {
-              this.playerService.anadirMascota(trampa.avatar.id, xp);
+              this.playerService.anadirMascota(trampa.avatar.id, xp, null, trampa.obj.propiedades.xp);
               this.playerService.player.trampas_activas.splice(_idx_trampa_activa, 1);
               this.playerService.savePlayer();
             }

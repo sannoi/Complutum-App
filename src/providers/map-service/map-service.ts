@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/map';
@@ -20,10 +21,11 @@ export class MapServiceProvider {
 
   public entorno: any;
 
-  constructor(public http: HttpClient, public events: Events, public configService: ConfigServiceProvider, public playerService: PlayerServiceProvider) { }
+  constructor(public http: HttpClient, public storage: Storage, public events: Events, public configService: ConfigServiceProvider, public playerService: PlayerServiceProvider) { }
 
   public establecerCoordenadas(coordenadas: any) {
     this.coordenadas = coordenadas;
+    this.storage.set('ultima_posicion', this.coordenadas);
   }
 
   public iniciarObservableEnemigos() {
@@ -68,7 +70,7 @@ export class MapServiceProvider {
 
   public actualizarEntorno() {
     if (this.coordenadas) {
-      var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_info_entorno + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng;
+      var _url = this.configService.config.juego.url_base + this.configService.config.juego.url_info_entorno + '/?lat=' + this.coordenadas.lat + '&lng=' + this.coordenadas.lng + '&radio=' + this.configService.config.mapa.radio_interaccion;
       return this.http.get(_url)
         .toPromise()
         .then(respuesta => {
