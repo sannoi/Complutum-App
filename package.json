@@ -39,7 +39,6 @@
     "leaflet-realtime": "^2.1.1",
     "mapbox-gl": "^0.44.1",
     "mapbox-gl-leaflet": "0.0.3",
-    "moment": "^2.21.0",
     "rxjs": "5.5.2",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.18"

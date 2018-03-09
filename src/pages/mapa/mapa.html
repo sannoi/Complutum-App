@@ -3,13 +3,13 @@
 <ion-fab left bottom #fab>
   <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
   <ion-fab-list side="top">
-    <button ion-fab color="secondary" (click)="perfilPlayer(fab)"><ion-icon name="person"></ion-icon><div class="label">Mi Perfil</div></button>
-    <button ion-fab color="secondary" (click)="fab.close();plantarTrampa()"><ion-icon name="bug"></ion-icon><div class="label">Colocar Trampa</div></button>
-    <button ion-fab color="secondary" (click)="recogerItemRandom(fab)"><ion-icon name="cube"></ion-icon><div class="label">Objeto Aleatorio</div></button>
-    <button ion-fab color="secondary" (click)="fab.close();toggleTabs()"><ion-icon name="menu"></ion-icon><div class="label">Mostrar/Ocultar Menú</div></button>
+    <button ion-fab color="secondary" (click)="perfilPlayer(fab)"><ion-icon name="person"></ion-icon></button>
+    <button ion-fab color="secondary" (click)="fab.close();toggleTabs()"><ion-icon name="menu"></ion-icon></button>
+    <button ion-fab color="secondary" (click)="anadirMascotaRandom(fab)"><ion-icon name="bug"></ion-icon></button>
+    <button ion-fab color="secondary" (click)="recogerItemRandom(fab)"><ion-icon name="cube"></ion-icon></button>
   </ion-fab-list>
 </ion-fab>
 <ion-fab right bottom *ngIf="mapService.entorno">
-  <button ion-fab mini color="light" (click)="mostrarMeteo()"><img [src]="mapService.entorno.icono"><div class="label">Entorno</div></button>
+  <button ion-fab mini color="primary" (click)="mostrarMeteo()"><img [src]="mapService.entorno.icono"></button>
 </ion-fab>
 </ion-content>

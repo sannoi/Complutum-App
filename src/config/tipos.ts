@@ -6,9 +6,7 @@ export let tipos = [
     color_texto: '#ffffff',
     icono: 'leaf',
     eficaz: ['agua'],
-    no_eficaz: ['veneno','fuego'],
-    meteo: [800,801,802,803,804],
-    terreno: ['landuse.grass','landuse.farmland','landuse.orchard','landuse.plant_nursery','landuse.village_green','landuse.vineyard']
+    no_eficaz: ['veneno','fuego']
   },
   {
     id: 'fuego',
@@ -17,9 +15,7 @@ export let tipos = [
     color_texto: '#ffffff',
     icono: 'flame',
     eficaz: ['planta'],
-    no_eficaz: ['agua'],
-    meteo: [800,711,751,761,762,904],
-    terreno: []
+    no_eficaz: ['agua']
   },
   {
     id: 'agua',
@@ -28,9 +24,7 @@ export let tipos = [
     color_texto: '#ffffff',
     icono: 'water',
     eficaz: ['fuego'],
-    no_eficaz: ['electrico','planta'],
-    meteo: [300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,701,741],
-    terreno: []
+    no_eficaz: ['electrico','planta']
   },
   {
     id: 'electrico',
@@ -39,9 +33,7 @@ export let tipos = [
     color_texto: '#000000',
     icono: 'flash',
     eficaz: ['agua','normal'],
-    no_eficaz: ['veneno'],
-    meteo: [200,201,202,210,211,212,221,230,231,232],
-    terreno: []
+    no_eficaz: ['veneno']
   },
   {
     id: 'veneno',
@@ -50,9 +42,7 @@ export let tipos = [
     color_texto: '#ffffff',
     icono: 'flask',
     eficaz: ['planta'],
-    no_eficaz: ['agua'],
-    meteo: [801,802,803,804,903],
-    terreno: ['landuse.residential']
+    no_eficaz: ['agua']
   },
   {
     id: 'normal',
@@ -61,8 +51,6 @@ export let tipos = [
     color_texto: '#000000',
     icono: 'contact',
     eficaz: ['veneno'],
-    no_eficaz: ['agua','planta'],
-    meteo: [],
-    terreno: []
+    no_eficaz: ['agua','planta']
   }
 ];

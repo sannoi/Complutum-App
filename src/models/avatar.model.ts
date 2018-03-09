@@ -5,7 +5,6 @@ export class AvatarModel {
   public nombre: string;
   public icono: string = 'assets/imgs/avatar_default.png';
   public tipo: any;
-  public rareza: any;
   public xp: number;
   public nivel: number;
   public salud: number;
@@ -30,7 +29,6 @@ export class AvatarModel {
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
     mascota_nueva.tipo = avatar.tipo;
-    mascota_nueva.rareza = avatar.rareza;
     mascota_nueva.xp = avatar.xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };
@@ -55,7 +53,6 @@ export class AvatarModel {
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
     mascota_nueva.tipo = this.configService.encontrarTipo(avatar.tipo);
-    mascota_nueva.rareza = avatar.rareza;
     mascota_nueva.xp = xp;
     mascota_nueva.salud = avatar.salud;
     mascota_nueva.propiedades = { ataque: avatar.propiedades.ataque, defensa: avatar.propiedades.defensa };

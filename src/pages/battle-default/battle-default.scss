@@ -11,15 +11,14 @@ page-battle-default {
   }
   .texto_efectividad {
     position: absolute;
-    right: 68px;
-    top: -16px;
+    right: 80px;
+    top: 16px;
     padding: 3px 10px;
     text-transform: uppercase;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 20px;
     min-width: 145px;
     text-align: center;
-    -webkit-transition: all 0.5s;
     transition: all 0.5s;
   }
   .efectividad_enemigo .texto_efectividad {

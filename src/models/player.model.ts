@@ -11,7 +11,6 @@ export class PlayerModel {
   public mascotas: Array<AvatarModel>;
   public mascota_seleccionada_idx: number;
   public items: Array<ItemModel>;
-  public trampas_activas: Array<any>;
 
   //private configService: ConfigServiceProvider;
 
@@ -39,7 +38,6 @@ export class PlayerModel {
       item_nuevo = item_nuevo.parse(player.items[z]);
       items.push(item_nuevo);
     }
-    player_nuevo.trampas_activas = player.trampas_activas;
     player_nuevo.items = items;
     return player_nuevo;
   }
