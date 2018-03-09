@@ -24,6 +24,27 @@
 
   </div>
 
+  <div class="player-traps">
+    <ion-card>
+      <ion-card-header>
+        Trampas Activas
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid *ngIf="player && player.trampas_activas && player.trampas_activas.length > 0">
+          <ion-row>
+            <ion-col col-4 *ngFor="let trampa of player.trampas_activas" text-center>
+              <button (click)="abrirDetallesTrampa(trampa)">
+                <img [src]="trampa.obj.icono">
+                <p><b>{{tiempoRestante(trampa.tiempo_restante)}}</b></p>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <h6 text-center *ngIf="player && (!player.trampas_activas || player.trampas_activas.length <= 0)">No hay trampas activas</h6>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <ion-fab bottom center>
     <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
   </ion-fab>

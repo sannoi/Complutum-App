@@ -5,6 +5,7 @@ import { PlayerModel } from '../../models/player.model';
 import { AvatarModel } from '../../models/avatar.model';
 import { ItemModel } from '../../models/item.model';
 import { ConfigServiceProvider } from '../config-service/config-service';
+import * as moment from 'moment';
 
 @Injectable()
 export class PlayerServiceProvider {
@@ -122,6 +123,11 @@ export class PlayerServiceProvider {
       } else {
         player.items = this.itemsIniciales();
       }
+      if (data.trampas_activas) {
+        player.trampas_activas = data.trampas_activas;
+      } else {
+        player.trampas_activas = new Array<any>();
+      }
       return this.storage.set('player', player).then(res => {
         return res;
       });
@@ -172,6 +178,52 @@ export class PlayerServiceProvider {
       } else {
         response(false);
       }
+    });
+  }
+
+  plantarTrampa(trampa: any, coordenadas: any, entorno: any) {
+    var este = this;
+    var avatares = this.configService.luchadores.filter(function(x) {
+      var tipo_obj = este.configService.encontrarTipo(x.tipo);
+      var some_terreno = true;
+      if (trampa.propiedades.influye.indexOf('terreno') > -1) {
+        if (tipo_obj.terreno && tipo_obj.terreno.length > 0) {
+          some_terreno = tipo_obj.terreno.some(function(y) {
+            return entorno.terreno.indexOf(y) > -1;
+          });
+        }
+      }
+      var some_meteo = true;
+      if (trampa.propiedades.influye.indexOf('meteo') > -1) {
+        if (tipo_obj.meteo && tipo_obj.meteo.length > 0) {
+          some_meteo = tipo_obj.meteo.some(function(y) {
+            return entorno.meteo_id === y;
+          });
+        }
+      }
+      var cumple_rareza = (x.rareza >= trampa.propiedades.rareza_minima && x.rareza <= trampa.propiedades.rareza_maxima) ? true : false;
+      return (some_terreno && some_meteo && cumple_rareza);
+    });
+    if (avatares && avatares.length > 0) {
+      var avatar = avatares[Math.floor(Math.random() * avatares.length)];
+      let trampa_plantada = {
+        obj: trampa,
+        fecha: moment().format(),
+        coordenadas: coordenadas,
+        entorno: entorno,
+        avatar: avatar,
+        tiempo_restante: 999
+      };
+      this.player.trampas_activas.push(trampa_plantada);
+      this.events.publish("player:trampa_plantada", { trampa: trampa_plantada });
+
+      return new Promise((response, error) => {
+        response(trampa_plantada);
+      });
+    }
+
+    return new Promise((response, error) => {
+      response(false);
     });
   }
 

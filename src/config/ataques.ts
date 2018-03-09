@@ -15,7 +15,8 @@ export let ataques = {
     { id: 'aliento_fuego', nombre: 'Aliento de Fuego', tipo: 'fuego', icono: 'flame', puntos_dano: 11, segundos_enfriamiento: 0.9, incremento_energia: 8 },
     { id: 'alarido', nombre: 'Alarido', icono: 'flask', tipo: 'veneno', puntos_dano: 12, segundos_enfriamiento: 1.1, incremento_energia: 12 },
     { id: 'burbuja', nombre: 'Burbuja', icono: 'water', tipo: 'agua', puntos_dano: 12, segundos_enfriamiento: 1.2, incremento_energia: 14 },
-    { id: 'corte', nombre: 'Corte', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 8 }
+    { id: 'corte', nombre: 'Corte', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 8 },
+    { id: 'bostezo', nombre: 'Bostezo', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 0, segundos_enfriamiento: 1.7, incremento_energia: 15 }
   ],
   fuertes: [
     { id: 'pucheritos', nombre: 'Pucheritos', tipo: 'planta', puntos_dano: 80, segundos_enfriamiento: 17, gasto_energia: 33 },
