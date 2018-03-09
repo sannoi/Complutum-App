@@ -30,14 +30,14 @@ export class FighterDetailPage {
     private configService: ConfigServiceProvider,
     private itemsService: ItemsServiceProvider,
     private playerService: PlayerServiceProvider) {
-      this.luchador = navParams.get('luchador');
-      this.esModal = navParams.get('modal');
-      if (navParams.get('titulo_custom')) {
-        this.titulo_custom = navParams.get('titulo_custom');
-      }
-      if (this.luchador) {
-        this.saludLuchador = (this.luchador.salud_actual/this.luchador.propiedades_nivel.salud) * 100;
-      }
+    this.luchador = navParams.get('luchador');
+    this.esModal = navParams.get('modal');
+    if (navParams.get('titulo_custom')) {
+      this.titulo_custom = navParams.get('titulo_custom');
+    }
+    if (this.luchador) {
+      this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
+    }
   }
 
   dpsAtaque() {
@@ -64,22 +64,21 @@ export class FighterDetailPage {
     }
   }
 
-  ConvertHexToRGBA(hex:string, opacity?:number):string
-      {
-            opacity = opacity || 1;
+  ConvertHexToRGBA(hex: string, opacity?: number): string {
+    opacity = opacity || 1;
 
-            opacity < 0 ? opacity = 0 : opacity = opacity;
-            opacity > 1 ? opacity = 1 : opacity = opacity;
+    opacity < 0 ? opacity = 0 : opacity = opacity;
+    opacity > 1 ? opacity = 1 : opacity = opacity;
 
-            hex = hex.replace('#','');
+    hex = hex.replace('#', '');
 
-            let r = parseInt(hex.substring(0, 2), 16);
-            let g = parseInt(hex.substring(2, 4), 16);
-            let b = parseInt(hex.substring(4, 6), 16);
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
 
-            return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity +')';
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
 
-      }
+  }
 
   xpAvatar() {
     var _acumulados = this.configService.xpAcumuladosNivel(this.luchador.nivel - 1);
@@ -115,7 +114,7 @@ export class FighterDetailPage {
               if (this.luchador.salud_actual > this.luchador.propiedades_nivel.salud) {
                 this.luchador.salud_actual = this.luchador.propiedades_nivel.salud;
               }
-              this.saludLuchador = (this.luchador.salud_actual/this.luchador.propiedades_nivel.salud) * 100;
+              this.saludLuchador = (this.luchador.salud_actual / this.luchador.propiedades_nivel.salud) * 100;
               /*this.playerService.player.items[_item_idx].cantidad -= 1;
               if (this.playerService.player.items[_item_idx].cantidad <= 0) {
                 this.playerService.player.items.splice(_item_idx, 1);

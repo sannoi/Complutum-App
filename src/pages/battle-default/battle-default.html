@@ -15,16 +15,16 @@
   <progress-bar [progress]="saludEnemigo" [color]="configService.config.colores.salud" [text]="saludEnemigoText"></progress-bar>
   <ion-item text-center>
     <div class="efectividad_enemigo">
-    <div *ngIf="efectividad_ataque_enemigo == -1" class="texto_efectividad ataque_poco_efectivo">Poco Eficaz</div>
-    <div *ngIf="efectividad_ataque_enemigo == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
-    <div *ngIf="efectividad_ataque_enemigo == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
-    <div *ngIf="efectividad_ataque_enemigo == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
+      <div *ngIf="efectividad_ataque_enemigo == -1" class="texto_efectividad ataque_poco_efectivo">Poco Eficaz</div>
+      <div *ngIf="efectividad_ataque_enemigo == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
+      <div *ngIf="efectividad_ataque_enemigo == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
+      <div *ngIf="efectividad_ataque_enemigo == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
 
-    <div *ngIf="efectividad_especial_enemigo == -1" class="texto_efectividad ataque_poco_efectivo">Poco Eficaz</div>
-    <div *ngIf="efectividad_especial_enemigo == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
-    <div *ngIf="efectividad_especial_enemigo == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
-    <div *ngIf="efectividad_especial_enemigo == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
-  </div>
+      <div *ngIf="efectividad_especial_enemigo == -1" class="texto_efectividad ataque_poco_efectivo">Poco Eficaz</div>
+      <div *ngIf="efectividad_especial_enemigo == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
+      <div *ngIf="efectividad_especial_enemigo == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
+      <div *ngIf="efectividad_especial_enemigo == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
+    </div>
 
     <ion-thumbnail class="big">
       <img [src]="enemigo.icono">
@@ -35,25 +35,25 @@
     <div *ngIf="efectividad_ataque == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
     <div *ngIf="efectividad_ataque == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
     <div *ngIf="efectividad_ataque == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
-    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon [name]="luchador.ataque.icono"></ion-icon></button>
+    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_debil" (click)="ataqueDebil()"><ion-icon [name]="luchador.ataque.icono"></ion-icon><div class="label">{{luchador.ataque.nombre}}</div></button>
   </ion-fab>
   <ion-fab right bottom style="bottom: 76px;" *ngIf="luchador">
     <div *ngIf="efectividad_especial == -1" class="texto_efectividad ataque_poco_efectivo">Poco Eficaz</div>
     <div *ngIf="efectividad_especial == -2" class="texto_efectividad ataque_muy_poco_efectivo">Muy Poco Eficaz</div>
     <div *ngIf="efectividad_especial == 1" class="texto_efectividad ataque_efectivo">Eficaz</div>
     <div *ngIf="efectividad_especial == 2" class="texto_efectividad ataque_muy_efectivo">Muy Eficaz</div>
-    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_fuerte || !especial_cargado" (click)="ataqueFuerte()"><ion-icon name="nuclear"></ion-icon></button>
+    <button ion-fab color="primary" [disabled]="!batalla_iniciada || enfriamiento_fuerte || !especial_cargado" (click)="ataqueFuerte()"><ion-icon name="nuclear"></ion-icon><div class="label">{{luchador.especial.nombre}}</div></button>
   </ion-fab>
 </ion-content>
 <ion-footer color="primary">
   <ion-item>
     <div item-start text-center>
-    <ion-thumbnail>
-      <img [src]="luchador.icono">
-    </ion-thumbnail>
-    <small>{{luchador.nombre}}</small>
-  </div>
-  <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud"></progress-bar>
-  <progress-bar [progress]="energiaLuchador" [color]="configService.config.colores.energia"></progress-bar>
-</ion-item>
+      <ion-thumbnail>
+        <img [src]="luchador.icono">
+      </ion-thumbnail>
+      <small>{{luchador.nombre}}</small>
+    </div>
+    <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud"></progress-bar>
+    <progress-bar [progress]="energiaLuchador" [color]="configService.config.colores.energia"></progress-bar>
+  </ion-item>
 </ion-footer>

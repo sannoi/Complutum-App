@@ -4,6 +4,7 @@ export let luchadores = [
     nombre: 'Bulbassaur',
     icono: 'assets/imgs/fighters/pokemon_icon_001_00.png',
     tipo: 'planta',
+    rareza: 80,
     salud: 90,
     propiedades: {
       ataque: 118,
@@ -17,6 +18,7 @@ export let luchadores = [
     nombre: 'Ivysaur',
     icono: 'assets/imgs/fighters/pokemon_icon_002_00.png',
     tipo: 'planta',
+    rareza: 50,
     salud: 120,
     propiedades: {
       ataque: 151,
@@ -30,6 +32,7 @@ export let luchadores = [
     nombre: 'Venusaur',
     icono: 'assets/imgs/fighters/pokemon_icon_003_00.png',
     tipo: 'planta',
+    rareza: 30,
     salud: 160,
     propiedades: {
       ataque: 198,
@@ -43,6 +46,7 @@ export let luchadores = [
     nombre: 'Charmander',
     icono: 'assets/imgs/fighters/pokemon_icon_004_00.png',
     tipo: 'fuego',
+    rareza: 80,
     salud: 78,
     propiedades: {
       ataque: 116,
@@ -56,6 +60,7 @@ export let luchadores = [
     nombre: 'Charmeleon',
     icono: 'assets/imgs/fighters/pokemon_icon_005_00.png',
     tipo: 'fuego',
+    rareza: 40,
     salud: 116,
     propiedades: {
       ataque: 158,
@@ -69,6 +74,7 @@ export let luchadores = [
     nombre: 'Charizard',
     icono: 'assets/imgs/fighters/pokemon_icon_006_00.png',
     tipo: 'fuego',
+    rareza: 25,
     salud: 156,
     propiedades: {
       ataque: 223,
@@ -82,6 +88,7 @@ export let luchadores = [
     nombre: 'Squirtle',
     icono: 'assets/imgs/fighters/pokemon_icon_007_00.png',
     tipo: 'agua',
+    rareza: 80,
     salud: 88,
     propiedades: {
       ataque: 94,
@@ -95,6 +102,7 @@ export let luchadores = [
     nombre: 'Wartortle',
     icono: 'assets/imgs/fighters/pokemon_icon_008_00.png',
     tipo: 'agua',
+    rareza: 50,
     salud: 118,
     propiedades: {
       ataque: 126,
@@ -108,6 +116,7 @@ export let luchadores = [
     nombre: 'Blastoise',
     icono: 'assets/imgs/fighters/pokemon_icon_009_00.png',
     tipo: 'agua',
+    rareza: 25,
     salud: 158,
     propiedades: {
       ataque: 171,
@@ -121,6 +130,7 @@ export let luchadores = [
     nombre: 'Raichu',
     icono: 'assets/imgs/fighters/pokemon_icon_026_00.png',
     tipo: 'electrico',
+    rareza: 45,
     salud: 120,
     propiedades: {
       ataque: 193,
@@ -134,6 +144,7 @@ export let luchadores = [
     nombre: 'Nidoqueen',
     icono: 'assets/imgs/fighters/pokemon_icon_031_00.png',
     tipo: 'veneno',
+    rareza: 80,
     salud: 180,
     propiedades: {
       ataque: 180,
@@ -147,6 +158,7 @@ export let luchadores = [
     nombre: 'Nidoking',
     icono: 'assets/imgs/fighters/pokemon_icon_034_00.png',
     tipo: 'veneno',
+    rareza: 60,
     salud: 162,
     propiedades: {
       ataque: 204,
@@ -160,6 +172,7 @@ export let luchadores = [
     nombre: 'Blissey',
     icono: 'assets/imgs/fighters/pokemon_icon_242_00.png',
     tipo: 'normal',
+    rareza: 15,
     salud: 510,
     propiedades: {
       ataque: 129,
@@ -173,6 +186,7 @@ export let luchadores = [
     nombre: 'Mewtwo',
     icono: 'assets/imgs/fighters/pokemon_icon_150_00.png',
     tipo: 'normal',
+    rareza: 5,
     salud: 193,
     propiedades: {
       ataque: 300,
@@ -186,6 +200,7 @@ export let luchadores = [
     nombre: 'Arcanine',
     icono: 'assets/imgs/fighters/pokemon_icon_059_00.png',
     tipo: 'fuego',
+    rareza: 85,
     salud: 180,
     propiedades: {
       ataque: 227,
@@ -199,6 +214,7 @@ export let luchadores = [
     nombre: 'Poliwrath',
     icono: 'assets/imgs/fighters/pokemon_icon_062_00.png',
     tipo: 'agua',
+    rareza: 60,
     salud: 180,
     propiedades: {
       ataque: 182,
@@ -212,6 +228,7 @@ export let luchadores = [
     nombre: 'Alakazam',
     icono: 'assets/imgs/fighters/pokemon_icon_065_00.png',
     tipo: 'normal',
+    rareza: 50,
     salud: 110,
     propiedades: {
       ataque: 271,
@@ -225,6 +242,7 @@ export let luchadores = [
     nombre: 'Machamp',
     icono: 'assets/imgs/fighters/pokemon_icon_068_00.png',
     tipo: 'normal',
+    rareza: 77,
     salud: 180,
     propiedades: {
       ataque: 234,
@@ -238,6 +256,7 @@ export let luchadores = [
     nombre: 'Victreebel',
     icono: 'assets/imgs/fighters/pokemon_icon_071_00.png',
     tipo: 'planta',
+    rareza: 35,
     salud: 160,
     propiedades: {
       ataque: 207,
@@ -245,5 +264,19 @@ export let luchadores = [
     },
     ataques: ['mirada_cuqui','alarido'],
     especiales: ['rayo_solar','lluvia_esporas','onda_choque']
+  },
+  {
+    id: 'slaking',
+    nombre: 'Slaking',
+    icono: 'assets/imgs/fighters/pokemon_icon_289_00.png',
+    tipo: 'normal',
+    rareza: 8,
+    salud: 273,
+    propiedades: {
+      ataque: 290,
+      defensa: 183
+    },
+    ataques: ['bostezo'],
+    especiales: ['premonicion','onda_certera','hiperrayo']
   }
 ];

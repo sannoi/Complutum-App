@@ -81,8 +81,8 @@
   <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">
-      <button ion-fab color="secondary" (click)="fab.close();elegirItem()"><ion-icon name="cube"></ion-icon></button>
-      <button ion-fab color="danger" (click)="fab.close();despedirMascota()"><ion-icon name="trash"></ion-icon></button>
+      <button ion-fab color="secondary" (click)="fab.close();elegirItem()"><ion-icon name="cube"></ion-icon><div class="label">Dar Objeto</div></button>
+      <button ion-fab color="danger" (click)="fab.close();despedirMascota()"><ion-icon name="trash"></ion-icon><div class="label">Despedir</div></button>
     </ion-fab-list>
   </ion-fab>
   <ion-fab bottom center *ngIf="esModal">

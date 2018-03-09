@@ -8,6 +8,7 @@ import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { AvatarModel } from '../../models/avatar.model'
+import * as moment from 'moment';
 
 @IonicPage()
 @Component({
@@ -20,8 +21,11 @@ export class MapaPage {
   map: any;
   marker: any;
   markers_enemigos: Array<any>;
+  markers_trampas: Array<any>;
 
   observable_iniciado: boolean = false;
+
+  cuentas_trampas: Array<any> = new Array<any>();
 
   url_statics: any;
 
@@ -39,6 +43,7 @@ export class MapaPage {
     private itemsService: ItemsServiceProvider,
     private toastService: ToastServiceProvider) {
     this.markers_enemigos = new Array<any>();
+    this.markers_trampas = new Array<any>();
     this.checkEvents();
   }
 
@@ -59,6 +64,11 @@ export class MapaPage {
         }
       }
     });
+    this.events.subscribe('player:trampa_plantada', (data) => {
+      if (data && data.trampa) {
+        this.anadirTrampaMapa(data.trampa);
+      }
+    });
   }
 
   toggleTabs() {
@@ -68,10 +78,131 @@ export class MapaPage {
   mostrarMeteo() {
     let alert = this.alertCtrl.create({
       title: 'Meteorología',
-      subTitle: 'El tiempo atmosférico es: ' + this.mapService.entorno.meteo,
+      subTitle: 'El tiempo atmosférico es: <b>' + this.mapService.entorno.meteo + '</b>',
+      message: '<div align="center"><img src="' + this.mapService.entorno.icono + '"></div>Temperatura: <b>' + this.mapService.entorno.temp + 'ºC</b><br>Localización: <b>' + this.mapService.entorno.localizacion.poblacion + ', ' + this.mapService.entorno.localizacion.pais + '</b><br>Terreno: <b>' + this.mapService.entorno.terreno.join(', ') + '</b>',
       buttons: ['Vale']
     });
     alert.present();
+  }
+
+  trampasIniciales() {
+    if (this.playerService.player && this.playerService.player.trampas_activas && this.playerService.player.trampas_activas.length > 0) {
+      for (var i = 0; i < this.playerService.player.trampas_activas.length; i++) {
+        this.anadirTrampaMapa(this.playerService.player.trampas_activas[i]);
+      }
+    }
+  }
+
+  anadirTrampaMapa(trampa: any) {
+    if (trampa && trampa.obj && trampa.coordenadas && trampa.avatar && trampa.tiempo_restante) {
+      var _fecha_expiracion = moment(trampa.fecha).add(trampa.obj.propiedades.tiempo, "seconds");
+      var _fecha_actual = moment();
+
+      var _timeout = parseInt(_fecha_expiracion.format('X')) - parseInt(_fecha_actual.format('X'));
+
+      if (_timeout > 0) {
+        var este = this;
+
+        let feature = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [trampa.coordenadas.lng, trampa.coordenadas.lat]
+          },
+          properties: {
+            id: trampa.obj.id,
+            tipo: 'Trampa'
+          },
+          id: this.generarId()
+        };
+
+        // create a HTML element for each feature
+        var el = document.createElement('div');
+        el.className = 'marker-trampa';
+        el.style.backgroundImage = 'url(' + trampa.obj.icono + ')';
+
+        el.addEventListener('click', function() {
+          este.abrirFeature(feature);
+        });
+
+        // make a marker for each feature and add to the map
+        var trampa_marker = new mapboxgl.Marker(el)
+          .setLngLat(feature.geometry.coordinates)
+          .addTo(this.map);
+
+        var _exp = parseInt(moment(trampa.fecha).add(trampa.obj.propiedades.tiempo, "seconds").format('X'));
+        var _act = parseInt(moment().format('X'));
+        trampa.tiempo_restante=_exp - _act;
+
+        var _marker = { id: feature.id, marker: trampa_marker, element: trampa };
+        this.markers_trampas.push(_marker);
+
+        var cuentas_trampa = setInterval(function() {
+          var _marker = este.markers_trampas.find(function(x) {
+            return x.id === feature.id;
+          });
+          if (_marker && _marker.element) {
+            _marker.element.tiempo_restante = _marker.element.tiempo_restante - 1;
+            if (_marker.element.tiempo_restante <= 0) {
+              clearInterval(cuentas_trampa);
+              //counter ended, do something here
+              return;
+            }
+          }
+        }, 1000);
+
+        setTimeout(function() {
+          este.anadirRecompensaTrampa(trampa);
+          este.borrarMarkerTrampa(feature.id);
+        }, _timeout * 1000);
+
+      } else {
+        this.anadirRecompensaTrampa(trampa);
+      }
+    }
+  }
+
+  anadirRecompensaTrampa(trampa: any) {
+    let alert = this.alertCtrl.create({
+      title: '¡Has capturado una nueva mascota!',
+      message: 'Parece que una de tus trampas ha conseguido atrapar algo.',
+      buttons: [
+        {
+          text: '¡Quiero verlo!',
+          handler: () => {
+            var xp = this.configService.xpAcumuladosNivel(this.configService.config.jugador.mascota_nueva.nivel_maximo - 1);
+            if (xp <= 0) {
+              xp = 1;
+            } else if (xp > this.playerService.player.xp) {
+              xp = this.configService.xpAcumuladosNivel(this.playerService.player.nivel - 1);
+            }
+
+            var _idx_trampa_activa = this.playerService.player.trampas_activas.indexOf(trampa);
+            if (_idx_trampa_activa > -1) {
+              this.playerService.anadirMascota(trampa.avatar.id, xp);
+              this.playerService.player.trampas_activas.splice(_idx_trampa_activa, 1);
+              this.playerService.savePlayer();
+            }
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  borrarMarkerTrampa(id: any) {
+    var _added_marker = this.markers_trampas.find(function(x) {
+      return x.id === id;
+    });
+    if (_added_marker) {
+      var _idx_marker = this.markers_trampas.indexOf(_added_marker);
+      if (_added_marker) {
+        _added_marker.marker.remove();
+      }
+      if (_idx_marker > -1) {
+        this.markers_trampas.splice(_idx_marker, 1);
+      }
+    }
   }
 
   anadirEnemigoMapa(feature: any) {
@@ -140,13 +271,23 @@ export class MapaPage {
           enableBackdropDismiss: false
         });
         modal.present();
+      } else if (feature.properties.tipo == 'Trampa') {
+        var trampa = this.markers_trampas.find(function(x) {
+          return x.id === feature.id;
+        });
+        if (trampa) {
+          let modal = this.modalCtrl.create('TrapDetailPage', { trampa: trampa.element }, {
+            enableBackdropDismiss: false
+          });
+          modal.present();
+        }
       }
     }
   }
 
   perfilPlayer(fab: FabContainer) {
     fab.close();
-    let modal = this.modalCtrl.create('PlayerDetailPage', { }, {
+    let modal = this.modalCtrl.create('PlayerDetailPage', {}, {
       enableBackdropDismiss: false
     });
     modal.present();
@@ -200,12 +341,62 @@ export class MapaPage {
     return dis;
   }
 
+  plantarTrampa() {
+    let modal = this.modalCtrl.create('InventorySelectPage', { tipo: 'trampa' }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
+
+    modal.onDidDismiss(data => {
+      if (data && data.item) {
+        if (data.item.tipo == 'trampa') {
+          let alert = this.alertCtrl.create({
+            title: 'Colocar trampa',
+            message: '¿Seguro que quieres colocar una ' + data.item.nombre + ' en tu ubicación actual?',
+            buttons: [
+              {
+                text: 'No',
+                role: 'cancel',
+                handler: () => { }
+              },
+              {
+                text: 'Sí',
+                handler: () => {
+                  this.itemsService.playerBorrarItem(data.item.id, 1).then(res => {
+                    if (res) {
+                      this.playerService.plantarTrampa(data.item, this.mapService.coordenadas, this.mapService.entorno).then(trampa => {
+                        if (trampa && trampa['obj'] && trampa['coordenadas']) {
+                          let alrt = this.alertCtrl.create({
+                            title: 'Trampa colocada',
+                            message: 'Has colocado una ' + trampa['obj'].nombre + ' en las coordenadas (' + trampa['coordenadas'].lat + ', ' + trampa['coordenadas'].lng + '). Comprueba si has cazado algo dentro de un tiempo.',
+                            buttons: ['Vale']
+                          });
+                          alrt.present();
+                        } else {
+                          this.itemsService.playerAnadirItem(data.item, 1);
+                        }
+                      });
+                    }
+                  });
+                }
+              }
+            ]
+          });
+          alert.present();
+        }
+      }
+    });
+  }
+
   anadirMascotaRandom(fab: FabContainer) {
     fab.close();
     var idx = Math.floor(Math.random() * this.configService.luchadores.length);
-    var xp = this.getRandomInt(1, this.playerService.player.xp);
+    //var xp = this.getRandomInt(1, this.playerService.player.xp);
+    var xp = this.configService.xpAcumuladosNivel(this.configService.config.jugador.mascota_nueva.nivel_maximo - 1);
     if (xp <= 0) {
       xp = 1;
+    } else if (xp > this.playerService.player.xp) {
+      xp = this.configService.xpAcumuladosNivel(this.playerService.player.nivel - 1);
     }
     this.playerService.anadirMascota(this.configService.luchadores[idx].id, xp);
   }
@@ -227,9 +418,9 @@ export class MapaPage {
   executemap() {
     /*Initializing Map*/
     if (!this.map) {
-      mapboxgl.accessToken = 'pk.eyJ1Ijoic2Fubm9pIiwiYSI6ImNpeTgwcnBmeTAwMXgycXI3bTA5ZHZ0MjIifQ.4_oblhduvDc6UKdrdioMMQ';
+      mapboxgl.accessToken = this.configService.config.mapa.mapbox_access_token;
       this.map = new mapboxgl.Map({
-        style: 'mapbox://styles/mapbox/streets-v9',
+        style: 'mapbox://styles/' + this.configService.config.mapa.mapbox_estilo,
         center: [this.Coordinates.longitude, this.Coordinates.latitude],
         zoom: 16,
         pitch: 260,
@@ -276,6 +467,8 @@ export class MapaPage {
             'fill-extrusion-opacity': .2
           }
         });
+
+        este.trampasIniciales();
 
         window.setInterval(function() {
           este.map.getSource('drone').setData(este.url_statics);
@@ -351,6 +544,10 @@ export class MapaPage {
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  generarId() {
+    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 8)).toUpperCase();
   }
 
 }
