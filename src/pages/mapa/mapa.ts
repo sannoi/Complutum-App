@@ -181,6 +181,7 @@ export class MapaPage {
     let alert = this.alertCtrl.create({
       title: '¡Has capturado una nueva mascota!',
       message: 'Parece que una de tus trampas ha conseguido atrapar algo.',
+      enableBackdropDismiss: false,
       buttons: [
         {
           text: '¡Quiero verlo!',
@@ -281,6 +282,10 @@ export class MapaPage {
         }*/
         this.comenzarBatalla(feature.properties.id, feature.properties.xp, feature.id);
       } else if (feature.properties.tipo == 'Item') {
+        if (feature.properties.obj) {
+          feature.properties.obj = JSON.parse(feature.properties.obj);
+        }
+        console.log(feature);
         feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
         let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
           enableBackdropDismiss: false
@@ -368,6 +373,7 @@ export class MapaPage {
           let alert = this.alertCtrl.create({
             title: 'Colocar trampa',
             message: '¿Seguro que quieres colocar una ' + data.item.nombre + ' en tu ubicación actual?',
+            enableBackdropDismiss: false,
             buttons: [
               {
                 text: 'No',
@@ -384,6 +390,7 @@ export class MapaPage {
                           let alrt = this.alertCtrl.create({
                             title: 'Trampa colocada',
                             message: 'Has colocado una ' + trampa['obj'].nombre + ' en las coordenadas (' + trampa['coordenadas'].lat + ', ' + trampa['coordenadas'].lng + '). Comprueba si has cazado algo dentro de un tiempo.',
+                            enableBackdropDismiss: false,
                             buttons: ['Vale']
                           });
                           alrt.present();
@@ -437,10 +444,11 @@ export class MapaPage {
       this.map = new mapboxgl.Map({
         style: 'mapbox://styles/' + this.configService.config.mapa.mapbox_estilo,
         center: [this.Coordinates.longitude, this.Coordinates.latitude],
-        zoom: 16,
-        pitch: 260,
-        minZoom: 12, //restrict map zoom - buildings not visible beyond 13
-        maxZoom: 22,
+        zoom: this.configService.config.mapa.zoom.inicial,
+        pitch: this.configService.config.mapa.perspectiva.inclinacion,
+        bearing: this.configService.config.mapa.perspectiva.rotacion,
+        minZoom: this.configService.config.mapa.zoom.minimo, //restrict map zoom - buildings not visible beyond 13
+        maxZoom: this.configService.config.mapa.zoom.maximo,
         container: 'map'
       });
       // create a HTML element for each feature
@@ -460,28 +468,30 @@ export class MapaPage {
       }
 
       this.map.on('load', function() {
-        /*este.map.addLayer({
-          'id': '3d-buildings',
-          'source': 'composite',
-          'source-layer': 'building',
-          'filter': ['==', 'extrude', 'true'],
-          'type': 'fill-extrusion',
-          'minzoom': 15,
-          'paint': {
-            'fill-extrusion-color': '#ffff00',
-            'fill-extrusion-height': [
-              "interpolate", ["linear"], ["zoom"],
-              15, 0,
-              15.05, ["get", "height"]
-            ],
-            'fill-extrusion-base': [
-              "interpolate", ["linear"], ["zoom"],
-              15, 0,
-              15.05, ["get", "min_height"]
-            ],
-            'fill-extrusion-opacity': .2
-          }
-        });*/
+        if (este.configService.config.mapa.edificios.activo) {
+          este.map.addLayer({
+            'id': '3d-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': este.configService.config.mapa.edificios.zoom_minimo,
+            'paint': {
+              'fill-extrusion-color': este.configService.config.mapa.edificios.color,
+              'fill-extrusion-height': [
+                "interpolate", ["linear"], ["zoom"],
+                este.configService.config.mapa.edificios.zoom_minimo, 0,
+                (este.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "height"]
+              ],
+              'fill-extrusion-base': [
+                "interpolate", ["linear"], ["zoom"],
+                este.configService.config.mapa.edificios.zoom_minimo, 0,
+                (este.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "min_height"]
+              ],
+              'fill-extrusion-opacity': este.configService.config.mapa.edificios.opacidad
+            }
+          });
+        }
 
         este.trampasIniciales();
 

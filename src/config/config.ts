@@ -50,6 +50,21 @@ export let config = {
     mapbox_access_token: 'pk.eyJ1Ijoic2Fubm9pIiwiYSI6ImNpeTgwcnBmeTAwMXgycXI3bTA5ZHZ0MjIifQ.4_oblhduvDc6UKdrdioMMQ',
     mapbox_estilo: 'mapbox/streets-v10',
     localizacion_defecto: { lat: 40.5, lng: -3.2 },
+    zoom: {
+      inicial: 19,
+      minimo: 12,
+      maximo: 22
+    },
+    perspectiva: {
+      inclinacion: 60,
+      rotacion: 0
+    },
+    edificios: {
+      activo: true,
+      zoom_minimo: 16,
+      color: '#dddbd7',
+      opacidad: 0.4
+    },
     tiempo_refresco_entorno: 30,
     tiempo_aparicion_enemigos: 15,
     tiempo_desaparicion_enemigos: 45,
