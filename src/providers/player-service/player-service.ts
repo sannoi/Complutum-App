@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Events } from 'ionic-angular';
+import { Events, Platform } from 'ionic-angular';
 import { PlayerModel } from '../../models/player.model';
 import { AvatarModel } from '../../models/avatar.model';
 import { ItemModel } from '../../models/item.model';
@@ -12,26 +12,52 @@ export class PlayerServiceProvider {
 
   public player: PlayerModel;
 
-  constructor(private storage: Storage, public events: Events, private configService: ConfigServiceProvider) {
+  private modificadores: Array<any>;
+
+  constructor(private storage: Storage, public platform: Platform, public events: Events, private configService: ConfigServiceProvider) {
+    this.modificadores = new Array<any>();
+
+    this.platform.ready().then(() => {
+      this.iniciarModificadores();
+    });
+  }
+
+  iniciarModificadores() {
+    this.loadPlayer().then(res => {
+      if (res && res.modificadores_activos && res.modificadores_activos.length > 0) {
+        for (var i = 0; i < res.modificadores_activos.length; i++) {
+          this.nuevoModificador(res.modificadores_activos[i], i);
+        }
+      }
+    });
   }
 
   public addXp(xp:number) {
     if (this.player) {
-      this.player.xp += xp;
+      var _xp = this.modificar(xp, "xp");
+      this.player.xp += _xp;
       let nivel_actual = this.player.nivel;
       let nivel_calculado = this.configService.nivelXp(this.player.xp);
       if (nivel_calculado > nivel_actual) {
         console.log(this.player.nombre + " ha subido del nivel " + nivel_actual + " al nivel " + nivel_calculado);
         this.player.nivel = nivel_calculado;
-        this.savePlayer().then(res => {
+        return this.savePlayer().then(res => {
           this.events.publish('player:nivel_conseguido', { player: this.player, nivel: nivel_calculado });
+          return _xp;
         });
       }
+      return new Promise((response,error) => {
+        response(_xp);
+      });
     }
+    return new Promise((response,error) => {
+      response(false);
+    });
   }
 
   public avatarAddXp(xp:number, avatar: AvatarModel, idx_avatar: number) {
-    avatar.xp += xp;
+    var _xp = this.modificar(xp, "xp");
+    avatar.xp += _xp;
     let nivel_actual = avatar.nivel;
     let nivel_calculado = this.configService.nivelXp(avatar.xp);
     if (nivel_calculado > nivel_actual) {
@@ -43,7 +69,30 @@ export class PlayerServiceProvider {
     }
     this.player.mascotas[idx_avatar] = avatar;
 
-    return avatar;
+    return new Promise((response,error) => {
+      response(_xp);
+    });
+  }
+
+  public modificar(valor: any, tipo: string) {
+    var _val = valor;
+    if (tipo === "xp") {
+      if (this.configService.config.juego.modificadores.xp_multiplicador > 0) {
+        _val = _val * this.configService.config.juego.modificadores.xp_multiplicador;
+      }
+      var _mods = this.modificadores.filter(function(x){
+        return x.item.tipo == "modificador" && x.item.propiedades['xp'];
+      });
+      for (var i = 0; i < _mods.length; i++) {
+        var _m = _mods[i];
+        if (_m.item.propiedades.xp.substr(0,1) == "x") {
+          var _multiplier = parseInt(_m.item.propiedades.xp.substr(1));
+          _val = _val * _multiplier;
+          console.log(_val);
+        }
+      }
+    }
+    return _val;
   }
 
   getPlayer() {
@@ -128,6 +177,11 @@ export class PlayerServiceProvider {
       } else {
         player.trampas_activas = new Array<any>();
       }
+      if (data.modificadores_activos) {
+        player.modificadores_activos = data.modificadores_activos;
+      } else {
+        player.modificadores_activos = new Array<any>();
+      }
       return this.storage.set('player', player).then(res => {
         return res;
       });
@@ -172,6 +226,7 @@ export class PlayerServiceProvider {
   borrarMascota(id: any) {
     return new Promise((response,error) => {
       if (id > -1 && this.player.mascotas[id]) {
+        this.events.publish("player:despedir_mascota", { mascota: this.player.mascotas[id] });
         this.player.mascotas.splice(id, 1);
         this.savePlayer();
         response(true);
@@ -212,7 +267,8 @@ export class PlayerServiceProvider {
         coordenadas: coordenadas,
         entorno: entorno,
         avatar: avatar,
-        tiempo_restante: 999
+        tiempo_restante: 999,
+        multiplicador_tiempo: this.configService.config.juego.modificadores.tiempo_trampas_multiplicador
       };
       this.player.trampas_activas.push(trampa_plantada);
       this.events.publish("player:trampa_plantada", { trampa: trampa_plantada });
@@ -223,6 +279,106 @@ export class PlayerServiceProvider {
     }
 
     return new Promise((response, error) => {
+      response(false);
+    });
+  }
+
+  anadirModificador(modificador: any) {
+    if (modificador && modificador.item && modificador.fecha) {
+      return this.nuevoModificador(modificador).then(mod => {
+        this.events.publish("player:modificador_anadido", { modificador: modificador });
+        return modificador;
+      });
+    }
+
+    return new Promise((response, error) => {
+      response(false);
+    });
+  }
+
+  nuevoModificador(modificador: any, idx_mod_player?: any) {
+    if (modificador && modificador.id && modificador.item && modificador.tiempo_restante) {
+      var _fecha_expiracion = moment(modificador.fecha).add(modificador.item.propiedades.tiempo, "seconds");
+      var _fecha_actual = moment();
+
+      var _timeout = parseInt(_fecha_expiracion.format('X')) - parseInt(_fecha_actual.format('X'));
+
+      if (_timeout > 0) {
+        var este = this;
+        var _exp = parseInt(moment(modificador.fecha).add(modificador.item.propiedades.tiempo, "seconds").format('X'));
+        var _act = parseInt(moment().format('X'));
+        modificador.tiempo_restante=_exp - _act;
+        this.modificadores.push(modificador);
+
+        var cuentas_mod = setInterval(function() {
+          var _mod = este.modificadores.find(function(x) {
+            return x.id === modificador.id;
+          });
+          var _idx_mod = este.modificadores.indexOf(_mod);
+          if (_idx_mod > -1) {
+            if (idx_mod_player == undefined) {
+              var _mod_player = este.player.modificadores_activos.find(function(x) {
+                return x.id === modificador.id;
+              });
+              idx_mod_player = este.player.modificadores_activos.indexOf(_mod_player);
+            }
+            este.modificadores[_idx_mod].tiempo_restante -= 1;
+            este.player.modificadores_activos = este.modificadores;
+            if (este.modificadores[_idx_mod].tiempo_restante <= 0) {
+              clearInterval(cuentas_mod);
+              //counter ended, do something here
+              return;
+            }
+          }
+        }, 1000);
+
+        setTimeout(function() {
+          //este.anadirRecompensaTrampa(trampa);
+          este.borrarModificador(modificador.id).then(res => {
+            este.borrarModificadorPlayer(modificador.id).then(result => {
+              console.log("Modificador expirado");
+            });
+          });
+        }, _timeout * 1000);
+
+        return new Promise((response, error)=>{
+          response(modificador);
+        });
+
+      } else {
+        //this.anadirRecompensaTrampa(trampa);
+        this.borrarModificadorPlayer(modificador.id, true).then(result => {
+          console.log("Modificador expirado");
+        });
+      }
+    }
+
+    return new Promise((response, error)=>{
+      response(false);
+    });
+  }
+
+  borrarModificadorPlayer(id: any, force?: boolean) {
+    this.player.modificadores_activos = this.modificadores;
+    if (force) {
+      return this.savePlayer();
+    } else {
+      return new Promise((response, error) => {
+        response(true);
+      });
+    }
+  }
+
+  borrarModificador(id: any) {
+    return new Promise((response, error)=> {
+      var _mod = this.modificadores.find(function(x) {
+        return x.id === id;
+      });
+      var _idx = this.modificadores.indexOf(_mod);
+      if (_idx > -1) {
+        this.modificadores.splice(_idx, 1);
+        response(true);
+      }
       response(false);
     });
   }

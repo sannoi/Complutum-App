@@ -45,6 +45,27 @@
     </ion-card>
   </div>
 
+  <div class="player-mods">
+    <ion-card>
+      <ion-card-header>
+        Modificadores Activos
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid *ngIf="player && player.modificadores_activos && player.modificadores_activos.length > 0">
+          <ion-row>
+            <ion-col col-4 *ngFor="let modificador of player.modificadores_activos" text-center>
+              <button (click)="abrirDetallesMod(modificador)">
+                <img [src]="modificador.item.icono">
+                <p><b>{{tiempoRestante(modificador.tiempo_restante)}}</b></p>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <h6 text-center *ngIf="player && (!player.modificadores_activos || player.modificadores_activos.length <= 0)">No hay modificadores activos</h6>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <ion-fab bottom center>
     <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
   </ion-fab>

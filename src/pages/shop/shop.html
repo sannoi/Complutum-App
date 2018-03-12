@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Tienda</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <div class="player-monedas" text-center>
+    <ion-icon name="cash"></ion-icon> {{player.monedas}}
+  </div>
+
+  <div class="tienda-objetos">
+    <ion-list>
+      <button ion-item *ngFor="let item of items">
+        <ion-thumbnail item-start>
+          <img [src]="item.icono">
+        </ion-thumbnail>
+        <h3>{{item.nombre}} x{{item.cantidad}}</h3>
+        <p><ion-icon name="cash"></ion-icon> {{item.precio}}</p>
+      </button>
+    </ion-list>
+  </div>
+
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
+</ion-content>

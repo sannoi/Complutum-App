@@ -11,7 +11,7 @@
 <ion-content>
   <ion-searchbar *ngIf="searchbar_visible" placeholder="Buscar..." (ionInput)="filtrarItems($event)"></ion-searchbar>
   <ion-list>
-    <button ion-item *ngFor="let item of items">
+    <button ion-item *ngFor="let item of items" [disabled]="disableItem(item)" (click)="clickItem(item)">
       <ion-thumbnail item-start>
         <img [src]="item.icono">
         <ion-badge bottom right>x{{item.cantidad}}</ion-badge>

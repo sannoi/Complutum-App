@@ -13,7 +13,11 @@ page-player-detail {
     margin-right: auto;
   }
 
-  .player-traps {
+  .player-mods {
+    padding-bottom: 55px;
+  }
+
+  .player-traps, .player-mods {
     ion-col button {
       background-color: color($colors, light);
     }

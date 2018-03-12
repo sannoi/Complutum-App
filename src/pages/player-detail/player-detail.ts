@@ -53,6 +53,13 @@ export class PlayerDetailPage {
     modal.present();
   }
 
+  abrirDetallesMod(mod: any) {
+    let modal = this.modalCtrl.create('ModifierDetailPage', { modificador: mod }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
+  }
+
   xpPlayer() {
     var _acumulados = this.configService.xpAcumuladosNivel(this.player.nivel - 1);
     var _necesarios = this.configService.xpRelativosNivel(this.player.nivel);

@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
+import { ItemsServiceProvider } from '../providers/items-service/items-service';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -26,7 +27,8 @@ export class MyApp {
     private alertCtrl: AlertController,
     private configService: ConfigServiceProvider,
     private toastService: ToastServiceProvider,
-    private playerService: PlayerServiceProvider) {
+    private playerService: PlayerServiceProvider,
+    private itemsService: ItemsServiceProvider) {
     this.checkEvents();
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -58,13 +60,50 @@ export class MyApp {
       if (data && data.mascota) {
         if ((this.configService.config.avatares.xp_nueva_mascota > 0 || data.xp_player) && this.playerService.player) {
           var _xp = data.xp_player ? data.xp_player : this.configService.config.avatares.xp_nueva_mascota;
-          this.playerService.addXp(_xp);
-          this.toastService.push('+' + _xp + ' XP ' + this.playerService.player.nombre);
+          this.playerService.addXp(_xp).then(_exp => {
+            this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+          });
+
         }
         let modal = this.modalCtrl.create('FighterDetailPage', { luchador: data.mascota, modal: true, titulo_custom: '¡Has conseguido un ' + data.mascota.nombre + '!' }, {
           enableBackdropDismiss: false
         });
         modal.present();
+      }
+    });
+
+    this.events.subscribe('player:despedir_mascota', (data) => {
+      if (data && data.mascota) {
+        if (this.configService.config.avatares.despedir_mascota.xp > 0 && this.playerService.player) {
+          var _xp = this.configService.config.avatares.despedir_mascota.xp;
+          this.playerService.addXp(_xp).then(_exp => {
+            this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+            if (this.configService.config.avatares.despedir_mascota.monedas > 0) {
+              this.playerService.anadirMonedas(this.configService.config.avatares.despedir_mascota.monedas);
+              if (data.mascota.id_original) {
+                var ref = this.configService.luchadores.find(function(x){
+                  return x.id === data.mascota.id_original;
+                });
+                if (ref && ref.items_despedir && ref.items_despedir.length > 0) {
+                  for (var i = 0; i < ref.items_despedir.length; i++) {
+                    var refItem = this.configService.items.find(function(x){
+                      return x.id === ref.items_despedir[i].id;
+                    });
+
+                    if (refItem) {
+                      var _cantidad = ref.items_despedir[i].cantidad;
+                      this.itemsService.playerAnadirItem(refItem, ref.items_despedir[i].cantidad).then(res1 => {
+                        if (res1) {
+                          this.toastService.push("+" + _cantidad + " " + refItem.nombre);
+                        }
+                      });
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
       }
     });
 
@@ -74,6 +113,10 @@ export class MyApp {
 
     this.events.subscribe('player:monedas_borradas', (data) => {
       this.toastService.push('-' + data.monedas + ' Monedas');
+    });
+
+    this.events.subscribe('player:modificador_anadido', (data) => {
+      this.toastService.push('Has usado el objeto ' + data.modificador.item.nombre);
     });
 
     this.events.subscribe('interfaz:toggle_tabs', () => {

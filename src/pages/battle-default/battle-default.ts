@@ -396,9 +396,10 @@ export class BattleDefaultPage {
         {
           text: 'OK',
           handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana);
-            this.addCoins(this.configService.config.batalla.monedas_gana);
-            this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
+            this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana).then(() => {
+              this.addCoins(this.configService.config.batalla.monedas_gana);
+              this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
+            });
           }
         }
       ]
@@ -418,9 +419,10 @@ export class BattleDefaultPage {
         {
           text: 'Otra vez será',
           handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde);
-            this.addCoins(this.configService.config.batalla.monedas_pierde);
-            this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
+            this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde).then(() => {
+              this.addCoins(this.configService.config.batalla.monedas_pierde);
+              this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
+            });
           }
         }
       ]
@@ -440,9 +442,10 @@ export class BattleDefaultPage {
         {
           text: 'OK',
           handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado);
-            this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
-            this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
+            this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado).then(() => {
+              this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
+              this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
+            });
           }
         }
       ]
@@ -458,20 +461,27 @@ export class BattleDefaultPage {
 
   addXp(xp_avatar: number, xp_player: number) {
     if (xp_player && xp_player > 0) {
-      this.playerService.addXp(xp_player);
-      this.toastService.push('+' + xp_player + ' XP ' + this.playerService.player.nombre);
+      this.playerService.addXp(xp_player).then(_exp => {
+        this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+      });
     }
     if (xp_avatar && xp_avatar > 0) {
-      this.luchador = this.playerService.avatarAddXp(xp_avatar, this.luchador, this.luchador_idx);
-      this.playerService.player.mascotas[this.luchador_idx] = this.luchador;
-      this.toastService.push('+' + xp_avatar + ' XP ' + this.luchador.nombre);
+      this.playerService.avatarAddXp(xp_avatar, this.luchador, this.luchador_idx).then(_exp => {
+        this.luchador = this.playerService.player.mascotas[this.luchador_idx];
+        this.toastService.push('+' + _exp + ' XP ' + this.luchador.nombre);
+      });;
+
     }
     if (xp_player || xp_avatar) {
-      this.playerService.savePlayer();
+      return this.playerService.savePlayer();
     }
+    return new Promise((response, error) => {
+      response(false);
+    });
   }
 
   huir() {
+    this.batalla_iniciada = false;
     this.viewCtrl.dismiss();
   }
 

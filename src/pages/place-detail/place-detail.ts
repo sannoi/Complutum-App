@@ -56,8 +56,9 @@ export class PlaceDetailPage {
       }
       this.sin_items = true;
       if (this.configService.config.sitios.xp_recoger_items > 0) {
-        this.playerService.addXp(this.configService.config.sitios.xp_recoger_items);
-        this.toastService.push('+' + this.configService.config.sitios.xp_recoger_items + ' XP ' + this.playerService.player.nombre);
+        this.playerService.addXp(this.configService.config.sitios.xp_recoger_items).then(_exp => {
+          this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+        });
       }
 
       var este = this;

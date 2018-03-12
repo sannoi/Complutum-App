@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ItemModel } from '../../models/item.model';
 
 @IonicPage()
@@ -14,11 +15,47 @@ export class InventoryPage {
 
   searchbar_visible: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private playerService: PlayerServiceProvider) {
+  constructor(
+    public navCtrl: NavController,
+    public alertCtrl: AlertController,
+    public navParams: NavParams,
+    private playerService: PlayerServiceProvider,
+    private itemsService: ItemsServiceProvider) {
   }
 
   ionViewWillEnter() {
     this.items = this.playerService.player.items;
+  }
+
+  disableItem(item: any) {
+    if (item.tipo != 'modificador') {
+      return 'disabled';
+    } else {
+      return '';
+    }
+  }
+
+  clickItem(item: any) {
+    if (item && item.tipo == "modificador") {
+      let alert = this.alertCtrl.create({
+        title: "Usar Objeto",
+        message: "¿Seguro que quieres usar el objeto " + item.nombre + "?",
+        buttons: [
+          {
+            text: "No",
+            role: "cancel",
+            handler: () => {}
+          },
+          {
+            text: "Sí",
+            handler: () => {
+              this.itemsService.playerUsarItem(item);
+            }
+          }
+        ]
+      });
+      alert.present();
+    }
   }
 
   toggleSearchBar() {

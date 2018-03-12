@@ -2,6 +2,7 @@ import { ConfigServiceProvider } from '../providers/config-service/config-servic
 
 export class AvatarModel {
   public id: string;
+  public id_original: string;
   public nombre: string;
   public icono: string = 'assets/imgs/avatar_default.png';
   public tipo: any;
@@ -27,6 +28,7 @@ export class AvatarModel {
   public parse(avatar: any) {
     let mascota_nueva = new AvatarModel(this.configService);
     mascota_nueva.id = avatar.id;
+    mascota_nueva.id_original = avatar.id_original;
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
     mascota_nueva.tipo = avatar.tipo;
@@ -52,6 +54,7 @@ export class AvatarModel {
   public parse_reference(avatar: any, xp: number) {
     let mascota_nueva = new AvatarModel(this.configService);
     mascota_nueva.id = this.generateId();
+    mascota_nueva.id_original = avatar.id;
     mascota_nueva.nombre = avatar.nombre;
     mascota_nueva.icono = avatar.icono;
     mascota_nueva.tipo = this.configService.encontrarTipo(avatar.tipo);

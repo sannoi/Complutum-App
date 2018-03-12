@@ -68,4 +68,65 @@ export class ItemsServiceProvider {
     });
   }
 
+  playerUsarItem(item: any) {
+    return this.playerService.getPlayer().then(player => {
+      if (player.items && player.items.length > 0 && item.tipo == 'modificador') {
+        var _idx = player.items.indexOf(item);
+
+        if (_idx > -1) {
+          return this.playerBorrarItem(item.id, 1).then(res => {
+            if (res) {
+              return this.iniciarModificador(item).then(resultado => {
+                return resultado;
+              });
+            }
+          });
+        }
+      }
+
+      return false;
+    });
+  }
+
+  iniciarModificador(item: any) {
+    let mod = {
+      id: this.generateId(),
+      item: item,
+      fecha: this.getDateTime(),
+      tiempo_restante: 999
+    };
+    return this.playerService.anadirModificador(mod);
+  }
+
+  generateId() {
+    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 8)).toUpperCase();
+  }
+
+  getDateTime() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = (now.getMonth() + 1).toString();
+    var day = now.getDate().toString();
+    var hour = now.getHours().toString();
+    var minute = now.getMinutes().toString();
+    var second = now.getSeconds().toString();
+    if (month.toString().length == 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length == 1) {
+      day = '0' + day;
+    }
+    if (hour.toString().length == 1) {
+      hour = '0' + hour;
+    }
+    if (minute.toString().length == 1) {
+      minute = '0' + minute;
+    }
+    if (second.toString().length == 1) {
+      second = '0' + second;
+    }
+    var dateTime = year + '/' + month + '/' + day + ' ' + hour + ':' + minute + ':' + second;
+    return dateTime;
+  }
+
 }

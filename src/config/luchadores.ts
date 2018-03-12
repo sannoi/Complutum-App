@@ -137,7 +137,8 @@ export let luchadores = [
       defensa: 165
     },
     ataques: ['chispa','voltiazo'],
-    especiales: ['carga_total','puno_trueno']
+    especiales: ['carga_total','puno_trueno'],
+    items_despedir: [ { id: "medicina-xxl", cantidad: 1 } ]
   },
   {
     id: 'nidoqueen',
@@ -179,7 +180,8 @@ export let luchadores = [
       defensa: 229
     },
     ataques: ['destructor','cabezazo'],
-    especiales: ['hiperrayo','brillo_magico']
+    especiales: ['hiperrayo','brillo_magico'],
+    items_despedir: [ { id: "medicina-xxl", cantidad: 2 } ]
   },
   {
     id: 'mewtwo',
@@ -263,7 +265,8 @@ export let luchadores = [
       defensa: 138
     },
     ataques: ['mirada_cuqui','alarido'],
-    especiales: ['rayo_solar','lluvia_esporas','onda_choque']
+    especiales: ['rayo_solar','lluvia_esporas','onda_choque'],
+    items_despedir: [ { id: "medicina-xxl", cantidad: 2 } ]
   },
   {
     id: 'slaking',

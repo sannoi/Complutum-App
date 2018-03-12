@@ -93,6 +93,13 @@ export class MapaPage {
     alert.present();
   }
 
+  abrirTienda() {
+    let modal = this.modalCtrl.create('ShopPage', { player: this.playerService.player }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
+  }
+
   trampasIniciales() {
     if (this.playerService.player && this.playerService.player.trampas_activas && this.playerService.player.trampas_activas.length > 0) {
       for (var i = 0; i < this.playerService.player.trampas_activas.length; i++) {
@@ -103,7 +110,7 @@ export class MapaPage {
 
   anadirTrampaMapa(trampa: any) {
     if (trampa && trampa.obj && trampa.coordenadas && trampa.avatar && trampa.tiempo_restante) {
-      var _fecha_expiracion = moment(trampa.fecha).add(trampa.obj.propiedades.tiempo, "seconds");
+      var _fecha_expiracion = moment(trampa.fecha).add(trampa.obj.propiedades.tiempo * trampa.multiplicador_tiempo, "seconds");
       var _fecha_actual = moment();
 
       var _timeout = parseInt(_fecha_expiracion.format('X')) - parseInt(_fecha_actual.format('X'));
@@ -138,7 +145,7 @@ export class MapaPage {
           .setLngLat(feature.geometry.coordinates)
           .addTo(this.map);
 
-        var _exp = parseInt(moment(trampa.fecha).add(trampa.obj.propiedades.tiempo, "seconds").format('X'));
+        var _exp = parseInt(moment(trampa.fecha).add(trampa.obj.propiedades.tiempo * trampa.multiplicador_tiempo, "seconds").format('X'));
         var _act = parseInt(moment().format('X'));
         trampa.tiempo_restante=_exp - _act;
 
@@ -453,7 +460,7 @@ export class MapaPage {
       }
 
       this.map.on('load', function() {
-        este.map.addLayer({
+        /*este.map.addLayer({
           'id': '3d-buildings',
           'source': 'composite',
           'source-layer': 'building',
@@ -474,7 +481,7 @@ export class MapaPage {
             ],
             'fill-extrusion-opacity': .2
           }
-        });
+        });*/
 
         este.trampasIniciales();
 

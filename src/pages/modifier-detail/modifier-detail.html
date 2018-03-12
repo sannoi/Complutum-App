@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar color="primary" *ngIf="modificador">
+    <ion-title>{{modificador.item.nombre}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding *ngIf="modificador">
+
+  <div class="modificador-header" text-center>
+    <div class="modificador-img">
+      <img [src]="modificador.item.icono">
+    </div>
+    <h4>{{tiempoRestante()}}</h4>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      {{modificador.item.descripcion}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
+</ion-content>

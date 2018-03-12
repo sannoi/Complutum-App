@@ -79,7 +79,7 @@ export let items = [
     id: "trampa-xl",
     nombre: "Trampa Premium",
     descripcion: "Captura mascotas de nivel alto en 60 minutos",
-    icono: "assets/imgs/items/Item_0401.png",
+    icono: "assets/imgs/items/Item_1201.png",
     tipo: "trampa",
     propiedades: {
       tiempo: 60 * 60,
@@ -101,6 +101,17 @@ export let items = [
       rareza_maxima: 10,
       xp: 2500,
       influye: [ "meteo", "terreno" ]
+    }
+  },
+  {
+    id: "baya-suerte",
+    nombre: "Baya de la Suerte",
+    descripcion: "Consigue el doble de XP durante 30 minutos",
+    icono: "assets/imgs/items/Item_0704.png",
+    tipo: "modificador",
+    propiedades: {
+      tiempo: 30 * 60,
+      xp: "x2"
     }
   }
 ];

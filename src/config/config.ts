@@ -7,7 +7,11 @@ export let config = {
     url_base: 'https://web.mideas.es/mideas_devel',
     url_realtime: '/api/mplay/usuario/usuariosCercanos.json',
     url_statics: '/api/sitios/sitio/realtime.json',
-    url_info_entorno: '/api/mplay/usuario/infoEntorno.json'
+    url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
+    modificadores: {
+      xp_multiplicador: 4,
+      tiempo_trampas_multiplicador: 0.01
+    }
   },
   jugador: {
     xp_inicial: 0,
@@ -23,7 +27,8 @@ export let config = {
       { item: 5, cantidad: 10 },
       { item: 6, cantidad: 5 },
       { item: 7, cantidad: 2 },
-      { item: 8, cantidad: 1 }
+      { item: 8, cantidad: 1 },
+      { item: 9, cantidad: 3 }
     ],
     niveles_xp: AppNiveles.niveles,
     inventario: {
@@ -35,7 +40,11 @@ export let config = {
   },
   avatares: {
     energia_maxima: 100,
-    xp_nueva_mascota: 250
+    xp_nueva_mascota: 250,
+    despedir_mascota: {
+      xp: 25,
+      monedas: 15
+    }
   },
   mapa: {
     mapbox_access_token: 'pk.eyJ1Ijoic2Fubm9pIiwiYSI6ImNpeTgwcnBmeTAwMXgycXI3bTA5ZHZ0MjIifQ.4_oblhduvDc6UKdrdioMMQ',
