@@ -89,6 +89,7 @@ export let config = {
   colores: {
     salud: '#32db64',
     energia: '#488aff',
-    nivel: '#488aff'
+    nivel: '#488aff',
+    danger: '#ff0000'
   }
 };

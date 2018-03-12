@@ -276,21 +276,30 @@ export class MapaPage {
       if (feature.properties.tipo == 'Bot') {
         this.loading = this.loadingCtrl.create();
         this.loading.present();
-        /*var xp = this.getRandomInt(1, this.playerService.player.xp);
-        if (xp <= 0) {
-          xp = 1;
-        }*/
-        this.comenzarBatalla(feature.properties.id, feature.properties.xp, feature.id);
+        this.comenzarBatalla(feature.properties.id, feature.properties.xp, feature.id).then(data => {
+          if (data && data['resultado'] && data['enemigo']) {
+            if (data.resultado && data.resultado == 'ganador' && data.enemigo && data.enemigo.id_marker) {
+              this.borrarMarkerEnemigo(data.enemigo.id_marker);
+            }
+          }
+        });
+        
       } else if (feature.properties.tipo == 'Item') {
         if (feature.properties.obj) {
           feature.properties.obj = JSON.parse(feature.properties.obj);
         }
-        console.log(feature);
-        feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
-        let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
-          enableBackdropDismiss: false
-        });
-        modal.present();
+        if (feature.properties.obj && feature.properties.obj.parametros.tipo == "torneo") {
+            let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature.properties.obj }, {
+              enableBackdropDismiss: false
+            });
+            modal.present();
+        } else {
+          feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
+          let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
+            enableBackdropDismiss: false
+          });
+          modal.present();
+        }
       } else if (feature.properties.tipo == 'Trampa') {
         var trampa = this.markers_trampas.find(function(x) {
           return x.id === feature.id;
@@ -324,15 +333,16 @@ export class MapaPage {
         enableBackdropDismiss: false
       });
       modal.present();
-
-      modal.onDidDismiss(data => {
-        if (data) {
-          if (data.resultado && data.resultado == 'ganador' && data.enemigo && data.enemigo.id_marker) {
-            this.borrarMarkerEnemigo(data.enemigo.id_marker);
-          }
-        }
+      return new Promise((response, error) => {
+        return modal.onDidDismiss(data => {
+          response(data);
+        });
       });
     }
+
+    return new Promise((response, error) => {
+      response(false);
+    });
   }
 
   comprobarDistanciaEnemigos() {

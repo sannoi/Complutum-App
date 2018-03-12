@@ -1,0 +1,63 @@
+<ion-header *ngIf="torneo">
+  <ion-navbar color="primary">
+    <ion-title>{{torneo.nombre}}</ion-title>
+
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">Salir</button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <div class="torneo-header" *ngIf="torneo" text-center>
+    <div class="torneo-img">
+      <img [src]="torneo.imagen" style="max-width: 100%; width: 100px; height: auto;">
+    </div>
+    <div class="torneo-nivel">
+      <h4>Nivel {{torneo.nivel}}</h4>
+      <div class="torneo-nivel-progreso">
+        <progress-bar [progress]="xpTorneo()" [color]="configService.config.colores.danger" [text]="xpNivelText()"></progress-bar>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="torneo-jefes" *ngIf="torneo && torneo.jefes && torneo.jefes.length > 0">
+    <ion-card>
+      <ion-card-header>
+        Jefes del Torneo
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <ion-grid>
+
+        <ion-row justify-content-center align-items-center>
+
+          <ion-col col-4 *ngFor="let jefe of torneo.jefes">
+
+            <ion-card color="primary">
+
+              <ion-card-content>
+
+                <img [src]="jefe.icono">
+
+              </ion-card-content>
+
+            </ion-card>
+
+          </ion-col>
+
+        </ion-row>
+
+      </ion-grid>
+
+    </ion-card-content>
+
+    </ion-card>
+  </div>
+
+</ion-content>
