@@ -190,7 +190,7 @@ export class MapServiceProvider {
   generarPunto(center: any, distance: any) {
     const radius_earth = 6371.01; //kms
 
-    let centre_rads = new Array<any>(center[0] * Math.PI / 180, center[1] * Math.PI / 180);
+    let centre_rads = new Array<any>(this._toRadians(center[0]), this._toRadians(center[1]));
     var lat_rads = (Math.PI / 2) - distance / radius_earth;
     var lng_rads = Math.random() * 2 * Math.PI;
     var x1 = Math.cos(lat_rads) * Math.sin(lng_rads);
