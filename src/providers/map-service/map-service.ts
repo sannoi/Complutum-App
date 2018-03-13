@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Rx';
 import { ConfigServiceProvider } from '../config-service/config-service';
+import { StatsServiceProvider } from '../stats-service/stats-service';
 import { PlayerServiceProvider } from '../player-service/player-service';
 
 @Injectable()
@@ -21,11 +22,26 @@ export class MapServiceProvider {
 
   public entorno: any;
 
-  constructor(public http: HttpClient, public storage: Storage, public events: Events, public configService: ConfigServiceProvider, public playerService: PlayerServiceProvider) { }
+  private _earthRadiusInMeters: number = 6378137;
+
+  constructor(
+    public http: HttpClient,
+    public storage: Storage,
+    public events: Events,
+    public statsService: StatsServiceProvider,
+    public configService: ConfigServiceProvider,
+    public playerService: PlayerServiceProvider) { }
 
   public establecerCoordenadas(coordenadas: any) {
     this.coordenadas = coordenadas;
-    this.storage.set('ultima_posicion', this.coordenadas);
+    this.storage.get("ultima_posicion").then(pos => {
+      if (pos && pos.lat && pos.lng) {
+        var _distancia = this.getDistanciaEnMetros(pos, this.coordenadas);
+        this.statsService.anadirEstadistica('distancia_recorrida', _distancia, 'number');
+      }
+      this.storage.set('ultima_posicion', this.coordenadas);
+    });
+
   }
 
   public iniciarObservableEnemigos() {
@@ -206,5 +222,29 @@ export class MapServiceProvider {
 
     return this.generarPunto(centro, distancia);
   }
+
+  private _getDistance(coord1: any, coord2: any): number {
+        let φ1 = this._toRadians(coord1.lat);
+        let φ2 = this._toRadians(coord2.lat);
+        let Δφ = this._toRadians(coord2.lat - coord1.lat);
+        let Δλ = this._toRadians(coord2.lng - coord1.lng);
+        // a = sin²(Δφ / 2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ / 2)
+        let a = Math.pow(Math.sin(Δφ / 2), 2) +
+                Math.cos(φ1) *
+                Math.cos(φ2) *
+                Math.pow(Math.sin(Δλ / 2), 2);
+        // c = 2 ⋅ atan2(√a, √(1−a))
+        return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    private _toRadians(value: number): number {
+        return value * Math.PI / 180;
+    }
+
+    getDistanciaEnMetros(coord1: any, coord2: any): number {
+        let c = this._getDistance(coord1, coord2);
+        // d = R ⋅ c
+        return this._earthRadiusInMeters * c;
+    }
 
 }
