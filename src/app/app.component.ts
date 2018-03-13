@@ -4,11 +4,14 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
+import { StatsServiceProvider } from '../providers/stats-service/stats-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../providers/items-service/items-service';
 
 import { TabsPage } from '../pages/tabs/tabs';
+
+import * as moment from 'moment';
 
 @Component({
   templateUrl: 'app.html'
@@ -26,6 +29,7 @@ export class MyApp {
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private configService: ConfigServiceProvider,
+    private statsService: StatsServiceProvider,
     private toastService: ToastServiceProvider,
     private playerService: PlayerServiceProvider,
     private itemsService: ItemsServiceProvider) {
@@ -161,6 +165,7 @@ export class MyApp {
         this.playerService.newPlayer(data.player).then(res => {
           if (res) {
             this.playerService.setPlayer(res);
+            this.statsService.anadirEstadistica("fecha_inicio", moment().format(), "date");
             let alert = this.alertCtrl.create({
               title: 'Bienvenida',
               subTitle: '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.',

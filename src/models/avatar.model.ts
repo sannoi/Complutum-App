@@ -17,6 +17,7 @@ export class AvatarModel {
   public propiedades_nivel: { ataque: number, defensa: number, salud: number };
   public ataque: { nombre: string, icono: string, tipo: any, puntos_dano: number, segundos_enfriamiento: number, incremento_energia: number };
   public especial: { nombre: string, icono: string, tipo: any, puntos_dano: number, segundos_enfriamiento: number, gasto_energia: number };
+  public estadisticas: Array<any>;
   public fecha?: string;
   public id_marker?: any;
 
@@ -41,6 +42,7 @@ export class AvatarModel {
     mascota_nueva.nivel = this.configService.nivelXp(avatar.xp);
     mascota_nueva.salud_actual = avatar.salud_actual;
     mascota_nueva.energia = avatar.energia;
+    mascota_nueva.estadisticas = avatar.estadisticas;
     if (avatar.fecha) {
       mascota_nueva.fecha = avatar.fecha;
     } else {
@@ -68,6 +70,7 @@ export class AvatarModel {
     mascota_nueva.especial = this.configService.encontrarAtaque(_especial_id,'fuerte');
     mascota_nueva.nivel = this.configService.nivelXp(xp);
     mascota_nueva.energia = 0;
+    mascota_nueva.estadisticas = new Array<any> ();
     mascota_nueva.fecha = this.getDateTime();
     mascota_nueva.propiedades_nivel = mascota_nueva.calc_propiedades_nivel();
     mascota_nueva.puntos_poder = mascota_nueva.calc_puntos_poder();
@@ -91,6 +94,41 @@ export class AvatarModel {
     var bDefensa = 2 * parseInt(this.propiedades.defensa.toString()) * multiplier;
     var bSalud = 2 * parseInt(this.salud.toString()) * multiplier;
     return Math.max(10, Math.floor( (Math.pow(bSalud, 0.5) * bAtaque * Math.pow(bDefensa, 0.5)) / 40));
+  }
+
+  public anadirEstadistica(clave: string, valor: any, tipo?: string) {
+    if (!tipo) {
+      tipo = 'number';
+    }
+    var _stat = this.estadisticas.find(function(x){
+      return x.clave === clave;
+    });
+    if (_stat) {
+      // La estadistica existe
+      var _idx = this.estadisticas.indexOf(_stat);
+      if (_idx > -1) {
+        if (tipo == 'number') {
+          this.estadisticas[_idx].valor = this.estadisticas[_idx].valor + valor;
+        } else {
+          this.estadisticas[_idx].valor = valor;
+        }
+      }
+    } else {
+      // La estadistica no existe
+      let _new_stat = {
+        clave: clave,
+        valor: valor,
+        tipo: tipo
+      };
+      this.estadisticas.push(_new_stat);
+    }
+  }
+
+  public recuperarEstadistica(clave: string) {
+    var _stat = this.estadisticas.find(function(x){
+      return x.clave === clave;
+    });
+    return _stat;
   }
 
   generateId() {

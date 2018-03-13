@@ -5,6 +5,7 @@ import { NavController, ModalController, LoadingController, Events, AlertControl
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
@@ -41,6 +42,7 @@ export class MapaPage {
     private geolocation: Geolocation,
     private configService: ConfigServiceProvider,
     private playerService: PlayerServiceProvider,
+    private statsService: StatsServiceProvider,
     private mapService: MapServiceProvider,
     private itemsService: ItemsServiceProvider,
     private toastService: ToastServiceProvider) {
@@ -278,8 +280,8 @@ export class MapaPage {
         this.loading.present();
         this.comenzarBatalla(feature.properties.id, feature.properties.xp, feature.id).then(data => {
           if (data && data['resultado'] && data['enemigo']) {
-            if (data.resultado && data.resultado == 'ganador' && data.enemigo && data.enemigo.id_marker) {
-              this.borrarMarkerEnemigo(data.enemigo.id_marker);
+            if (data['resultado'] && data['resultado'] == 'ganador' && data['enemigo'] && data['enemigo'].id_marker) {
+              this.borrarMarkerEnemigo(data['enemigo'].id_marker);
             }
           }
         });
@@ -335,6 +337,26 @@ export class MapaPage {
       modal.present();
       return new Promise((response, error) => {
         return modal.onDidDismiss(data => {
+          if (data && data['resultado'] && data['luchador']) {
+            var _luchador = this.playerService.player.mascotas.find(function(x){
+              return x.id === data['luchador'].id;
+            });
+            var _idx_luchador = this.playerService.player.mascotas.indexOf(_luchador);
+            if (data['resultado'] == 'ganador') {
+              if (_idx_luchador > -1) {
+                this.playerService.player.mascotas[_idx_luchador].anadirEstadistica('batallas_ganadas', 1, 'number');
+                this.playerService.savePlayer();
+              }
+              this.statsService.anadirEstadistica('batallas_ganadas', 1, 'number');
+              this.statsService.anadirEstadistica(data['enemigo']['id_original'] + '_derrotados', 1, 'number')
+            } else if (data['resultado'] == 'perdedor') {
+              if (_idx_luchador > -1) {
+                this.playerService.player.mascotas[_idx_luchador].anadirEstadistica('batallas_perdidas', 1, 'number');
+                this.playerService.savePlayer();
+              }
+              this.statsService.anadirEstadistica('batallas_perdidas', 1, 'number');
+            }
+          }
           response(data);
         });
       });

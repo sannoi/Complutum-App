@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ConfigServiceProvider } from '../config-service/config-service';
+import { StatsServiceProvider } from '../stats-service/stats-service';
 import { PlayerServiceProvider } from '../player-service/player-service';
 import { ItemModel } from '../../models/item.model';
 
 @Injectable()
 export class ItemsServiceProvider {
 
-  constructor(private playerService: PlayerServiceProvider, private configService: ConfigServiceProvider) { }
+  constructor(private playerService: PlayerServiceProvider, private statsService: StatsServiceProvider, private configService: ConfigServiceProvider) { }
 
   playerAnadirItem(item: any, cantidad: number) {
     return this.playerService.getPlayer().then(player => {
@@ -41,6 +42,9 @@ export class ItemsServiceProvider {
         this.playerService.savePlayer();
       }
 
+      this.statsService.anadirEstadistica('items_conseguidos', cantidad, 'number');
+      this.statsService.anadirEstadistica(item.id + '_items_conseguidos', cantidad, 'number');
+
       return true;
     });
   }
@@ -61,6 +65,8 @@ export class ItemsServiceProvider {
             this.playerService.player.items[_idx_item].cantidad -= cantidad;
           }
           this.playerService.savePlayer();
+          this.statsService.anadirEstadistica('items_gastados', cantidad, 'number');
+          this.statsService.anadirEstadistica(id_item + '_items_gastados', cantidad, 'number');
           return true;
         }
       }

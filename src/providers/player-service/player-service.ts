@@ -5,6 +5,7 @@ import { PlayerModel } from '../../models/player.model';
 import { AvatarModel } from '../../models/avatar.model';
 import { ItemModel } from '../../models/item.model';
 import { ConfigServiceProvider } from '../config-service/config-service';
+import { StatsServiceProvider } from '../stats-service/stats-service';
 import * as moment from 'moment';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class PlayerServiceProvider {
 
   private modificadores: Array<any>;
 
-  constructor(private storage: Storage, public platform: Platform, public events: Events, private configService: ConfigServiceProvider) {
+  constructor(private storage: Storage, public platform: Platform, public events: Events, private configService: ConfigServiceProvider, private statsService: StatsServiceProvider) {
     this.modificadores = new Array<any>();
 
     this.platform.ready().then(() => {
@@ -88,7 +89,6 @@ export class PlayerServiceProvider {
         if (_m.item.propiedades.xp.substr(0,1) == "x") {
           var _multiplier = parseInt(_m.item.propiedades.xp.substr(1));
           _val = _val * _multiplier;
-          console.log(_val);
         }
       }
     }
@@ -191,6 +191,7 @@ export class PlayerServiceProvider {
   anadirMonedas(monedas: number) {
     if (this.player) {
       this.player.monedas += monedas;
+      this.statsService.anadirEstadistica('monedas_conseguidas', monedas, 'number');
       this.events.publish('player:monedas_anadidas', { monedas: monedas });
     }
   }
@@ -200,6 +201,7 @@ export class PlayerServiceProvider {
       if (monedas > 0 && this.player && this.player.monedas >= monedas) {
         this.player.monedas -= monedas;
         this.savePlayer();
+        this.statsService.anadirEstadistica('monedas_gastadas', monedas, 'number');
         this.events.publish('player:monedas_borradas', { monedas: monedas });
         response(true);
       } else {
@@ -219,6 +221,9 @@ export class PlayerServiceProvider {
         this.player.mascotas.push(mascota_nueva);
         this.savePlayer();
       }
+      mascota_nueva.anadirEstadistica('fecha_captura', moment().format(), 'date');
+      this.statsService.anadirEstadistica('mascotas_conseguidas', 1, 'number');
+      this.statsService.anadirEstadistica(id_avatar + '_mascotas_conseguidas', 1, 'number');
       this.events.publish("player:nueva_mascota", { mascota: mascota_nueva, xp_player: xp_player });
     }
   }
@@ -226,9 +231,12 @@ export class PlayerServiceProvider {
   borrarMascota(id: any) {
     return new Promise((response,error) => {
       if (id > -1 && this.player.mascotas[id]) {
+        var _id_mascota = this.player.mascotas[id].id_original;
         this.events.publish("player:despedir_mascota", { mascota: this.player.mascotas[id] });
         this.player.mascotas.splice(id, 1);
         this.savePlayer();
+        this.statsService.anadirEstadistica('mascotas_despedidas', 1, 'number');
+        this.statsService.anadirEstadistica(_id_mascota + '_mascotas_despedidas', 1, 'number');
         response(true);
       } else {
         response(false);
@@ -271,6 +279,8 @@ export class PlayerServiceProvider {
         multiplicador_tiempo: this.configService.config.juego.modificadores.tiempo_trampas_multiplicador
       };
       this.player.trampas_activas.push(trampa_plantada);
+      this.statsService.anadirEstadistica('trampas_plantadas', 1, 'number');
+      this.statsService.anadirEstadistica(trampa.id + '__trampas_plantadas', 1, 'number');
       this.events.publish("player:trampa_plantada", { trampa: trampa_plantada });
 
       return new Promise((response, error) => {
@@ -286,6 +296,8 @@ export class PlayerServiceProvider {
   anadirModificador(modificador: any) {
     if (modificador && modificador.item && modificador.fecha) {
       return this.nuevoModificador(modificador).then(mod => {
+        this.statsService.anadirEstadistica('modificadores_usados', 1, 'number');
+        this.statsService.anadirEstadistica(modificador.item.id + '_mod_usado', 1, 'number');
         this.events.publish("player:modificador_anadido", { modificador: modificador });
         return modificador;
       });
@@ -404,6 +416,8 @@ export class PlayerServiceProvider {
           let item_nuevo = new ItemModel();
           item_nuevo = item_nuevo.parse_reference(this.configService.items[idx],cantidad);
           items_iniciales.push(item_nuevo);
+          this.statsService.anadirEstadistica('items_conseguidos', cantidad, 'number');
+          this.statsService.anadirEstadistica(item_nuevo.id + '_items_conseguidos', cantidad, 'number');
         }
       }
     }
