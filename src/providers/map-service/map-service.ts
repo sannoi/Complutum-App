@@ -23,6 +23,7 @@ export class MapServiceProvider {
   public entorno: any;
 
   private _earthRadiusInMeters: number = 6378137;
+  private _earthRadiusInKilometers: number = 6371.01;
 
   constructor(
     public http: HttpClient,
@@ -188,10 +189,8 @@ export class MapServiceProvider {
   }
 
   generarPunto(center: any, distance: any) {
-    const radius_earth = 6371.01; //kms
-
     let centre_rads = new Array<any>(this._toRadians(center[0]), this._toRadians(center[1]));
-    var lat_rads = (Math.PI / 2) - distance / radius_earth;
+    var lat_rads = (Math.PI / 2) - distance / this._earthRadiusInKilometers;
     var lng_rads = Math.random() * 2 * Math.PI;
     var x1 = Math.cos(lat_rads) * Math.sin(lng_rads);
     var y1 = Math.cos(lat_rads) * Math.cos(lng_rads);
@@ -245,6 +244,12 @@ export class MapServiceProvider {
         let c = this._getDistance(coord1, coord2);
         // d = R ⋅ c
         return this._earthRadiusInMeters * c;
+    }
+
+    getDistanciaEnKilometros(coord1: any, coord2: any): number {
+        let c = this._getDistance(coord1, coord2);
+        // d = R ⋅ c
+        return this._earthRadiusInKilometers * c;
     }
 
 }
