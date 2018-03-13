@@ -283,7 +283,7 @@ export class MapaPage {
             }
           }
         });
-        
+
       } else if (feature.properties.tipo == 'Item') {
         if (feature.properties.obj) {
           feature.properties.obj = JSON.parse(feature.properties.obj);
@@ -521,7 +521,8 @@ export class MapaPage {
             "layout": {
               "icon-image": "sitio",
               "icon-size": 0.3
-            }
+            },
+            "filter": ["==", "tipo", "Item"]
           });
 
           // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.

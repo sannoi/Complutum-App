@@ -9,7 +9,6 @@
   </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
 
   <div class="torneo-header" *ngIf="torneo" text-center>
@@ -30,34 +29,40 @@
       <ion-card-header>
         Jefes del Torneo
     </ion-card-header>
-
-    <ion-card-content>
-
       <ion-grid>
-
         <ion-row justify-content-center align-items-center>
-
-          <ion-col col-4 *ngFor="let jefe of torneo.jefes">
-
-            <ion-card color="primary">
-
+          <ion-col col-4 *ngFor="let jefe of torneo.jefes" no-padding>
+            <ion-card color="primary" text-center no-margin>
               <ion-card-content>
-
                 <img [src]="jefe.icono">
-
+                <h6><b>{{jefe.nombre}}</b></h6>
+                <p><small>N. {{jefe.nivel}}</small></p>
               </ion-card-content>
-
             </ion-card>
-
           </ion-col>
-
         </ion-row>
-
       </ion-grid>
-
-    </ion-card-content>
-
     </ion-card>
   </div>
 
+  <div class="torneo-contrincantes" *ngIf="torneo && torneo.enemigos && torneo.enemigos.length > 0">
+    <ion-card>
+      <ion-card-header>
+        Contrincantes del Torneo
+    </ion-card-header>
+      <ion-grid>
+        <ion-row justify-content-center align-items-center>
+          <ion-col col-3 *ngFor="let enemigo of torneo.enemigos" no-padding>
+            <ion-card color="secondary" text-center no-margin>
+              <ion-card-content>
+                <img [src]="enemigo.icono">
+                <h6><b>{{enemigo.nombre}}</b></h6>
+                <p><small>N. {{enemigo.nivel}}</small></p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
 </ion-content>
