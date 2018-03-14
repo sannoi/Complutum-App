@@ -14,6 +14,7 @@ import * as moment from 'moment';
 export class PlayerDetailPage {
 
   player: PlayerModel;
+  stats: any;
 
   constructor(
     public navCtrl: NavController,
@@ -26,6 +27,9 @@ export class PlayerDetailPage {
 
   ionViewDidLoad() {
     this.player = this.playerService.player;
+    this.statsService.cargarEstadisticas().then(data => {
+      this.stats = data;
+    });
   }
 
   tiempoRestante(tiempo: any) {
@@ -76,8 +80,14 @@ export class PlayerDetailPage {
   }
 
   estadistica(clave: any) {
-    var _stat = this.statsService.recuperarEstadistica(clave);
-    return _stat.valor;
+    var _stat = this.stats.find(function(x){
+      return x.clave === clave;
+    });
+    if (_stat) {
+      return _stat.valor;
+    } else {
+      return { clave: clave, valor: 0 };
+    }
   }
 
   dismiss() {

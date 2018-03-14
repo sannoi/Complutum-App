@@ -7,12 +7,17 @@ export class StatsServiceProvider {
   stats: any;
 
   constructor(public storage: Storage) {
-    storage.get("estadisticas").then(data => {
+    this.cargarEstadisticas();
+  }
+
+  cargarEstadisticas() {
+    return this.storage.get("estadisticas").then(data => {
       if (data) {
         this.stats = data;
       } else {
         this.stats = new Array<any> ();
       }
+      return this.stats;
     });
   }
 
