@@ -66,6 +66,41 @@
     </ion-card>
   </div>
 
+  <div class="player-stats">
+    <ion-card>
+      <ion-card-header>
+        Estadísticas
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-4 text-center>
+              <ion-card color="light">
+                <ion-icon name="globe"></ion-icon>
+                <h4>{{estadistica('distancia_recorrida')/1000 | number : '1.1-1'}} Kms.</h4>
+                <p><small>Distancia recorrida</small></p>
+              </ion-card>
+            </ion-col>
+            <ion-col col-4 text-center>
+              <ion-card color="light">
+                <ion-icon name="trophy"></ion-icon>
+                <h4>{{estadistica('batallas_ganadas') | number : '1.0-0'}}</h4>
+                <p><small>Combates ganados</small></p>
+              </ion-card>
+            </ion-col>
+            <ion-col col-4 text-center>
+              <ion-card color="light">
+                <ion-icon name="podium"></ion-icon>
+                <h4>0</h4>
+                <p><small>Torneos ganados</small></p>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <ion-fab bottom center>
     <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
   </ion-fab>

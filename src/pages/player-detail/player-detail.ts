@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ViewController, ModalController } 
 import { PlayerModel } from '../../models/player.model';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import * as moment from 'moment';
 
 @IonicPage()
@@ -19,6 +20,7 @@ export class PlayerDetailPage {
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
     public navParams: NavParams,
+    public statsService: StatsServiceProvider,
     public playerService: PlayerServiceProvider,
     public configService: ConfigServiceProvider) { }
 
@@ -71,6 +73,11 @@ export class PlayerDetailPage {
     var _necesarios = this.configService.xpRelativosNivel(this.player.nivel);
 
     return (this.player.xp - _acumulados).toString() + '/' + _necesarios.toString();
+  }
+
+  estadistica(clave: any) {
+    var _stat = this.statsService.recuperarEstadistica(clave);
+    return _stat.valor;
   }
 
   dismiss() {

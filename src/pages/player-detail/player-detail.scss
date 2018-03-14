@@ -13,11 +13,11 @@ page-player-detail {
     margin-right: auto;
   }
 
-  .player-mods {
+  .player-stats {
     padding-bottom: 55px;
   }
 
-  .player-traps, .player-mods {
+  .player-traps, .player-mods, .player-stats {
     ion-col button {
       background-color: color($colors, light);
     }
@@ -32,6 +32,12 @@ page-player-detail {
     ion-col p {
       margin-top: 0.5rem;
       margin-bottom: 1rem;
+    }
+    ion-icon {
+      font-size: 4rem;
+    }
+    ion-col ion-card {
+      padding-top: 15px;
     }
   }
 }
