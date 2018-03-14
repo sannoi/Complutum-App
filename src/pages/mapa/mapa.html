@@ -13,4 +13,7 @@
 <ion-fab right bottom *ngIf="mapService.entorno">
   <button ion-fab mini color="light" (click)="mostrarMeteo()"><img [src]="mapService.entorno.icono"><div class="label">Entorno</div></button>
 </ion-fab>
+<ion-fab center bottom *ngIf="mapService.velocidad > -1">
+  <button ion-fab color="dark"><div class="big">{{mapService.velocidad | number : '1.0-0'}}</div><div class="label">Km/h</div></button>
+</ion-fab>
 </ion-content>

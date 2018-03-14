@@ -65,6 +65,11 @@ export let config = {
       color: '#dddbd7',
       opacidad: 0.4
     },
+    config_gps: {
+      frequency: 3000,
+      enableHighAccuracy: true
+    },
+    limite_velocidad: 65,
     tiempo_refresco_entorno: 30,
     tiempo_aparicion_enemigos: 15,
     tiempo_desaparicion_enemigos: 45,

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Rx';
 import { ConfigServiceProvider } from '../config-service/config-service';
 import { StatsServiceProvider } from '../stats-service/stats-service';
 import { PlayerServiceProvider } from '../player-service/player-service';
+import * as moment from 'moment';
 
 @Injectable()
 export class MapServiceProvider {
@@ -16,6 +17,7 @@ export class MapServiceProvider {
   suscripcion: any;
 
   public coordenadas: any;
+  public velocidad: any;
 
   origen_entorno: any;
   suscripcion_entorno: any;
@@ -38,7 +40,14 @@ export class MapServiceProvider {
     this.storage.get("ultima_posicion").then(pos => {
       if (pos && pos.lat && pos.lng) {
         var _distancia = this.getDistanciaEnMetros(pos, this.coordenadas);
-        this.statsService.anadirEstadistica('distancia_recorrida', _distancia, 'number');
+        var _velocidad_ms = _distancia / (this.configService.config.mapa.config_gps.frequency / 1000);
+        this.velocidad = _velocidad_ms * 3.6;
+        console.log(this.velocidad, _distancia);
+        if (this.velocidad > this.configService.config.mapa.limite_velocidad) {
+          this.events.publish("player:limite_velocidad_alcanzado", { velocidad: this.velocidad });
+        } else {
+          this.statsService.anadirEstadistica('distancia_recorrida', _distancia, 'number');
+        }
       }
       this.storage.set('ultima_posicion', this.coordenadas);
     });

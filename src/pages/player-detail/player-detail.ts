@@ -86,7 +86,7 @@ export class PlayerDetailPage {
     if (_stat) {
       return _stat.valor;
     } else {
-      return { clave: clave, valor: 0 };
+      return 0;
     }
   }
 

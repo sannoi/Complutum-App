@@ -21,6 +21,8 @@ export class MyApp {
 
   tabs_visible: boolean = true;
 
+  private velocidad_notificada: boolean = false;
+
   constructor(
     platform: Platform,
     statusBar: StatusBar,
@@ -109,6 +111,27 @@ export class MyApp {
           });
         }
       }
+    });
+
+    this.events.subscribe('player:limite_velocidad_alcanzado', (data) => {
+      if (data && data['velocidad'] && !this.velocidad_notificada) {
+        this.velocidad_notificada = true;
+        let alert = this.alertCtrl.create({
+          title: "Demasiado rápido",
+          message: "Vas demasiado rápido y no es recomendable jugar mientras conduces.",
+          buttons: [{
+            text: "Soy el copiloto",
+            handler: () => {
+              var este = this;
+              setTimeout(function(){
+                este.velocidad_notificada = false;
+              }, 10 * 60 * 1000)
+            }
+          }]
+        });
+        alert.present();
+      }
+
     });
 
     this.events.subscribe('player:monedas_anadidas', (data) => {

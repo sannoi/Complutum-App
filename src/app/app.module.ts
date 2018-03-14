@@ -12,6 +12,7 @@ import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { FightersListPage } from '../pages/fighters-list/fighters-list';
 import { MapaPage } from '../pages/mapa/mapa';
+import { SettingsPage } from '../pages/settings/settings';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -35,6 +36,7 @@ import { StatsServiceProvider } from '../providers/stats-service/stats-service';
     InventoryPage,
     FightersListPage,
     MapaPage,
+    SettingsPage,
     TabsPage
   ],
   imports: [
@@ -55,6 +57,7 @@ import { StatsServiceProvider } from '../providers/stats-service/stats-service';
     InventoryPage,
     FightersListPage,
     MapaPage,
+    SettingsPage,
     TabsPage
   ],
   providers: [

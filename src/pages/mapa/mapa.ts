@@ -568,12 +568,12 @@ export class MapaPage {
       this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
 
       /*Initializing geolocation*/
-      let options = {
+      /*let options = {
         frequency: 3000,
         enableHighAccuracy: true
-      };
+      };*/
 
-      let watch = this.geolocation.watchPosition(options);
+      let watch = this.geolocation.watchPosition(this.configService.config.mapa.config_gps);
       watch.subscribe((position: Geoposition) => {
         if (position && position.coords) {
           this.Coordinates = position.coords;
