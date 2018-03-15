@@ -8,36 +8,15 @@ import { SettingsServiceProvider } from '../../providers/settings-service/settin
 })
 export class SettingsPage {
 
-  settings: {
-    interfaz: {
-      velocimetro: boolean,
-      entorno: boolean
-    },
-    mapa: {
-      estilo: string
-    }
-  };
+  settings: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public settingsService: SettingsServiceProvider) {
     this.settingsService.getSettings().then(val => {
-      if (!val || !val.interfaz || !val.mapa) {
-        this.settings = {
-          interfaz: {
-            velocimetro: false,
-            entorno: false
-          },
-          mapa: {
-            estilo: 'mapbox/streets-v10'
-          }
-        };
-        this.settingsService.setOpcion("interfaz", this.settings.interfaz);
-      } else {
         this.settings = val;
-      }
     });
   }
 
-  toggleInterfaz() {
+  changeInterfaz() {
     this.settingsService.setOpcion("interfaz", this.settings.interfaz);
   }
 

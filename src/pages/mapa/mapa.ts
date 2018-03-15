@@ -38,6 +38,7 @@ export class MapaPage {
 
   private intervalo: any;
   private estilo_actual: any;
+  private edificios_visibles: any;
 
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -64,7 +65,8 @@ export class MapaPage {
       if (this.map && this.estilo_actual != this.settings.mapa.estilo) {
         this.estilo_actual = this.settings.mapa.estilo;
         this.map.setStyle('mapbox://styles/' + this.settings.mapa.estilo);
-        this.realtime();
+      } else if (this.map && this.edificios_visibles != this.settings.mapa.edificios) {
+        this.edificios();
       }
     });
   }
@@ -491,49 +493,89 @@ export class MapaPage {
   }
 
   realtime() {
-    if (this.map) {
+    if (this.map && !this.map.hasImage('sitio') && !this.map.getSource('drone')) {
       var este = this;
+      var _loaded = false;
 
       if (this.intervalo) {
         clearInterval(this.intervalo);
+        _loaded = true;
       }
 
       this.intervalo = window.setInterval(function() {
-        este.map.getSource('drone').setData(este.url_statics);
+        var _source = este.map.getSource('drone');
+        if (_source) {
+          _source.setData(este.url_statics);
+        }
       }, 10000);
 
       this.map.loadImage('assets/imgs/places/specialbox.png', function(error, image) {
         if (error) throw error;
-        este.map.addImage('sitio', image);
+        if (!este.map.hasImage('sitio') && !este.map.getSource('drone')) {
+          este.map.addImage('sitio', image);
 
-        este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
-        este.map.addLayer({
-          "id": "drone",
-          "type": "symbol",
-          "source": "drone",
-          "layout": {
-            "icon-image": "sitio",
-            "icon-size": 0.3
-          },
-          "filter": ["==", "tipo", "Item"]
-        });
+          este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
+          este.map.addLayer({
+            "id": "drone",
+            "type": "symbol",
+            "source": "drone",
+            "layout": {
+              "icon-image": "sitio",
+              "icon-size": 0.3
+            },
+            "filter": ["==", "tipo", "Item"]
+          });
 
-        // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
-        este.map.on('click', 'drone', function(e) {
-          este.map.flyTo({ center: e.features[0].geometry.coordinates });
-          este.abrirFeature(e.features[0]);
-        });
+          if (!_loaded) {
+            // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+            este.map.on('click', 'drone', function(e) {
+              este.map.flyTo({ center: e.features[0].geometry.coordinates });
+              este.abrirFeature(e.features[0]);
+              return false;
+            });
 
-        // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-        este.map.on('mouseenter', 'drone', function() {
-          este.map.getCanvas().style.cursor = 'pointer';
-        });
+            // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+            este.map.on('mouseenter', 'drone', function() {
+              este.map.getCanvas().style.cursor = 'pointer';
+            });
 
-        // Change it back to a pointer when it leaves.
-        este.map.on('mouseleave', 'drone', function() {
-          este.map.getCanvas().style.cursor = '';
-        });
+            // Change it back to a pointer when it leaves.
+            este.map.on('mouseleave', 'drone', function() {
+              este.map.getCanvas().style.cursor = '';
+            });
+          }
+        }
       });
+
+    }
+  }
+
+  edificios() {
+    if (this.configService.config.mapa.edificios.activo && this.settings.mapa.edificios && !this.map.getLayer('3d-buildings')) {
+      this.map.addLayer({
+        'id': '3d-buildings',
+        'source': 'composite',
+        'source-layer': 'building',
+        'filter': ['==', 'extrude', 'true'],
+        'type': 'fill-extrusion',
+        'minzoom': this.configService.config.mapa.edificios.zoom_minimo,
+        'paint': {
+          'fill-extrusion-color': this.configService.config.mapa.edificios.color,
+          'fill-extrusion-height': [
+            "interpolate", ["linear"], ["zoom"],
+            this.configService.config.mapa.edificios.zoom_minimo, 0,
+            (this.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "height"]
+          ],
+          'fill-extrusion-base': [
+            "interpolate", ["linear"], ["zoom"],
+            this.configService.config.mapa.edificios.zoom_minimo, 0,
+            (this.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "min_height"]
+          ],
+          'fill-extrusion-opacity': this.configService.config.mapa.edificios.opacidad
+        }
+      });
+    } else if (this.map.getLayer('3d-buildings')) {
+      this.map.removeLayer('3d-buildings');
     }
   }
 
@@ -541,6 +583,7 @@ export class MapaPage {
     /*Initializing Map*/
     if (!this.map) {
       mapboxgl.accessToken = this.configService.config.mapa.mapbox_access_token;
+      this.estilo_actual = this.settings.mapa.estilo;
       this.map = new mapboxgl.Map({
         //style: 'mapbox://styles/' + this.configService.config.mapa.mapbox_estilo,
         style: 'mapbox://styles/' + this.settings.mapa.estilo,
@@ -569,43 +612,27 @@ export class MapaPage {
       }
 
       this.map.on('load', function() {
-        if (este.configService.config.mapa.edificios.activo) {
-          este.map.addLayer({
-            'id': '3d-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': este.configService.config.mapa.edificios.zoom_minimo,
-            'paint': {
-              'fill-extrusion-color': este.configService.config.mapa.edificios.color,
-              'fill-extrusion-height': [
-                "interpolate", ["linear"], ["zoom"],
-                este.configService.config.mapa.edificios.zoom_minimo, 0,
-                (este.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "height"]
-              ],
-              'fill-extrusion-base': [
-                "interpolate", ["linear"], ["zoom"],
-                este.configService.config.mapa.edificios.zoom_minimo, 0,
-                (este.configService.config.mapa.edificios.zoom_minimo + 0.05), ["get", "min_height"]
-              ],
-              'fill-extrusion-opacity': este.configService.config.mapa.edificios.opacidad
-            }
-          });
-        }
-
+        este.edificios();
         este.trampasIniciales();
-
         este.realtime();
-
       });
-      this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
 
-      /*Initializing geolocation*/
-      /*let options = {
-        frequency: 3000,
-        enableHighAccuracy: true
-      };*/
+      var loadSource = ()=>{
+        if (este.map.isStyleLoaded()) {
+          este.edificios();
+          este.realtime();
+          este.map.off('data', loadSource);
+        }
+      }
+
+      this.map.on('styledataloading', function(styledata) {
+        console.log("style map loaded!",styledata);
+        este.map.on('data', loadSource);
+      });
+
+      this.map.on('data', loadSource);
+
+      this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
 
       let watch = this.geolocation.watchPosition(this.configService.config.mapa.config_gps);
       watch.subscribe((position: Geoposition) => {

@@ -12,12 +12,12 @@
     <ion-item>
       <ion-icon name="speedometer" item-start color="dark"></ion-icon>
       <ion-label>Velocímetro</ion-label>
-      <ion-toggle color="secondary" [(ngModel)]="settings.interfaz.velocimetro" (ionChange)="toggleInterfaz()"></ion-toggle>
+      <ion-toggle color="secondary" [(ngModel)]="settings.interfaz.velocimetro" (ionChange)="changeInterfaz()"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-icon name="sunny" item-start color="secondary"></ion-icon>
       <ion-label>Entorno</ion-label>
-      <ion-toggle color="secondary" [(ngModel)]="settings.interfaz.entorno" (ionChange)="toggleInterfaz()"></ion-toggle>
+      <ion-toggle color="secondary" [(ngModel)]="settings.interfaz.entorno" (ionChange)="changeInterfaz()"></ion-toggle>
     </ion-item>
   </ion-list>
   <ion-list *ngIf="settings && settings.mapa">
@@ -33,6 +33,11 @@
         <ion-option value="mapbox/dark-v9">Oscuro</ion-option>
         <ion-option value="mapbox/satellite-v9">Satélite</ion-option>
       </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-icon name="home" item-start color="danger"></ion-icon>
+      <ion-label>Edificios 3D</ion-label>
+      <ion-toggle color="secondary" [(ngModel)]="settings.mapa.edificios" (ionChange)="changeMapa()"></ion-toggle>
     </ion-item>
   </ion-list>
 </ion-content>

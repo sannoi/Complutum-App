@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import * as AppDefaultSettings from '../../config/settings.default';
 
 @Injectable()
 export class SettingsServiceProvider {
@@ -16,15 +17,7 @@ export class SettingsServiceProvider {
         this.settings = data;
         return data;
       } else {
-        this.settings = {
-          interfaz: {
-            velocimetro: false,
-            entorno: false
-          },
-          mapa: {
-            estilo: 'mapbox/streets-v10'
-          }
-        };
+        this.settings = AppDefaultSettings.settings;
         this.storage.set("settings", this.settings);
         return this.settings;
       }

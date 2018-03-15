@@ -65,4 +65,10 @@
       </ion-grid>
     </ion-card>
   </div>
+  <ion-fab right bottom #fab>
+    <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="secondary" [disabled]="!torneo || torneo.distancia > configService.config.mapa.radio_interaccion" (click)="fab.close();comenzarTorneo()"><ion-icon name="flash"></ion-icon><div class="label">Luchar</div></button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
