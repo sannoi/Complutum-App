@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { MapServiceProvider } from '../../providers/map-service/map-service';
@@ -33,6 +34,8 @@ export class MapaPage {
 
   loading: any;
 
+  settings: any;
+
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
@@ -40,6 +43,7 @@ export class MapaPage {
     public storage: Storage,
     public events: Events,
     private geolocation: Geolocation,
+    private settingsService: SettingsServiceProvider,
     private configService: ConfigServiceProvider,
     private playerService: PlayerServiceProvider,
     private statsService: StatsServiceProvider,
@@ -49,6 +53,12 @@ export class MapaPage {
     this.markers_enemigos = new Array<any>();
     this.markers_trampas = new Array<any>();
     this.checkEvents();
+  }
+
+  ionViewWillEnter() {
+    this.settingsService.getSettings().then(data => {
+      this.settings = data;
+    });
   }
 
   ionViewDidLoad() {

@@ -26,6 +26,7 @@ import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { ItemsServiceProvider } from '../providers/items-service/items-service';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 import { StatsServiceProvider } from '../providers/stats-service/stats-service';
+import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { StatsServiceProvider } from '../providers/stats-service/stats-service';
     ToastServiceProvider,
     ItemsServiceProvider,
     MapServiceProvider,
-    StatsServiceProvider
+    StatsServiceProvider,
+    SettingsServiceProvider
   ]
 })
 export class AppModule {}

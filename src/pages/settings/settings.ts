@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 
 @Component({
   selector: 'page-settings',
@@ -10,32 +10,29 @@ export class SettingsPage {
 
   settings: {
     interfaz: {
-      velocimetro: boolean
+      velocimetro: boolean,
+      entorno: boolean
     }
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public configService: ConfigServiceProvider) {
-    this.settings = {
-      interfaz: {
-        velocimetro: false
-      }
-    };
-    /*this.configService.getSettings().then(val => {
-      if (!val) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public settingsService: SettingsServiceProvider) {
+    this.settingsService.getSettings().then(val => {
+      if (!val || !val.interfaz) {
         this.settings = {
           interfaz: {
-            velocimetro: false
+            velocimetro: false,
+            entorno: false
           }
         };
+        this.settingsService.setOpcion("interfaz", this.settings.interfaz);
       } else {
         this.settings = val;
       }
-    });*/
+    });
   }
 
-  toggleVelocidad() {
-    console.log(this.settings);
-    //this.configService.setOpcion("interfaz.velocimetro", this.velocimetro);
+  toggleInterfaz() {
+    this.settingsService.setOpcion("interfaz", this.settings.interfaz);
   }
 
   ionViewDidLoad() {
