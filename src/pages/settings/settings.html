@@ -20,4 +20,19 @@
       <ion-toggle color="secondary" [(ngModel)]="settings.interfaz.entorno" (ionChange)="toggleInterfaz()"></ion-toggle>
     </ion-item>
   </ion-list>
+  <ion-list *ngIf="settings && settings.mapa">
+    <ion-list-header>Mapa</ion-list-header>
+    <ion-item>
+      <ion-icon name="map" item-start color="primary"></ion-icon>
+      <ion-label>Estilo</ion-label>
+      <ion-select [(ngModel)]="settings.mapa.estilo" (ionChange)="changeMapa()">
+        <ion-option value="mapbox/streets-v10">Por defecto</ion-option>
+        <ion-option value="mapbox/basic-v9">Básico</ion-option>
+        <ion-option value="mapbox/bright-v9">Claro</ion-option>
+        <ion-option value="mapbox/light-v9">Ligero</ion-option>
+        <ion-option value="mapbox/dark-v9">Oscuro</ion-option>
+        <ion-option value="mapbox/satellite-v9">Satélite</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
 </ion-content>

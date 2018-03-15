@@ -16,7 +16,16 @@ export class SettingsServiceProvider {
         this.settings = data;
         return data;
       } else {
-        this.settings = {};
+        this.settings = {
+          interfaz: {
+            velocimetro: false,
+            entorno: false
+          },
+          mapa: {
+            estilo: 'mapbox/streets-v10'
+          }
+        };
+        this.storage.set("settings", this.settings);
         return this.settings;
       }
     });

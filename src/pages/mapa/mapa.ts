@@ -36,6 +36,9 @@ export class MapaPage {
 
   settings: any;
 
+  private intervalo: any;
+  private estilo_actual: any;
+
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
@@ -58,6 +61,11 @@ export class MapaPage {
   ionViewWillEnter() {
     this.settingsService.getSettings().then(data => {
       this.settings = data;
+      if (this.map && this.estilo_actual != this.settings.mapa.estilo) {
+        this.estilo_actual = this.settings.mapa.estilo;
+        this.map.setStyle('mapbox://styles/' + this.settings.mapa.estilo);
+        this.realtime();
+      }
     });
   }
 
@@ -68,7 +76,10 @@ export class MapaPage {
       } else {
         this.Coordinates = { latitude: 40.5, longitude: -3.2 };
       }
-      this.executemap();
+      this.settingsService.getSettings().then(data => {
+        this.settings = data;
+        this.executemap();
+      });
     });
   }
 
@@ -479,12 +490,60 @@ export class MapaPage {
     });
   }
 
+  realtime() {
+    if (this.map) {
+      var este = this;
+
+      if (this.intervalo) {
+        clearInterval(this.intervalo);
+      }
+
+      this.intervalo = window.setInterval(function() {
+        este.map.getSource('drone').setData(este.url_statics);
+      }, 10000);
+
+      this.map.loadImage('assets/imgs/places/specialbox.png', function(error, image) {
+        if (error) throw error;
+        este.map.addImage('sitio', image);
+
+        este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
+        este.map.addLayer({
+          "id": "drone",
+          "type": "symbol",
+          "source": "drone",
+          "layout": {
+            "icon-image": "sitio",
+            "icon-size": 0.3
+          },
+          "filter": ["==", "tipo", "Item"]
+        });
+
+        // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+        este.map.on('click', 'drone', function(e) {
+          este.map.flyTo({ center: e.features[0].geometry.coordinates });
+          este.abrirFeature(e.features[0]);
+        });
+
+        // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+        este.map.on('mouseenter', 'drone', function() {
+          este.map.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves.
+        este.map.on('mouseleave', 'drone', function() {
+          este.map.getCanvas().style.cursor = '';
+        });
+      });
+    }
+  }
+
   executemap() {
     /*Initializing Map*/
     if (!this.map) {
       mapboxgl.accessToken = this.configService.config.mapa.mapbox_access_token;
       this.map = new mapboxgl.Map({
-        style: 'mapbox://styles/' + this.configService.config.mapa.mapbox_estilo,
+        //style: 'mapbox://styles/' + this.configService.config.mapa.mapbox_estilo,
+        style: 'mapbox://styles/' + this.settings.mapa.estilo,
         center: [this.Coordinates.longitude, this.Coordinates.latitude],
         zoom: this.configService.config.mapa.zoom.inicial,
         pitch: this.configService.config.mapa.perspectiva.inclinacion,
@@ -537,42 +596,7 @@ export class MapaPage {
 
         este.trampasIniciales();
 
-        window.setInterval(function() {
-          este.map.getSource('drone').setData(este.url_statics);
-        }, 10000);
-
-        este.map.loadImage('assets/imgs/places/specialbox.png', function(error, image) {
-          if (error) throw error;
-          este.map.addImage('sitio', image);
-
-          este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
-          este.map.addLayer({
-            "id": "drone",
-            "type": "symbol",
-            "source": "drone",
-            "layout": {
-              "icon-image": "sitio",
-              "icon-size": 0.3
-            },
-            "filter": ["==", "tipo", "Item"]
-          });
-
-          // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
-          este.map.on('click', 'drone', function(e) {
-            este.map.flyTo({ center: e.features[0].geometry.coordinates });
-            este.abrirFeature(e.features[0]);
-          });
-
-          // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-          este.map.on('mouseenter', 'drone', function() {
-            este.map.getCanvas().style.cursor = 'pointer';
-          });
-
-          // Change it back to a pointer when it leaves.
-          este.map.on('mouseleave', 'drone', function() {
-            este.map.getCanvas().style.cursor = '';
-          });
-        });
+        este.realtime();
 
       });
       this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });

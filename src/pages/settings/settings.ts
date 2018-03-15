@@ -12,16 +12,22 @@ export class SettingsPage {
     interfaz: {
       velocimetro: boolean,
       entorno: boolean
+    },
+    mapa: {
+      estilo: string
     }
   };
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public settingsService: SettingsServiceProvider) {
     this.settingsService.getSettings().then(val => {
-      if (!val || !val.interfaz) {
+      if (!val || !val.interfaz || !val.mapa) {
         this.settings = {
           interfaz: {
             velocimetro: false,
             entorno: false
+          },
+          mapa: {
+            estilo: 'mapbox/streets-v10'
           }
         };
         this.settingsService.setOpcion("interfaz", this.settings.interfaz);
@@ -33,6 +39,10 @@ export class SettingsPage {
 
   toggleInterfaz() {
     this.settingsService.setOpcion("interfaz", this.settings.interfaz);
+  }
+
+  changeMapa() {
+    this.settingsService.setOpcion("mapa", this.settings.mapa);
   }
 
   ionViewDidLoad() {
