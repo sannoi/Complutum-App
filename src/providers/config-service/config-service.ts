@@ -4,6 +4,7 @@ import * as AppLuchadores from '../../config/luchadores';
 import * as AppAtaques from '../../config/ataques';
 import * as AppTipos from '../../config/tipos';
 import * as AppItems from '../../config/items';
+import * as AppShop from '../../config/tienda';
 
 @Injectable()
 export class ConfigServiceProvider {
@@ -13,6 +14,7 @@ export class ConfigServiceProvider {
   public ataques: any;
   public tipos: any;
   public items: any;
+  public tienda: any;
 
   constructor() {
     this.config = AppConfig.config;
@@ -20,6 +22,7 @@ export class ConfigServiceProvider {
     this.ataques = AppAtaques.ataques;
     this.tipos = AppTipos.tipos;
     this.items = AppItems.items;
+    this.tienda = AppShop.tienda;
   }
 
   nivelXp(xp: number) {

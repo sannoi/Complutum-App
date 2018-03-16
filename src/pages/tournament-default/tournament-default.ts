@@ -247,8 +247,6 @@ export class TournamentDefaultPage {
       ]
     });
     alert.present();
-
-    console.log('Torneo ganado', this.torneo.recompensas);
   }
 
   torneoPerdido() {

@@ -12,15 +12,17 @@
   </div>
 
   <div class="tienda-objetos">
-    <ion-list>
-      <button ion-item *ngFor="let item of items">
-        <ion-thumbnail item-start>
+    <ion-grid>
+      <ion-row justify-content-center align-items-center>
+        <ion-col col-4 *ngFor="let item of items" text-center>
+          <button (click)="comprarItem(item)">
           <img [src]="item.icono">
-        </ion-thumbnail>
-        <h3>{{item.nombre}} x{{item.cantidad}}</h3>
-        <p><ion-icon name="cash"></ion-icon> {{item.precio}}</p>
-      </button>
-    </ion-list>
+          <h6><b>{{item.nombre}}</b><br>x{{item.cantidad}}</h6>
+          <p><ion-icon name="cash"></ion-icon> {{item.precio}}</p>
+        </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 
   <ion-fab bottom center>
