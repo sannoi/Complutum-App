@@ -172,7 +172,7 @@ export class MapaPage {
 
         var _exp = parseInt(moment(trampa.fecha).add(trampa.obj.propiedades.tiempo * trampa.multiplicador_tiempo, "seconds").format('X'));
         var _act = parseInt(moment().format('X'));
-        trampa.tiempo_restante=_exp - _act;
+        trampa.tiempo_restante = _exp - _act;
 
         var _marker = { id: feature.id, marker: trampa_marker, element: trampa };
         this.markers_trampas.push(_marker);
@@ -309,15 +309,15 @@ export class MapaPage {
           }
         });
 
-      } else if (feature.properties.tipo == 'Item') {
+      } else if (feature.properties.tipo == 'torneo' || feature.properties.tipo == 'tienda') {
         if (feature.properties.obj) {
           feature.properties.obj = JSON.parse(feature.properties.obj);
         }
         if (feature.properties.obj && feature.properties.obj.parametros.tipo == "torneo") {
-            let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature.properties.obj }, {
-              enableBackdropDismiss: false
-            });
-            modal.present();
+          let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature.properties.obj }, {
+            enableBackdropDismiss: false
+          });
+          modal.present();
         } else {
           feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
           let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
@@ -361,7 +361,7 @@ export class MapaPage {
       return new Promise((response, error) => {
         return modal.onDidDismiss(data => {
           if (data && data['resultado'] && data['luchador']) {
-            var _luchador = this.playerService.player.mascotas.find(function(x){
+            var _luchador = this.playerService.player.mascotas.find(function(x) {
               return x.id === data['luchador'].id;
             });
             var _idx_luchador = this.playerService.player.mascotas.indexOf(_luchador);
@@ -509,42 +509,78 @@ export class MapaPage {
         }
       }, 10000);
 
-      this.map.loadImage('assets/imgs/places/specialbox.png', function(error, image) {
+      this.map.loadImage(this.configService.config.mapa.iconos.sitio, function(error, image) {
+
         if (error) throw error;
-        if (!este.map.hasImage('sitio') && !este.map.getSource('drone')) {
-          este.map.addImage('sitio', image);
 
-          este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
-          este.map.addLayer({
-            "id": "drone",
-            "type": "symbol",
-            "source": "drone",
-            "layout": {
-              "icon-image": "sitio",
-              "icon-size": 0.3
-            },
-            "filter": ["==", "tipo", "Item"]
-          });
+        este.map.loadImage(este.configService.config.mapa.iconos.torneo, function(error1, image1) {
 
-          if (!_loaded) {
-            // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
-            este.map.on('click', 'drone', function(e) {
-              este.map.flyTo({ center: e.features[0].geometry.coordinates });
-              este.abrirFeature(e.features[0]);
-              return false;
+          if (error1) throw error1;
+
+          if (!este.map.hasImage('sitio') && !este.map.hasImage('torneo') && !este.map.getSource('drone')) {
+            este.map.addImage('sitio', image);
+            este.map.addImage('torneo', image1);
+
+            este.map.addSource('drone', { type: 'geojson', data: este.url_statics });
+            este.map.addLayer({
+              "id": "drone",
+              "type": "symbol",
+              "source": "drone",
+              "layout": {
+                "icon-image": "sitio",
+                "icon-size": 0.2
+              },
+              "filter": ["==", "tipo", "tienda"]
             });
 
-            // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-            este.map.on('mouseenter', 'drone', function() {
-              este.map.getCanvas().style.cursor = 'pointer';
+            este.map.addLayer({
+              "id": "drone2",
+              "type": "symbol",
+              "source": "drone",
+              "layout": {
+                "icon-image": "torneo",
+                "icon-size": 0.2
+              },
+              "filter": ["==", "tipo", "torneo"]
             });
 
-            // Change it back to a pointer when it leaves.
-            este.map.on('mouseleave', 'drone', function() {
-              este.map.getCanvas().style.cursor = '';
-            });
+            if (!_loaded) {
+              // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+              este.map.on('click', 'drone2', function(e) {
+                este.map.flyTo({ center: e.features[0].geometry.coordinates });
+                este.abrirFeature(e.features[0]);
+                return false;
+              });
+
+              // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+              este.map.on('mouseenter', 'drone2', function() {
+                este.map.getCanvas().style.cursor = 'pointer';
+              });
+
+              // Change it back to a pointer when it leaves.
+              este.map.on('mouseleave', 'drone2', function() {
+                este.map.getCanvas().style.cursor = '';
+              });
+
+              // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+              este.map.on('click', 'drone', function(e) {
+                este.map.flyTo({ center: e.features[0].geometry.coordinates });
+                este.abrirFeature(e.features[0]);
+                return false;
+              });
+
+              // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+              este.map.on('mouseenter', 'drone', function() {
+                este.map.getCanvas().style.cursor = 'pointer';
+              });
+
+              // Change it back to a pointer when it leaves.
+              este.map.on('mouseleave', 'drone', function() {
+                este.map.getCanvas().style.cursor = '';
+              });
+            }
           }
-        }
+        });
       });
 
     }
@@ -610,6 +646,7 @@ export class MapaPage {
       if (this.playerService.player && this.playerService.player.nivel) {
         this.url_statics += '&nivel=' + this.playerService.player.nivel;
       }
+      console.log(this.url_statics);
 
       this.map.on('load', function() {
         este.edificios();
@@ -617,7 +654,7 @@ export class MapaPage {
         este.realtime();
       });
 
-      var loadSource = ()=>{
+      var loadSource = () => {
         if (este.map.isStyleLoaded()) {
           este.edificios();
           este.realtime();
@@ -626,7 +663,7 @@ export class MapaPage {
       }
 
       this.map.on('styledataloading', function(styledata) {
-        console.log("style map loaded!",styledata);
+        console.log("style map loaded!", styledata);
         este.map.on('data', loadSource);
       });
 

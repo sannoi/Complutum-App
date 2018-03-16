@@ -69,6 +69,10 @@ export let config = {
       frequency: 3000,
       enableHighAccuracy: true
     },
+    iconos: {
+      sitio: 'assets/imgs/places/sitio.png',
+      torneo: 'assets/imgs/places/torneo.png'
+    },
     limite_velocidad: 65,
     tiempo_refresco_entorno: 30,
     tiempo_aparicion_enemigos: 15,
