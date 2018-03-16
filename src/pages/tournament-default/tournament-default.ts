@@ -4,6 +4,7 @@ import { ConfigServiceProvider } from '../../providers/config-service/config-ser
 import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
+import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { AvatarModel } from '../../models/avatar.model';
 
@@ -30,7 +31,8 @@ export class TournamentDefaultPage {
     private statsService: StatsServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
-    public playerService: PlayerServiceProvider) {
+    public playerService: PlayerServiceProvider,
+    public itemsService: ItemsServiceProvider) {
       this.torneo = this.parsearTorneo(this.navParams.get('torneo'));
   }
 
@@ -63,6 +65,27 @@ export class TournamentDefaultPage {
       return false;
     }
 
+    let alert = this.alertCtrl.create({
+      title: "Participar en Torneo",
+      subTitle: "Vas a participar en un torneo de nivel " + this.torneo.nivel + ". ¿Quieres continuar?",
+      buttons: [
+        {
+          text: "No",
+          role: "cancel",
+          handler: () => { }
+        },
+        {
+          text: "Sí",
+          handler: () => {
+            this.rutinaTorneo();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  rutinaTorneo() {
     if (this.torneo.enemigos && this.torneo.enemigos[this.enemigos_derrotados]) {
       this.torneo_iniciado = true;
       var _siguiente = -1;
@@ -71,8 +94,14 @@ export class TournamentDefaultPage {
       }
       this.comenzarBatalla(this.torneo.enemigos[this.enemigos_derrotados].id_original, this.torneo.enemigos[this.enemigos_derrotados].xp, _siguiente);
     }
-
-    console.log('Comenzar torneo', this.torneo);
+    if ((!this.torneo.enemigos || this.torneo.enemigos.length <= 0) && this.torneo.jefes && this.torneo.jefes.length > 0) {
+      this.torneo_iniciado = true;
+      var _siguiente_jefe = -1;
+      if (this.torneo.jefes[this.jefes_derrotados + 1]) {
+        _siguiente_jefe = this.jefes_derrotados + 1;
+      }
+      this.comenzarBatallaJefe(this.torneo.jefes[this.jefes_derrotados].id_original, this.torneo.jefes[this.jefes_derrotados].xp, _siguiente_jefe);
+    }
   }
 
   comenzarBatalla(luchadorId: any, luchadorXp: number, siguienteEnemigoIdx?: number) {
@@ -122,6 +151,9 @@ export class TournamentDefaultPage {
                 this.playerService.savePlayer();
               }
               this.statsService.anadirEstadistica('batallas_perdidas', 1, 'number');
+              this.torneoPerdido();
+            } else {
+              this.torneoPerdido();
             }
           }
           response(data);
@@ -175,6 +207,9 @@ export class TournamentDefaultPage {
                 this.playerService.savePlayer();
               }
               this.statsService.anadirEstadistica('batallas_perdidas', 1, 'number');
+              this.torneoPerdido();
+            } else {
+              this.torneoPerdido();
             }
           }
           response(data);
@@ -193,22 +228,77 @@ export class TournamentDefaultPage {
     var _out = "";
 
     for (var i = 0; i < this.torneo.recompensas.length; i++) {
-      _out = _out + this.anadirGanacia(this.torneo.recompensas[i]) + "<br>";
+      _out = _out + this.textoGanancia(this.torneo.recompensas[i]);
     }
+
+    this.statsService.anadirEstadistica('torneos_ganados', 1, 'number');
 
     let alert = this.alertCtrl.create({
       title: "Has ganado el torneo",
-      subtitle: "Enhorabuena, has ganado el torneo. Estas son tus ganancias:",
+      subTitle: "Enhorabuena, has ganado el torneo. Estas son tus ganancias:",
       message: _out,
-      buttons: ["Muy bien"]
+      buttons: [
+        {
+          text: "Muy bien",
+          handler: () => {
+            this.cobrarGanancias();
+          }
+        }
+      ]
     });
     alert.present();
 
     console.log('Torneo ganado', this.torneo.recompensas);
   }
 
+  torneoPerdido() {
+    this.torneo_iniciado = false;
+
+    this.statsService.anadirEstadistica('torneos_perdidos', 1, 'number');
+
+    let alert = this.alertCtrl.create({
+      title: "Has perdido el torneo",
+      subTitle: "Alguno de tus luchadores ha perdido su combate. Vuelve a intentarlo más adelante.",
+      buttons: ["Vale"]
+    });
+    alert.present();
+  }
+
+  textoGanancia(ganancia: any) {
+    var out = "";
+    if (ganancia.tipo == 'xp') {
+      out = '<b>XP:</b> ' + this.playerService.modificar(ganancia.cantidad, "xp") + '<br>';
+    } else if (ganancia.tipo == 'item' && ganancia['item']) {
+      var _item = this.configService.encontrarItem(ganancia['item']);
+      if (_item) {
+        out = '<b>Objetos:</b> ' + ganancia.cantidad + ' ' + _item.nombre + '<br>';
+      }
+    } else {
+      out = '<b>' + ganancia.tipo + ':</b> ' + ganancia.cantidad + '<br>';
+    }
+    return out;
+  }
+
+  cobrarGanancias() {
+    for (var i = 0; i < this.torneo.recompensas.length; i++) {
+      this.anadirGanacia(this.torneo.recompensas[i]);
+    }
+  }
+
   anadirGanacia(ganancia: any) {
-    return ganancia.tipo + " / " + ganancia.cantidad;
+    console.log(ganancia);
+    if (ganancia.tipo == 'xp') {
+      this.playerService.addXp(ganancia.cantidad).then(xp => {
+        this.toastService.push('+' + xp + " XP");
+      });
+    } else if (ganancia.tipo == 'monedas') {
+      this.playerService.anadirMonedas(ganancia.cantidad);
+    } else if (ganancia.tipo == 'item' && ganancia['item']) {
+      var _item = this.configService.encontrarItem(ganancia['item']);
+      if (_item) {
+        this.itemsService.playerAnadirItem(_item, ganancia.cantidad);
+      }
+    }
   }
 
   calcularNivelTorneo(torneo: any) {

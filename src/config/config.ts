@@ -9,8 +9,8 @@ export let config = {
     url_statics: '/api/sitios/sitio/realtime.json',
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
     modificadores: {
-      xp_multiplicador: 4,
-      tiempo_trampas_multiplicador: 0.01
+      xp_multiplicador: 2,
+      tiempo_trampas_multiplicador: 0.33
     }
   },
   jugador: {

@@ -190,7 +190,7 @@ export class PlayerServiceProvider {
 
   anadirMonedas(monedas: number) {
     if (this.player) {
-      this.player.monedas += monedas;
+      this.player.monedas = this.player.monedas + monedas;
       this.statsService.anadirEstadistica('monedas_conseguidas', monedas, 'number');
       this.events.publish('player:monedas_anadidas', { monedas: monedas });
     }
