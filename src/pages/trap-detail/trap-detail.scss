@@ -4,10 +4,24 @@ page-trap-detail {
   }
   .trampa-img-mapa {
     margin-bottom: 10px;
+    position: relative;
+
+    ion-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      margin-left: -16px;
+      margin-top: -16px;
+    }
   }
-  .trampa-img img {
-    max-width: 100%;
-    width: 100px;
-    height: auto;
+  .trampa-img {
+    img {
+      max-width: 100%;
+      width: 100px;
+      height: auto;
+    }
   }
 }

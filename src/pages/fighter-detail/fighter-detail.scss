@@ -35,9 +35,6 @@ page-fighter-detail {
   .avatar-ataques ion-card-header ion-icon {
     font-size: 1.1rem;
   }
-  .avatar-ataques {
-    padding-bottom: 55px;
-  }
   .avatar-ataques .label-md {
     margin: 3px 8px 3px 0;
   }
@@ -46,6 +43,19 @@ page-fighter-detail {
   }
   .avatar-ataques .item-block {
     min-height: 3rem;
+  }
+  .avatar-eficiencia {
+    padding-bottom: 55px;
+
+    ion-grid {
+      margin-bottom: 0px;
+    }
+    ion-card {
+      margin-bottom: 0px;
+    }
+    ion-card-content {
+      font-weight: bold;
+    }
   }
 
 }

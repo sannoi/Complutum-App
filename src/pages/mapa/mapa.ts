@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { Storage } from '@ionic/storage';
-import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer,Platform } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
@@ -13,7 +13,6 @@ import { ToastServiceProvider } from '../../providers/toast-service/toast-servic
 import { AvatarModel } from '../../models/avatar.model'
 import * as moment from 'moment';
 
-@IonicPage()
 @Component({
   selector: 'page-mapa',
   templateUrl: 'mapa.html',
@@ -25,6 +24,8 @@ export class MapaPage {
   marker: any;
   markers_enemigos: Array<any>;
   markers_trampas: Array<any>;
+
+  centrado_marker: boolean = true;
 
   observable_iniciado: boolean = false;
 
@@ -40,12 +41,15 @@ export class MapaPage {
   private estilo_actual: any;
   private edificios_visibles: any;
 
+  private map_inicializado: boolean;
+
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public storage: Storage,
     public events: Events,
+    public platform: Platform,
     private geolocation: Geolocation,
     private settingsService: SettingsServiceProvider,
     private configService: ConfigServiceProvider,
@@ -60,27 +64,31 @@ export class MapaPage {
   }
 
   ionViewWillEnter() {
-    this.settingsService.getSettings().then(data => {
-      this.settings = data;
-      if (this.map && this.estilo_actual != this.settings.mapa.estilo) {
-        this.estilo_actual = this.settings.mapa.estilo;
-        this.map.setStyle('mapbox://styles/' + this.settings.mapa.estilo);
-      } else if (this.map && this.edificios_visibles != this.settings.mapa.edificios) {
-        this.edificios();
-      }
-    });
+    if (this.map_inicializado) {
+      this.settingsService.getSettings().then(data => {
+        this.settings = data;
+        if (this.map && this.estilo_actual != this.settings.mapa.estilo) {
+          this.estilo_actual = this.settings.mapa.estilo;
+          this.map.setStyle('mapbox://styles/' + this.settings.mapa.estilo);
+        } else if (this.map && this.edificios_visibles != this.settings.mapa.edificios) {
+          this.edificios();
+        }
+      });
+    }
   }
 
   ionViewDidLoad() {
-    this.storage.get('ultima_posicion').then(pos => {
-      if (pos && pos.lat && pos.lng) {
-        this.Coordinates = { latitude: pos.lat, longitude: pos.lng };
-      } else {
-        this.Coordinates = { latitude: 40.5, longitude: -3.2 };
-      }
-      this.settingsService.getSettings().then(data => {
-        this.settings = data;
-        this.executemap();
+    this.platform.ready().then(() => {
+      this.storage.get('ultima_posicion').then(pos => {
+        if (pos && pos.lat && pos.lng) {
+          this.Coordinates = { latitude: pos.lat, longitude: pos.lng };
+        } else {
+          this.Coordinates = { latitude: 40.5, longitude: -3.2 };
+        }
+        this.settingsService.getSettings().then(data => {
+          this.settings = data;
+          this.executemap();
+        });
       });
     });
   }
@@ -220,7 +228,7 @@ export class MapaPage {
 
             var _idx_trampa_activa = this.playerService.player.trampas_activas.indexOf(trampa);
             if (_idx_trampa_activa > -1) {
-              this.playerService.anadirMascota(trampa.avatar.id, xp, null, trampa.obj.propiedades.xp);
+              this.playerService.anadirMascota(trampa.avatar.id, xp, null, trampa.obj.propiedades.xp, trampa.obj.propiedades.iv_rango);
               this.playerService.player.trampas_activas.splice(_idx_trampa_activa, 1);
               this.playerService.savePlayer();
             }
@@ -542,7 +550,9 @@ export class MapaPage {
               "type": "symbol",
               "source": "drone",
               "layout": {
+                "symbol-spacing": 100,
                 "icon-image": "sitio",
+                "icon-anchor": "bottom",
                 "icon-size": 0.2
               },
               "filter": ["==", "type", "tourism"]
@@ -553,7 +563,9 @@ export class MapaPage {
               "type": "symbol",
               "source": "drone",
               "layout": {
+                "symbol-spacing": 100,
                 "icon-image": "torneo",
+                "icon-anchor": "bottom",
                 "icon-size": 0.2
               },
               "filter": ["==", "type", "place"]
@@ -669,6 +681,12 @@ export class MapaPage {
         este.realtime();
       });
 
+      this.map.on('move', function(e) {
+        if (e['originalEvent']) {
+          este.centrado_marker = false;
+        }
+      });
+
       var loadSource = () => {
         if (este.map.isStyleLoaded()) {
           este.edificios();
@@ -688,11 +706,14 @@ export class MapaPage {
 
       let watch = this.geolocation.watchPosition(this.configService.config.mapa.config_gps);
       watch.subscribe((position: Geoposition) => {
-        if (position && position.coords) {
-          this.Coordinates = position.coords;
+        var _pos = this.parsePosicion(position);
+        if (_pos && _pos['coords']) {
+          this.Coordinates = _pos['coords'];
           this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
           //this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
-          this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
+          if (this.centrado_marker) {
+            this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
+          }
           this.marker.setLngLat([this.Coordinates.longitude, this.Coordinates.latitude]);
           this.comprobarDistanciaEnemigos();
           if (!this.observable_iniciado) {
@@ -707,9 +728,53 @@ export class MapaPage {
             this.mapService.iniciarObservableEntorno();
           }
         } else {
-          alert("Error de geolocalización: " + JSON.stringify(position));
+          console.log(this.parsePosicion(position));
+          alert("Error de geolocalización: " + JSON.stringify(this.parsePosicion(position)));
         }
       });
+    }
+  }
+
+  parsePosicion(position: any) {
+    var positionObject = {};
+
+    if ('coords' in position) {
+        positionObject['coords'] = {};
+
+        if ('latitude' in position.coords) {
+            positionObject['coords'].latitude = position.coords.latitude;
+        }
+        if ('longitude' in position.coords) {
+            positionObject['coords'].longitude = position.coords.longitude;
+        }
+        if ('accuracy' in position.coords) {
+            positionObject['coords'].accuracy = position.coords.accuracy;
+        }
+        if ('altitude' in position.coords) {
+            positionObject['coords'].altitude = position.coords.altitude;
+        }
+        if ('altitudeAccuracy' in position.coords) {
+            positionObject['coords'].altitudeAccuracy = position.coords.altitudeAccuracy;
+        }
+        if ('heading' in position.coords) {
+            positionObject['coords'].heading = position.coords.heading;
+        }
+        if ('speed' in position.coords) {
+            positionObject['coords'].speed = position.coords.speed;
+        }
+    }
+
+    if ('timestamp' in position) {
+        positionObject['timestamp'] = position.timestamp;
+    }
+
+    return positionObject;
+  }
+
+  centrarMapa() {
+    if (this.map) {
+      this.centrado_marker = true;
+      this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
     }
   }
 

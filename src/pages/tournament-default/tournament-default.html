@@ -1,74 +1,103 @@
-<ion-header *ngIf="torneo">
+<ion-header>
   <ion-navbar color="primary">
-    <ion-title>{{torneo.nombre}}</ion-title>
-
-    <ion-buttons start>
-      <button ion-button (click)="dismiss()">Salir</button>
-    </ion-buttons>
-
+    <ion-title *ngIf="torneo">{{torneo.nombre}}</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content no-padding>
 
-  <div class="torneo-header" *ngIf="torneo" text-center>
-    <div class="torneo-img">
-      <img [src]="torneo.imagen" style="max-width: 100%; width: 100px; height: auto;">
-    </div>
-    <div class="torneo-nivel">
-      <h4>Nivel {{torneo.nivel}}</h4>
-      <div class="torneo-nivel-progreso">
-        <progress-bar [progress]="xpTorneo()" [color]="configService.config.colores.danger" [text]="xpNivelText()"></progress-bar>
+  <div class="torneo-descripcion" *ngIf="(wikidata && wikidata.descriptions && wikidata.descriptions.es) || (torneo && torneo.descripcion)">
+    <ion-card color="light" *ngIf="wikidata && wikidata.descriptions && wikidata.descriptions.es">
+      <ion-card-content>
+        {{wikidata.descriptions.es.value}}
+      </ion-card-content>
+    </ion-card>
+    <ion-card color="light" *ngIf="torneo && torneo.descripcion">
+      <ion-card-content>
+        {{torneo.descripcion}}
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div padding>
+
+    <div class="torneo-header" *ngIf="torneo" text-center>
+      <div class="torneo-nivel">
+        <h4>Nivel {{torneo.nivel}}</h4>
+        <div class="torneo-nivel-progreso">
+          <progress-bar [progress]="xpTorneo()" [color]="configService.config.colores.danger" [text]="xpNivelText()"></progress-bar>
+        </div>
       </div>
     </div>
 
-  </div>
+    <div class="torneo-jefes" *ngIf="torneo && torneo.jefes && torneo.jefes.length > 0">
+      <ion-card>
+        <ion-card-header>
+          Jefes del Torneo
+        </ion-card-header>
+        <ion-grid>
+          <ion-row justify-content-center align-items-center>
+            <ion-col col-4 *ngFor="let jefe of torneo.jefes" no-padding>
+              <ion-card color="primary" text-center no-margin>
+                <ion-card-content>
+                  <img [src]="jefe.icono">
+                  <h6><b>{{jefe.nombre}}</b></h6>
+                  <p><small>N. {{jefe.nivel}}</small></p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </div>
 
-  <div class="torneo-jefes" *ngIf="torneo && torneo.jefes && torneo.jefes.length > 0">
-    <ion-card>
-      <ion-card-header>
-        Jefes del Torneo
-    </ion-card-header>
-      <ion-grid>
-        <ion-row justify-content-center align-items-center>
-          <ion-col col-4 *ngFor="let jefe of torneo.jefes" no-padding>
-            <ion-card color="primary" text-center no-margin>
-              <ion-card-content>
-                <img [src]="jefe.icono">
-                <h6><b>{{jefe.nombre}}</b></h6>
-                <p><small>N. {{jefe.nivel}}</small></p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card>
-  </div>
+    <div class="torneo-contrincantes" *ngIf="torneo && torneo.enemigos && torneo.enemigos.length > 0">
+      <ion-card>
+        <ion-card-header>
+          Contrincantes del Torneo
+        </ion-card-header>
+        <ion-grid>
+          <ion-row justify-content-center align-items-center>
+            <ion-col col-3 *ngFor="let enemigo of torneo.enemigos" no-padding>
+              <ion-card color="secondary" text-center no-margin>
+                <ion-card-content>
+                  <img [src]="enemigo.icono">
+                  <h6><b>{{enemigo.nombre}}</b></h6>
+                  <p><small>N. {{enemigo.nivel}}</small></p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </div>
 
-  <div class="torneo-contrincantes" *ngIf="torneo && torneo.enemigos && torneo.enemigos.length > 0">
-    <ion-card>
-      <ion-card-header>
-        Contrincantes del Torneo
-    </ion-card-header>
-      <ion-grid>
-        <ion-row justify-content-center align-items-center>
-          <ion-col col-3 *ngFor="let enemigo of torneo.enemigos" no-padding>
-            <ion-card color="secondary" text-center no-margin>
-              <ion-card-content>
-                <img [src]="enemigo.icono">
-                <h6><b>{{enemigo.nombre}}</b></h6>
-                <p><small>N. {{enemigo.nivel}}</small></p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card>
+    <div class="torneo-localizacion">
+
+      <ion-card *ngIf="torneo && torneo.coordenadas">
+        <ion-card-header>
+          Ubicación
+        </ion-card-header>
+        <ion-card-content>
+          <div class="torneo-img-mapa">
+            <ion-icon name="star" color="danger"></ion-icon>
+            <img [src]="torneo.imagen" >
+          </div>
+          <p class="torneo-localizacion" *ngIf="torneo.nombre">{{torneo.nombre}}</p>
+          <p class="torneo-coordenadas" *ngIf="torneo.coordenadas">({{torneo.coordenadas.lat}}, {{torneo.coordenadas.lng}})</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
   </div>
   <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">
       <button ion-fab color="light" [disabled]="!torneo || torneo.distancia > configService.config.mapa.radio_interaccion" (click)="fab.close();comenzarTorneo()"><ion-icon name="flash" color="danger"></ion-icon><div class="label">Luchar</div></button>
+      <button ion-fab color="secondary" (click)="fab.close();recogerItems()"><ion-icon name="cube"></ion-icon><div class="label">Recoger Objetos</div></button>
     </ion-fab-list>
+  </ion-fab>
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
   </ion-fab>
 </ion-content>

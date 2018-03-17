@@ -58,7 +58,19 @@ export let items = [
       rareza_minima: 70,
       rareza_maxima: 100,
       xp: 200,
-      influye: [ "meteo", "terreno" ]
+      influye: [ "meteo", "terreno" ],
+      iv_rango: {
+        min: {
+          ataque: 10,
+          defensa: 10,
+          salud: 10
+        },
+        max: {
+          ataque: 15,
+          defensa: 15,
+          salud: 15
+        }
+      }
     }
   },
   {
@@ -72,7 +84,19 @@ export let items = [
       rareza_minima: 40,
       rareza_maxima: 70,
       xp: 500,
-      influye: [ "meteo", "terreno" ]
+      influye: [ "meteo", "terreno" ],
+      iv_rango: {
+        min: {
+          ataque: 11,
+          defensa: 11,
+          salud: 11
+        },
+        max: {
+          ataque: 15,
+          defensa: 15,
+          salud: 15
+        }
+      }
     }
   },
   {
@@ -86,7 +110,19 @@ export let items = [
       rareza_minima: 10,
       rareza_maxima: 40,
       xp: 1000,
-      influye: [ "meteo", "terreno" ]
+      influye: [ "meteo", "terreno" ],
+      iv_rango: {
+        min: {
+          ataque: 12,
+          defensa: 12,
+          salud: 12
+        },
+        max: {
+          ataque: 15,
+          defensa: 15,
+          salud: 15
+        }
+      }
     }
   },
   {
@@ -100,7 +136,19 @@ export let items = [
       rareza_minima: 1,
       rareza_maxima: 10,
       xp: 2500,
-      influye: [ "meteo", "terreno" ]
+      influye: [ "meteo", "terreno" ],
+      iv_rango: {
+        min: {
+          ataque: 13,
+          defensa: 13,
+          salud: 13
+        },
+        max: {
+          ataque: 15,
+          defensa: 15,
+          salud: 15
+        }
+      }
     }
   },
   {

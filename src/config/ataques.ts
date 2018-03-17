@@ -16,7 +16,11 @@ export let ataques = {
     { id: 'alarido', nombre: 'Alarido', icono: 'flask', tipo: 'veneno', puntos_dano: 12, segundos_enfriamiento: 1.1, incremento_energia: 12 },
     { id: 'burbuja', nombre: 'Burbuja', icono: 'water', tipo: 'agua', puntos_dano: 12, segundos_enfriamiento: 1.2, incremento_energia: 14 },
     { id: 'corte', nombre: 'Corte', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 5, segundos_enfriamiento: 0.6, incremento_energia: 8 },
-    { id: 'bostezo', nombre: 'Bostezo', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 0, segundos_enfriamiento: 1.7, incremento_energia: 15 }
+    { id: 'bostezo', nombre: 'Bostezo', tipo: 'normal', icono: 'refresh-circle', puntos_dano: 0, segundos_enfriamiento: 1.7, incremento_energia: 15 },
+    { id: 'lanzarrocas', nombre: 'Lanzarrocas', tipo: 'roca', icono: 'hammer', puntos_dano: 12, segundos_enfriamiento: 0.9, incremento_energia: 7 },
+    { id: 'bofeton', nombre: 'Bofetón', tipo: 'normal', icono: 'hand', puntos_dano: 15, segundos_enfriamiento: 1.4, incremento_energia: 12 },
+    { id: 'toxico', nombre: 'Tóxico', tipo: 'veneno', icono: 'flask', puntos_dano: 10, segundos_enfriamiento: 1.2, incremento_energia: 15 },
+    { id: 'cascada', nombre: 'Cascada', icono: 'water', tipo: 'agua', puntos_dano: 16, segundos_enfriamiento: 1.2, incremento_energia: 8 },
   ],
   fuertes: [
     { id: 'pucheritos', nombre: 'Pucheritos', tipo: 'planta', puntos_dano: 80, segundos_enfriamiento: 17, gasto_energia: 33 },
@@ -36,6 +40,9 @@ export let ataques = {
     { id: 'onda_certera', nombre: 'Onda Certera', tipo: 'normal', puntos_dano: 140, segundos_enfriamiento: 3.5, gasto_energia: 100 },
     { id: 'llamarada', nombre: 'Llamarada', tipo: 'fuego', puntos_dano: 140, segundos_enfriamiento: 4.2, gasto_energia: 100 },
     { id: '10000_voltios', nombre: '10.000 Voltios', tipo: 'electrico', puntos_dano: 90, segundos_enfriamiento: 2.6, gasto_energia: 50 },
-    { id: 'premonicion', nombre: 'Premonición', tipo: 'normal', puntos_dano: 120, segundos_enfriamiento: 2.7, gasto_energia: 100 }
+    { id: 'premonicion', nombre: 'Premonición', tipo: 'normal', puntos_dano: 120, segundos_enfriamiento: 2.7, gasto_energia: 100 },
+    { id: 'roca_afilada', nombre: 'Roca Afilada', tipo: 'roca', puntos_dano: 100, segundos_enfriamiento: 2.3, gasto_energia: 100 },
+    { id: 'nube_radiactiva', nombre: 'Nube Radiactiva', tipo: 'veneno', puntos_dano: 100, segundos_enfriamiento: 3, gasto_energia: 50 },
+    { id: 'electrocanon', nombre: 'Electrocañón', tipo: 'electrico', puntos_dano: 140, segundos_enfriamiento: 3.7, gasto_energia: 100 }
   ]
 };

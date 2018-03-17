@@ -6,6 +6,7 @@ import { PlayerServiceProvider } from '../../providers/player-service/player-ser
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { MapServiceProvider } from '../../providers/map-service/map-service';
+import { WikidataServiceProvider } from '../../providers/wikidata-service/wikidata-service';
 
 @IonicPage()
 @Component({
@@ -15,6 +16,7 @@ import { MapServiceProvider } from '../../providers/map-service/map-service';
 export class PlaceDetailPage {
 
   lugar: any;
+  wikidata: any;
   coordenadas: any;
 
   sin_items: boolean = false;
@@ -30,13 +32,23 @@ export class PlaceDetailPage {
     public playerService: PlayerServiceProvider,
     public statsService: StatsServiceProvider,
     public configService: ConfigServiceProvider,
+    public wikiService: WikidataServiceProvider,
     public mapService: MapServiceProvider) {
     this.lugar = navParams.get('lugar');
     this.coordenadas = navParams.get('coordenadas');
     this.items = new Array(
-      { item: { id: 'medicina-sm' }, cantidad: 3 },
-      { item: { id: 'medicina-md' }, cantidad: 1 }
+      { item: 'medicina-sm', cantidad: 3 },
+      { item: 'medicina-md', cantidad: 1 }
     );
+    if (this.lugar['wikidata']) {
+      wikiService.getWikidataInfo(this.lugar.wikidata).then(info => {
+        console.log(info);
+        this.wikidata = info;
+      });
+    }
+    if (!this.lugar['name']) {
+      this.lugar.name ="Desconocido";
+    }
     console.log(this.lugar, this.coordenadas, this.items);
   }
 
@@ -48,7 +60,7 @@ export class PlaceDetailPage {
       this.toastService.push('Inténtalo más tarde');
     } else {
       for (var i = 0; i < this.items.length; i++) {
-        var _item = this.configService.encontrarItem(this.items[i].item.id);
+        var _item = this.configService.encontrarItem(this.items[i].item);
         if (_item) {
           this.itemsService.playerAnadirItem(_item, this.items[i].cantidad);
           this.toastService.push('+' + this.items[i].cantidad + ' ' + _item.nombre);

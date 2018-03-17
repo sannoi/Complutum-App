@@ -281,5 +281,257 @@ export let luchadores = [
     },
     ataques: ['bostezo'],
     especiales: ['premonicion','onda_certera','hiperrayo']
+  },
+  {
+    id: 'golem',
+    nombre: 'Golem',
+    icono: 'assets/imgs/fighters/pokemon_icon_076_00.png',
+    tipo: 'roca',
+    rareza: 35,
+    salud: 160,
+    propiedades: {
+      ataque: 211,
+      defensa: 229
+    },
+    ataques: ['lanzarrocas','bofeton'],
+    especiales: ['terremoto','roca_afilada']
+  },
+  {
+    id: 'gengar',
+    nombre: 'Gengar',
+    icono: 'assets/imgs/fighters/pokemon_icon_094_00.png',
+    tipo: 'veneno',
+    rareza: 47,
+    salud: 120,
+    propiedades: {
+      ataque: 261,
+      defensa: 156
+    },
+    ataques: ['toxico','cabezazo'],
+    especiales: ['nube_radiactiva','onda_certera','onda_choque']
+  },
+  {
+    id: 'rhydon',
+    nombre: 'Rhydon',
+    icono: 'assets/imgs/fighters/pokemon_icon_112_00.png',
+    tipo: 'roca',
+    rareza: 62,
+    salud: 210,
+    propiedades: {
+      ataque: 222,
+      defensa: 206
+    },
+    ataques: ['lanzarrocas','bofeton'],
+    especiales: ['terremoto','roca_afilada']
+  },
+  {
+    id: 'gyarados',
+    nombre: 'Gyarados',
+    icono: 'assets/imgs/fighters/pokemon_icon_130_00.png',
+    tipo: 'agua',
+    rareza: 22,
+    salud: 190,
+    propiedades: {
+      ataque: 237,
+      defensa: 197
+    },
+    ataques: ['mordisquito','cascada'],
+    especiales: ['hidro_bomba','golpe_helado']
+  },
+  {
+    id: 'mew',
+    nombre: 'Mew',
+    icono: 'assets/imgs/fighters/pokemon_icon_151_00.png',
+    tipo: 'normal',
+    rareza: 1,
+    salud: 200,
+    propiedades: {
+      ataque: 210,
+      defensa: 210
+    },
+    ataques: ['destructor'],
+    especiales: ['hiperrayo','onda_certera','rayo_solar','terremoto','carga_total','llamarada','hidro_bomba']
+  },
+  {
+    id: 'meganium',
+    nombre: 'Meganium',
+    icono: 'assets/imgs/fighters/pokemon_icon_154_00.png',
+    tipo: 'planta',
+    rareza: 16,
+    salud: 160,
+    propiedades: {
+      ataque: 168,
+      defensa: 202
+    },
+    ataques: ['mirada_cuqui','culo_pompa'],
+    especiales: ['rayo_solar','lluvia_esporas','terremoto']
+  },
+  {
+    id: 'typhlosion',
+    nombre: 'Typhlosion',
+    icono: 'assets/imgs/fighters/pokemon_icon_157_00.png',
+    tipo: 'fuego',
+    rareza: 27,
+    salud: 156,
+    propiedades: {
+      ataque: 223,
+      defensa: 176
+    },
+    ataques: ['aliento_fuego','ascuas'],
+    especiales: ['llamarada','rayo_solar']
+  },
+  {
+    id: 'feraligatr',
+    nombre: 'Feraligatr',
+    icono: 'assets/imgs/fighters/pokemon_icon_160_00.png',
+    tipo: 'agua',
+    rareza: 38,
+    salud: 170,
+    propiedades: {
+      ataque: 205,
+      defensa: 197
+    },
+    ataques: ['mordisquito','cascada'],
+    especiales: ['hidro_bomba','golpe_helado']
+  },
+  {
+    id: 'ampharos',
+    nombre: 'Ampharos',
+    icono: 'assets/imgs/fighters/pokemon_icon_181_00.png',
+    tipo: 'electrico',
+    rareza: 72,
+    salud: 180,
+    propiedades: {
+      ataque: 211,
+      defensa: 172
+    },
+    ataques: ['chispa','voltiazo'],
+    especiales: ['carga_total','onda_certera','electrocanon']
+  },
+  {
+    id: 'ursaring',
+    nombre: 'Ursaring',
+    icono: 'assets/imgs/fighters/pokemon_icon_217_00.png',
+    tipo: 'normal',
+    rareza: 33,
+    salud: 180,
+    propiedades: {
+      ataque: 236,
+      defensa: 144
+    },
+    ataques: ['cabezazo','corte'],
+    especiales: ['onda_certera','hiperrayo']
+  },
+  {
+    id: 'piloswine',
+    nombre: 'Piloswine',
+    icono: 'assets/imgs/fighters/pokemon_icon_221_00.png',
+    tipo: 'agua',
+    rareza: 21,
+    salud: 200,
+    propiedades: {
+      ataque: 181,
+      defensa: 147
+    },
+    ataques: ['burbuja','cascada'],
+    especiales: ['hidro_bomba','golpe_helado']
+  },
+  {
+    id: 'tyranitar',
+    nombre: 'Tyranitar',
+    icono: 'assets/imgs/fighters/pokemon_icon_248_00.png',
+    tipo: 'roca',
+    rareza: 9,
+    salud: 200,
+    propiedades: {
+      ataque: 251,
+      defensa: 212
+    },
+    ataques: ['mordisquito','bofeton'],
+    especiales: ['llamarada','roca_afilada']
+  },
+  {
+    id: 'gardevoir',
+    nombre: 'Gardevoir',
+    icono: 'assets/imgs/fighters/pokemon_icon_282_00.png',
+    tipo: 'normal',
+    rareza: 27,
+    salud: 136,
+    propiedades: {
+      ataque: 237,
+      defensa: 220
+    },
+    ataques: ['confusion','chispa'],
+    especiales: ['brillo_magico','hiperrayo']
+  },
+  {
+    id: 'exploud',
+    nombre: 'Exploud',
+    icono: 'assets/imgs/fighters/pokemon_icon_295_00.png',
+    tipo: 'normal',
+    rareza: 46,
+    salud: 208,
+    propiedades: {
+      ataque: 179,
+      defensa: 142
+    },
+    ataques: ['mordisquito','cabezazo'],
+    especiales: ['llamarada','premonicion']
+  },
+  {
+    id: 'aggron',
+    nombre: 'Aggron',
+    icono: 'assets/imgs/fighters/pokemon_icon_306_00.png',
+    tipo: 'roca',
+    rareza: 9,
+    salud: 140,
+    propiedades: {
+      ataque: 198,
+      defensa: 314
+    },
+    ataques: ['mordisquito','cabezazo'],
+    especiales: ['electrocanon','roca_afilada']
+  },
+  {
+    id: 'flygon',
+    nombre: 'Flygon',
+    icono: 'assets/imgs/fighters/pokemon_icon_330_00.png',
+    tipo: 'normal',
+    rareza: 16,
+    salud: 160,
+    propiedades: {
+      ataque: 205,
+      defensa: 168
+    },
+    ataques: ['mordisquito','destructor'],
+    especiales: ['terremoto','roca_afilada']
+  },
+  {
+    id: 'salamence',
+    nombre: 'Salamence',
+    icono: 'assets/imgs/fighters/pokemon_icon_373_00.png',
+    tipo: 'veneno',
+    rareza: 37,
+    salud: 190,
+    propiedades: {
+      ataque: 277,
+      defensa: 168
+    },
+    ataques: ['aliento_fuego','alarido'],
+    especiales: ['nube_radiactiva','llamarada']
+  },
+  {
+    id: 'metagross',
+    nombre: 'Metagross',
+    icono: 'assets/imgs/fighters/pokemon_icon_376_00.png',
+    tipo: 'roca',
+    rareza: 14,
+    salud: 160,
+    propiedades: {
+      ataque: 257,
+      defensa: 247
+    },
+    ataques: ['lanzarrocas','cabezazo'],
+    especiales: ['terremoto','roca_afilada']
   }
 ];

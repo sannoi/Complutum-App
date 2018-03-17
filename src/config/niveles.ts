@@ -28,5 +28,15 @@ export let niveles = [
   { id: 27, xp_necesaria: 250000 },
   { id: 28, xp_necesaria: 300000 },
   { id: 29, xp_necesaria: 350000 },
-  { id: 30, xp_necesaria: 500000 }
+  { id: 30, xp_necesaria: 500000 },
+  { id: 31, xp_necesaria: 500000 },
+  { id: 32, xp_necesaria: 750000 },
+  { id: 33, xp_necesaria: 1000000 },
+  { id: 34, xp_necesaria: 1250000 },
+  { id: 35, xp_necesaria: 1500000 },
+  { id: 36, xp_necesaria: 2000000 },
+  { id: 37, xp_necesaria: 2500000 },
+  { id: 38, xp_necesaria: 3000000 },
+  { id: 39, xp_necesaria: 5000000 },
+  { id: 40, xp_necesaria: 0 }
 ];

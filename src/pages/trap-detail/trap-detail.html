@@ -24,6 +24,7 @@
     </ion-card-header>
     <ion-card-content>
       <div class="trampa-img-mapa">
+        <ion-icon name="star" color="danger"></ion-icon>
         <img [src]="imagenMapa()" >
       </div>
       <p class="trampa-localizacion" *ngIf="trampa.entorno">{{trampa.entorno.localizacion.poblacion}}, {{trampa.entorno.localizacion.pais}}</p>

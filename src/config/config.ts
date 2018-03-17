@@ -11,14 +11,26 @@ export let config = {
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
     modificadores: {
       xp_multiplicador: 2,
-      tiempo_trampas_multiplicador: 0.33
+      tiempo_trampas_multiplicador: 0.01
     }
   },
   jugador: {
-    xp_inicial: 0,
+    xp_inicial: 25,
     monedas_iniciales: 15,
     xp_mascotas_iniciales: 1750,
-    mascotas_iniciales: [9],
+    iv_mascotas_iniciales: {
+      min: {
+        ataque: 10,
+        defensa: 10,
+        salud: 10
+      },
+      max: {
+        ataque: 15,
+        defensa: 15,
+        salud: 15
+      }
+    },
+    mascotas_iniciales: ['mew'],
     items_iniciales: [
       { item: 0, cantidad: 30 },
       { item: 1, cantidad: 20 },
@@ -68,6 +80,7 @@ export let config = {
     },
     config_gps: {
       frequency: 3000,
+      timeout: 50000,
       enableHighAccuracy: true
     },
     iconos: {
@@ -78,7 +91,7 @@ export let config = {
     tiempo_refresco_entorno: 30,
     tiempo_aparicion_enemigos: 15,
     tiempo_desaparicion_enemigos: 45,
-    radio_vision: 1.2,
+    radio_vision: 2.5,
     radio_interaccion: 0.05
   },
   sitios: {

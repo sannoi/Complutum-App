@@ -3,7 +3,6 @@ import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-an
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model';
 
-@IonicPage()
 @Component({
   selector: 'page-fighters-list',
   templateUrl: 'fighters-list.html',

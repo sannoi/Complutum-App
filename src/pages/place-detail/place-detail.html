@@ -8,7 +8,16 @@
     <ion-icon name="star" color="danger"></ion-icon>
     <img [src]="imagenMapa()">
   </div>
-  <div *ngIf="lugar.content" class="lugar-desc" [innerHtml]="lugar.content" padding></div>
+  <ion-card *ngIf="wikidata && wikidata.descriptions && wikidata.descriptions.es" color="light">
+    <ion-card-content>
+      {{wikidata.descriptions.es.value}}
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="lugar.description" color="light">
+    <ion-card-content>
+      {{lugar.description}}
+    </ion-card-content>
+  </ion-card>
   <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">

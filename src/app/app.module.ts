@@ -27,6 +27,7 @@ import { ItemsServiceProvider } from '../providers/items-service/items-service';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 import { StatsServiceProvider } from '../providers/stats-service/stats-service';
 import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
+import { WikidataServiceProvider } from '../providers/wikidata-service/wikidata-service';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { SettingsServiceProvider } from '../providers/settings-service/settings-
     ItemsServiceProvider,
     MapServiceProvider,
     StatsServiceProvider,
-    SettingsServiceProvider
+    SettingsServiceProvider,
+    WikidataServiceProvider
   ]
 })
 export class AppModule {}

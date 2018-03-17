@@ -23,4 +23,7 @@ page-mapa {
     height: 80px;
     cursor: pointer;
   }
+  ion-fab[left].center-marker {
+    left: 65px;
+  }
 }

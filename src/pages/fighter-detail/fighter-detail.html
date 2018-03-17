@@ -78,6 +78,33 @@
       </ion-row>
     </ion-grid>
   </div>
+  <div class="avatar-eficiencia" text-center>
+    <ion-grid>
+      <ion-row>
+        <ion-col col-4>
+          <ion-card color="danger">
+            <ion-card-content>
+              <span class="label">A</span> <span class="valor">{{luchador.propiedades_unicas.ataque}}</span>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col col-4>
+          <ion-card color="dark">
+            <ion-card-content>
+              <span class="label">D</span> <span class="valor">{{luchador.propiedades_unicas.defensa}}</span>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col col-4>
+          <ion-card color="secondary">
+            <ion-card-content>
+              <span class="label">S</span> <span class="valor">{{luchador.propiedades_unicas.salud}}</span>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
   <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">

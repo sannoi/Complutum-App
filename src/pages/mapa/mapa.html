@@ -10,6 +10,9 @@
     <button ion-fab color="secondary" (click)="fab.close();toggleTabs()"><ion-icon name="menu"></ion-icon><div class="label">Mostrar/Ocultar Menú</div></button>
   </ion-fab-list>
 </ion-fab>
+<ion-fab left bottom *ngIf="!centrado_marker" class="center-marker">
+  <button ion-fab mini color="light" (click)="centrarMapa()"><ion-icon name="locate" color="primary"></ion-icon></button>
+</ion-fab>
 <ion-fab right bottom *ngIf="mapService.entorno && settings && settings.interfaz && settings.interfaz.entorno">
   <button ion-fab mini color="light" (click)="mostrarMeteo()"><img [src]="mapService.entorno.icono"><div class="label">Entorno</div></button>
 </ion-fab>

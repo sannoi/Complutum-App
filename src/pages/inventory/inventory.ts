@@ -4,7 +4,6 @@ import { PlayerServiceProvider } from '../../providers/player-service/player-ser
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ItemModel } from '../../models/item.model';
 
-@IonicPage()
 @Component({
   selector: 'page-inventory',
   templateUrl: 'inventory.html',

@@ -7,6 +7,7 @@ import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { WikidataServiceProvider } from '../../providers/wikidata-service/wikidata-service';
 import { AvatarModel } from '../../models/avatar.model';
 
 @IonicPage()
@@ -16,7 +17,11 @@ import { AvatarModel } from '../../models/avatar.model';
 })
 export class TournamentDefaultPage {
   torneo: any;
-  jefes: Array<AvatarModel>;
+  wikidata: any;
+
+  items: Array<any>;
+
+  sin_items: boolean = false;
 
   private torneo_iniciado: boolean = false;
   private enemigos_derrotados: number = 0;
@@ -34,29 +39,78 @@ export class TournamentDefaultPage {
     public battleService: BattleServiceProvider,
     public mapService: MapServiceProvider,
     public playerService: PlayerServiceProvider,
+    public wikiService: WikidataServiceProvider,
     public itemsService: ItemsServiceProvider) {
-      this.torneo = this.parsearTorneo(this.navParams.get('torneo'));
+      var _torneo = this.navParams.get('torneo');
+      if (_torneo && _torneo['properties']['wikidata']) {
+        wikiService.getWikidataInfo(_torneo.properties.wikidata).then(info => {
+          this.wikidata = info;
+          this.torneo = this.parsearTorneo(_torneo);
+        });
+      } else {
+        this.torneo = this.parsearTorneo(_torneo);
+      }
+      this.items = new Array(
+        { item: 'medicina-sm', cantidad: 3 },
+        { item: 'medicina-md', cantidad: 1 }
+      );
   }
 
-  ionViewDidLoad() { }
+  recogerItems() {
+    var distancia = this.mapService.getDistanciaEnKilometros(this.mapService.coordenadas, this.torneo.coordenadas);
+    if (distancia > this.configService.config.mapa.radio_interaccion) {
+      this.toastService.push('Acércate para interactuar con el sitio');
+    } else if (this.sin_items) {
+      this.toastService.push('Inténtalo más tarde');
+    } else {
+      for (var i = 0; i < this.items.length; i++) {
+        var _item = this.configService.encontrarItem(this.items[i].item);
+        if (_item) {
+          this.itemsService.playerAnadirItem(_item, this.items[i].cantidad);
+          this.toastService.push('+' + this.items[i].cantidad + ' ' + _item.nombre);
+        }
+      }
+      this.sin_items = true;
+      if (this.configService.config.sitios.xp_recoger_items > 0) {
+        this.playerService.addXp(this.configService.config.sitios.xp_recoger_items).then(_exp => {
+          this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+        });
+      }
+      this.statsService.anadirEstadistica('torneos_visitados', 1, 'number');
+      this.statsService.anadirEstadistica(this.torneo.id + '_torneos_visitados', 1, 'number');
+
+      var este = this;
+      setTimeout(function(){
+        este.sin_items = false;
+      }, 60 * 1000);
+
+    }
+  }
 
   dismiss() {
     this.viewCtrl.dismiss();
   }
 
   parsearTorneo(torneo: any) {
-    /*var _idx_torneo = torneo.id.toString(10).replace(/\D/g, '0').split('').map(Number).reduce((a, b) => a + b, 0);
-    if (_idx_torneo > 9) {
-      _idx_torneo = parseInt(_idx_torneo.toString()[0]) - 1;
-    }*/
-    var _idx_torneo = Math.floor(Math.random()*this.configService.torneos.length);
+    var _idx_torneo = parseInt(torneo.id.toString().split('').pop());
+    if (_idx_torneo > this.configService.torneos.length) {
+      _idx_torneo = parseInt((_idx_torneo/2).toString());
+
+      if (_idx_torneo > this.configService.torneos.length) {
+        _idx_torneo = parseInt((_idx_torneo/2).toString());
+      }
+
+      if (_idx_torneo > this.configService.torneos.length) {
+        _idx_torneo = Math.floor(Math.random()*this.configService.torneos.length);
+      }
+    }
     var _ref_torneo = this.configService.torneos[0];
     if (this.configService.torneos[_idx_torneo]) {
       _ref_torneo = this.configService.torneos[_idx_torneo];
     }
-    console.log(_ref_torneo, _idx_torneo, torneo);
     let _latlng = { lat: torneo._geometry.coordinates[1], lng: torneo._geometry.coordinates[0] };
     let _torneo = {
+      id: torneo.id,
       nombre: torneo.properties.name,
       descripcion: "",
       coordenadas: _latlng,
@@ -64,12 +118,15 @@ export class TournamentDefaultPage {
       imagen: this.imagenMapa(_latlng),
       nivel: 1,
       puntos: 0,
-      enemigos: this.parsearBots(_ref_torneo.enemigos),
-      jefes: this.parsearBots(_ref_torneo.jefes),
+      puntos_combate: 0,
+      enemigos: this.parsearBots(_ref_torneo.enemigos, _ref_torneo.iv_enemigos),
+      jefes: this.parsearBots(_ref_torneo.jefes, _ref_torneo.iv_jefes),
       recompensas: this.parsearRecompensas(_ref_torneo.recompensas)
     };
     _torneo.nivel = this.calcularNivelTorneo(_torneo);
     _torneo.puntos = this.calcularPuntosTorneo(_torneo);
+    _torneo.puntos_combate = this.calcularPCTorneo(_torneo);
+    console.log(_torneo);
     return _torneo;
   }
 
@@ -352,7 +409,22 @@ export class TournamentDefaultPage {
     return parseInt((_result / _cuenta).toString());
   }
 
-  parsearBots(bots: any) {
+  calcularPCTorneo(torneo: any) {
+    var _result = 0;
+    if (torneo && torneo['enemigos'] && torneo['enemigos'].length > 0) {
+      for (var i = 0; i < torneo.enemigos.length; i++) {
+        _result = _result + torneo.enemigos[i].puntos_poder;
+      }
+    }
+    if (torneo && torneo['jefes'] && torneo['jefes'].length > 0) {
+      for (var ii = 0; ii < torneo.jefes.length; ii++) {
+        _result = _result + torneo.jefes[ii].puntos_poder;
+      }
+    }
+    return _result;
+  }
+
+  parsearBots(bots: any, rango_iv: any) {
     let _bots = new Array<AvatarModel>();
     var _botExp = bots.split(';');
 
@@ -366,7 +438,7 @@ export class TournamentDefaultPage {
           if (avatarRef) {
             var xp = this.configService.xpAcumuladosNivel(parseInt(_botExp2[i][1]) - 1);
             let mascota_nueva = new AvatarModel(this.configService);
-            mascota_nueva = mascota_nueva.parse_reference(avatarRef,xp);
+            mascota_nueva = mascota_nueva.parse_reference(avatarRef,xp,rango_iv);
             _bots.push(mascota_nueva);
           }
         }
@@ -411,16 +483,17 @@ export class TournamentDefaultPage {
   }
 
   xpTorneo() {
-    var _max = this.configService.xpAcumuladosNivel(29);
-    var _current = this.torneo.puntos;
+    var _max = 35;
+    var _current = this.torneo.nivel;
     return (_current / _max) * 100;
   }
 
   xpNivelText() {
-    var _max = this.configService.xpAcumuladosNivel(29);
+    /*var _max = this.configService.xpAcumuladosNivel(35);
     var _current = this.torneo.puntos;
 
-    return _current.toString() + '/' + _max.toString();
+    return _current.toString() + '/' + _max.toString();*/
+    return "P " + this.torneo.puntos_combate.toString();
   }
 
 }

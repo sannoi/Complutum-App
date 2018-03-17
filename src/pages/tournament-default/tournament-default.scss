@@ -2,4 +2,40 @@ page-tournament-default {
   ion-col > .card-md {
     width: 100%;
   }
+  .torneo-nivel-progreso {
+    .progress-inner {
+      padding: 10px 5px;
+    }
+    .progress-text {
+      top: 3px;
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: bold;
+    }
+  }
+  .torneo-img-mapa {
+    margin-bottom: 10px;
+    position: relative;
+
+    ion-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      margin-left: -16px;
+      margin-top: -16px;
+    }
+
+    img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  div.torneo-localizacion {
+    margin-bottom: 55px;
+  }
 }
