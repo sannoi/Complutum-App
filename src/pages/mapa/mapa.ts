@@ -679,6 +679,7 @@ export class MapaPage {
         este.edificios();
         este.trampasIniciales();
         este.realtime();
+        este.map_inicializado = true;
       });
 
       this.map.on('move', function(e) {
