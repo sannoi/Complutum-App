@@ -297,6 +297,7 @@ export class MapaPage {
   }
 
   abrirFeature(feature: any) {
+    console.log(feature);
     if (feature && feature.properties) {
       if (feature.properties.tipo == 'Bot') {
         this.loading = this.loadingCtrl.create();
@@ -309,11 +310,25 @@ export class MapaPage {
           }
         });
 
-      } else if (feature.properties.tipo == 'torneo' || feature.properties.tipo == 'tienda') {
+      } else if (feature.properties.type == 'tourism' || feature.properties.type == 'place') {
         if (feature.properties.obj) {
           feature.properties.obj = JSON.parse(feature.properties.obj);
         }
-        if (feature.properties.obj && feature.properties.obj.parametros.tipo == "torneo") {
+        if (feature.properties.type == 'tourism') {
+          if (feature.properties.imagenes) {
+            feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
+          }
+          let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
+            enableBackdropDismiss: false
+          });
+          modal.present();
+        } else if (feature.properties.type == 'place') {
+          let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature }, {
+            enableBackdropDismiss: false
+          });
+          modal.present();
+        }
+        /*if (feature.properties.obj && feature.properties.obj.parametros.tipo == "torneo") {
           let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature.properties.obj }, {
             enableBackdropDismiss: false
           });
@@ -324,7 +339,7 @@ export class MapaPage {
             enableBackdropDismiss: false
           });
           modal.present();
-        }
+        }*/
       } else if (feature.properties.tipo == 'Trampa') {
         var trampa = this.markers_trampas.find(function(x) {
           return x.id === feature.id;
@@ -530,7 +545,7 @@ export class MapaPage {
                 "icon-image": "sitio",
                 "icon-size": 0.2
               },
-              "filter": ["==", "tipo", "tienda"]
+              "filter": ["==", "type", "tourism"]
             });
 
             este.map.addLayer({
@@ -541,7 +556,7 @@ export class MapaPage {
                 "icon-image": "torneo",
                 "icon-size": 0.2
               },
-              "filter": ["==", "tipo", "torneo"]
+              "filter": ["==", "type", "place"]
             });
 
             if (!_loaded) {
@@ -642,7 +657,7 @@ export class MapaPage {
         .addTo(this.map);
 
       var este = this;
-      this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
+      this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lng=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision;
       if (this.playerService.player && this.playerService.player.nivel) {
         this.url_statics += '&nivel=' + this.playerService.player.nivel;
       }
@@ -684,7 +699,7 @@ export class MapaPage {
             this.mapService.iniciarObservableEnemigos();
             this.observable_iniciado = true;
           }
-          this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lon=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision + '&categorias=192';
+          this.url_statics = this.configService.config.juego.url_base + this.configService.config.juego.url_statics + '/?lat=' + this.Coordinates.latitude + '&lng=' + this.Coordinates.longitude + '&radio=' + this.configService.config.mapa.radio_vision;
           if (this.playerService.player && this.playerService.player.nivel) {
             this.url_statics += '&nivel=' + this.playerService.player.nivel;
           }

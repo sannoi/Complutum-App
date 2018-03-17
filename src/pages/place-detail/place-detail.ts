@@ -71,6 +71,10 @@ export class PlaceDetailPage {
     }
   }
 
+  imagenMapa() {
+    return 'https://api.mapbox.com/styles/v1/' + this.configService.config.mapa.mapbox_estilo + '/static/'+ this.coordenadas.lng +','+ this.coordenadas.lat +',16,0.00,0.00/300x200@2x?access_token=' + this.configService.config.mapa.mapbox_access_token;
+  }
+
   dismiss() {
     this.viewCtrl.dismiss();
   }

@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ModalController, AlertController, 
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
+import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
@@ -31,6 +32,7 @@ export class TournamentDefaultPage {
     private statsService: StatsServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
+    public mapService: MapServiceProvider,
     public playerService: PlayerServiceProvider,
     public itemsService: ItemsServiceProvider) {
       this.torneo = this.parsearTorneo(this.navParams.get('torneo'));
@@ -43,21 +45,36 @@ export class TournamentDefaultPage {
   }
 
   parsearTorneo(torneo: any) {
+    /*var _idx_torneo = torneo.id.toString(10).replace(/\D/g, '0').split('').map(Number).reduce((a, b) => a + b, 0);
+    if (_idx_torneo > 9) {
+      _idx_torneo = parseInt(_idx_torneo.toString()[0]) - 1;
+    }*/
+    var _idx_torneo = Math.floor(Math.random()*this.configService.torneos.length);
+    var _ref_torneo = this.configService.torneos[0];
+    if (this.configService.torneos[_idx_torneo]) {
+      _ref_torneo = this.configService.torneos[_idx_torneo];
+    }
+    console.log(_ref_torneo, _idx_torneo, torneo);
+    let _latlng = { lat: torneo._geometry.coordinates[1], lng: torneo._geometry.coordinates[0] };
     let _torneo = {
-      nombre: torneo.titulo_formateado,
-      descripcion: torneo.contenido_formateado,
-      coordenadas: { lat: torneo.latitud, lng: torneo.longitud },
-      distancia: torneo.distancia,
-      imagen: torneo.imagenes.lg,
+      nombre: torneo.properties.name,
+      descripcion: "",
+      coordenadas: _latlng,
+      distancia: this.mapService.getDistanciaEnKilometros(_latlng, this.mapService.coordenadas),
+      imagen: this.imagenMapa(_latlng),
       nivel: 1,
       puntos: 0,
-      enemigos: this.parsearBots(torneo.parametros.propiedades.bots),
-      jefes: this.parsearBots(torneo.parametros.propiedades.jefes),
-      recompensas: this.parsearRecompensas(torneo.parametros.propiedades.recompensas)
+      enemigos: this.parsearBots(_ref_torneo.enemigos),
+      jefes: this.parsearBots(_ref_torneo.jefes),
+      recompensas: this.parsearRecompensas(_ref_torneo.recompensas)
     };
     _torneo.nivel = this.calcularNivelTorneo(_torneo);
     _torneo.puntos = this.calcularPuntosTorneo(_torneo);
     return _torneo;
+  }
+
+  imagenMapa(coordenadas: any) {
+    return 'https://api.mapbox.com/styles/v1/' + this.configService.config.mapa.mapbox_estilo + '/static/'+ coordenadas.lng +','+ coordenadas.lat +',16,0.00,0.00/300x200@2x?access_token=' + this.configService.config.mapa.mapbox_access_token;
   }
 
   comenzarTorneo() {

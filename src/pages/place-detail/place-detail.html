@@ -4,10 +4,11 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <div class="lugar-img" text-center>
-    <img [src]="lugar.imagenes.lg">
+  <div class="lugar-img" text-center *ngIf="lugar">
+    <ion-icon name="star" color="danger"></ion-icon>
+    <img [src]="imagenMapa()">
   </div>
-  <div class="lugar-desc" [innerHtml]="lugar.content" padding></div>
+  <div *ngIf="lugar.content" class="lugar-desc" [innerHtml]="lugar.content" padding></div>
   <ion-fab right bottom #fab>
     <button ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">

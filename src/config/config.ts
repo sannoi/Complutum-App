@@ -6,7 +6,8 @@ export let config = {
     online: false,
     url_base: 'https://web.mideas.es/mideas_devel',
     url_realtime: '/api/mplay/usuario/usuariosCercanos.json',
-    url_statics: '/api/sitios/sitio/realtime.json',
+    //url_statics: '/api/sitios/sitio/realtime.json',
+    url_statics: '/api/mplay/usuario/atracciones.json',
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
     modificadores: {
       xp_multiplicador: 2,
