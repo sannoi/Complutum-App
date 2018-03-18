@@ -95,6 +95,17 @@ export let config = {
     radio_interaccion: 0.05
   },
   sitios: {
+    items_disponibles: [
+      { item: 'medicina-sm', cantidad: 1, rareza: 80 },
+      { item: 'medicina-md', cantidad: 1, rareza: 60 },
+      { item: 'medicina-xl', cantidad: 1, rareza: 30 },
+      { item: 'medicina-xxl', cantidad: 1, rareza: 10 },
+      { item: 'trampa-sm', cantidad: 1, rareza: 40 },
+      { item: 'trampa-md', cantidad: 1, rareza: 20 },
+      { item: 'trampa-xl', cantidad: 1, rareza: 5 },
+      { item: 'trampa-xxl', cantidad: 1, rareza: 1 }
+    ],
+    cantidad_recoger_items: 3,
     xp_recoger_items: 150
   },
   batalla: {

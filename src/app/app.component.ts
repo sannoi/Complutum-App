@@ -192,7 +192,15 @@ export class MyApp {
             let alert = this.alertCtrl.create({
               title: 'Bienvenida',
               subTitle: '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.',
-              buttons: ['Adelante']
+              message: 'Un <b>Mew</b> es ahora tu compañero de aventuras. Úsalo para pelear contra otros luchadores.',
+              buttons: [
+                {
+                  text: 'Adelante',
+                  handler: () => {
+                    this.playerService.mascotasIniciales();
+                  }
+                }
+              ]
             });
             alert.present();
           } else {

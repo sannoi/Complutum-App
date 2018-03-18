@@ -1,8 +1,29 @@
 page-shop {
-  .tienda-objetos {
+  ion-icon[name=cash] {
+    font-size: 1em;
+    background-color: black;
+    padding: 3px 4px;
+    border-radius: 50%;
+    color: orange;
+  }
+  .tienda-objetos {  
     ion-col {
       h6 {
         font-size: 1.3rem;
+        text-transform: uppercase;
+      }
+      button {
+        background-color: transparent;
+
+        p {
+          margin-top: 5px;
+          margin-bottom: 5px;
+          margin-left: 5px;
+          margin-right: 5px;
+          border-radius: 15px;
+          background-color: color($colors, light);
+          padding: 5px;
+        }
       }
     }
   }

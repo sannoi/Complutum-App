@@ -160,7 +160,7 @@ export class PlayerServiceProvider {
         player.mascotas = data.mascotas;
       } else {
         player.mascotas = new Array<AvatarModel>();
-        this.mascotasIniciales(player);
+        //this.mascotasIniciales(player);
       }
       if (data.mascota_seleccionada_idx) {
         player.mascota_seleccionada_idx = data.mascota_seleccionada_idx;
@@ -395,7 +395,7 @@ export class PlayerServiceProvider {
     });
   }
 
-  mascotasIniciales(player: any) {
+  mascotasIniciales(player?: any) {
     if (this.configService.config.jugador.mascotas_iniciales && this.configService.config.jugador.mascotas_iniciales.length > 0) {
       for (var i = 0; i < this.configService.config.jugador.mascotas_iniciales.length; i++) {
         var _avatar = this.configService.encontrarLuchador(this.configService.config.jugador.mascotas_iniciales[i]);

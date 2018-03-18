@@ -19,7 +19,7 @@ export class TournamentDefaultPage {
   torneo: any;
   wikidata: any;
 
-  items: Array<any>;
+  items: any;
 
   sin_items: boolean = false;
 
@@ -50,10 +50,9 @@ export class TournamentDefaultPage {
       } else {
         this.torneo = this.parsearTorneo(_torneo);
       }
-      this.items = new Array(
-        { item: 'medicina-sm', cantidad: 3 },
-        { item: 'medicina-md', cantidad: 1 }
-      );
+      itemsService.playerItemsSitio().then(data => {
+        this.items = data;
+      });
   }
 
   recogerItems() {

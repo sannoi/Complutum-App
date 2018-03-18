@@ -21,7 +21,7 @@ export class PlaceDetailPage {
 
   sin_items: boolean = false;
 
-  items: Array<any>;
+  items: any;
 
   constructor(
     public navCtrl: NavController,
@@ -36,10 +36,9 @@ export class PlaceDetailPage {
     public mapService: MapServiceProvider) {
     this.lugar = navParams.get('lugar');
     this.coordenadas = navParams.get('coordenadas');
-    this.items = new Array(
-      { item: 'medicina-sm', cantidad: 3 },
-      { item: 'medicina-md', cantidad: 1 }
-    );
+    itemsService.playerItemsSitio().then(data => {
+      this.items = data;
+    });
     if (this.lugar['wikidata']) {
       wikiService.getWikidataInfo(this.lugar.wikidata).then(info => {
         console.log(info);

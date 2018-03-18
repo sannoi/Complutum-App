@@ -74,6 +74,43 @@ export class ItemsServiceProvider {
     });
   }
 
+  recuperarItemRandom(items: any) {
+    if (items && items.length > 0) {
+      var _rareza_minima = Math.random() * 100;
+      var _items_filtrados = items.filter(function(x) {
+        return x.rareza >= _rareza_minima;
+      });
+      if (_items_filtrados && _items_filtrados.length > 0) {
+        return _items_filtrados[Math.floor(Math.random() * _items_filtrados.length)];
+      } else {
+        return this.recuperarItemRandom(items);
+      }
+    } else {
+      return false;
+    }
+  }
+
+  playerItemsSitio() {
+    var _max_items = this.configService.config.sitios.cantidad_recoger_items;
+    var _items_disponibles = this.configService.config.sitios.items_disponibles;
+    var _items = [];
+
+    for (var i = 0; i < _max_items; i++) {
+      var _item = this.recuperarItemRandom(_items_disponibles);
+      if (_item) {
+        _items.push(_item);
+      } else {
+        _item = this.recuperarItemRandom(_items_disponibles);
+        if (_item) {
+          _items.push(_item);
+        }
+      }
+    }
+    return new Promise((response, fail) => {
+      return response(_items);
+    });
+  }
+
   playerUsarItem(item: any) {
     return this.playerService.getPlayer().then(player => {
       if (player.items && player.items.length > 0 && item.tipo == 'modificador') {
