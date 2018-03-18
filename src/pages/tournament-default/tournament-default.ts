@@ -7,6 +7,7 @@ import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { WikidataServiceProvider } from '../../providers/wikidata-service/wikidata-service';
 import { AvatarModel } from '../../models/avatar.model';
 
@@ -31,9 +32,9 @@ export class TournamentDefaultPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public toastService: ToastServiceProvider,
+    public alertService: AlertServiceProvider,
     private statsService: StatsServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
@@ -138,10 +139,29 @@ export class TournamentDefaultPage {
       return false;
     }
 
-    let alert = this.alertCtrl.create({
-      title: "Participar en Torneo",
-      subTitle: "Vas a participar en un torneo de nivel " + this.torneo.nivel + ". ¿Quieres continuar?",
-      buttons: [
+    var _acreditaciones = this.playerService.player.items.find(function(x){
+      return x.id === 'acreditacion-torneo';
+    });
+
+    if (!_acreditaciones) {
+      let buttons = [
+        {
+          text: "Vale"
+        },
+        {
+          text: "Ir a la tienda",
+          handler: () => {
+            let modal = this.modalCtrl.create('ShopPage', { player: this.playerService.player }, {
+              enableBackdropDismiss: false
+            });
+            modal.present();
+          }
+        }
+      ];
+      this.alertService.push('Sin acreditación', 'No tienes acreditaciones para participar en el torneo. Puedes comprar acreditaciones en la tienda.', null, buttons, false);
+
+    } else {
+      let btns = [
         {
           text: "No",
           role: "cancel",
@@ -150,12 +170,18 @@ export class TournamentDefaultPage {
         {
           text: "Sí",
           handler: () => {
-            this.rutinaTorneo();
+            this.itemsService.playerBorrarItem('acreditacion-torneo', 1).then(res => {
+              if (res) {
+                this.rutinaTorneo();
+              } else {
+                this.alertService.push('Error', 'Se ha producido un error. Vuelve a intentarlo.', null, ['Vale'], false);
+              }
+            });
           }
         }
-      ]
-    });
-    alert.present();
+      ];
+      this.alertService.push('Participar en Torneo', 'Vas a participar en un torneo de nivel ' + this.torneo.nivel + '. Para ello tienes que usar una acreditación. ¿Quieres continuar?', null, btns, false);
+    }
   }
 
   rutinaTorneo() {
@@ -306,20 +332,16 @@ export class TournamentDefaultPage {
 
     this.statsService.anadirEstadistica('torneos_ganados', 1, 'number');
 
-    let alert = this.alertCtrl.create({
-      title: "Has ganado el torneo",
-      subTitle: "Enhorabuena, has ganado el torneo. Estas son tus ganancias:",
-      message: _out,
-      buttons: [
-        {
-          text: "Muy bien",
-          handler: () => {
-            this.cobrarGanancias();
-          }
+    let buttons = [
+      {
+        text: "Muy bien",
+        handler: () => {
+          this.cobrarGanancias();
+          this.viewCtrl.dismiss();
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+    this.alertService.push('Has ganado el Torneo', 'Enhorabuena, has ganado el torneo. Estas son tus ganancias:', _out, buttons, false);
   }
 
   torneoPerdido() {
@@ -327,12 +349,7 @@ export class TournamentDefaultPage {
 
     this.statsService.anadirEstadistica('torneos_perdidos', 1, 'number');
 
-    let alert = this.alertCtrl.create({
-      title: "Has perdido el torneo",
-      subTitle: "Alguno de tus luchadores ha perdido su combate. Vuelve a intentarlo más adelante.",
-      buttons: ["Vale"]
-    });
-    alert.present();
+    this.alertService.push('Has perdido el Torneo', 'Alguno de tus luchadores ha perdido su combate. Vuelve a intentarlo más adelante.', null, ['Vale'], false);
   }
 
   textoGanancia(ganancia: any) {
@@ -460,7 +477,7 @@ export class TournamentDefaultPage {
           if (_recExp2[i][0] != 'item') {
             let _recompensa = {
               tipo: _recExp2[i][0],
-              cantidad: _recExp2[i][1]
+              cantidad: parseInt(_recExp2[i][1])
             }
             _rec.push(_recompensa);
           } else {
@@ -469,7 +486,7 @@ export class TournamentDefaultPage {
               let _recompensa_item = {
                 tipo: _recExp2[i][0],
                 item: _itemExp[1],
-                cantidad: _itemExp[0]
+                cantidad: parseInt(_itemExp[0])
               }
               _rec.push(_recompensa_item);
             }

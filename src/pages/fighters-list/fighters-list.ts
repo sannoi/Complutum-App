@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, ModalController } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { AvatarModel } from '../../models/avatar.model';
 
@@ -19,6 +19,7 @@ export class FightersListPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public modalCtrl: ModalController,
     private playerService: PlayerServiceProvider,
     public popoverCtrl: PopoverController) {
       this.orden = 'fecha';
@@ -51,7 +52,10 @@ export class FightersListPage {
   }
 
   detalleLuchador(luchador: AvatarModel) {
-    this.navCtrl.push('FighterDetailPage', { luchador: luchador });
+    let modal = this.modalCtrl.create('FighterDetailPage', { luchador: luchador, modal: true }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
   }
 
   filtrarLuchadores(ev: any) {

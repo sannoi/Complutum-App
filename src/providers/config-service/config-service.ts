@@ -6,12 +6,14 @@ import * as AppTipos from '../../config/tipos';
 import * as AppItems from '../../config/items';
 import * as AppShop from '../../config/tienda';
 import * as AppTorneos from '../../config/torneos';
+import * as AppEquipos from '../../config/equipos';
 
 @Injectable()
 export class ConfigServiceProvider {
 
   public config: any;
   public luchadores: any;
+  public equipos: any;
   public ataques: any;
   public tipos: any;
   public items: any;
@@ -21,6 +23,7 @@ export class ConfigServiceProvider {
   constructor() {
     this.config = AppConfig.config;
     this.luchadores = AppLuchadores.luchadores;
+    this.equipos = AppEquipos.equipos;
     this.ataques = AppAtaques.ataques;
     this.tipos = AppTipos.tipos;
     this.items = AppItems.items;

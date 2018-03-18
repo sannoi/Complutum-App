@@ -161,5 +161,15 @@ export let items = [
       tiempo: 30 * 60,
       xp: "x2"
     }
+  },
+  {
+    id: "acreditacion-torneo",
+    nombre: "Acreditación",
+    descripcion: "Te permite participar en un torneo",
+    icono: "assets/imgs/items/Item_1401.png",
+    tipo: "pase",
+    propiedades: {
+      tipo_torneo: 'defecto'
+    }
   }
 ];

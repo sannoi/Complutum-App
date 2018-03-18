@@ -137,6 +137,11 @@ export class PlayerServiceProvider {
       if (data.icono) {
         player.icono = data.icono;
       }
+      if (data.equipo) {
+        player.equipo = data.equipo;
+      } else {
+        player.equipo = {};
+      }
       if (data.xp) {
         player.xp = data.xp;
       } else if (this.configService.config.jugador.xp_inicial > 0) {
@@ -185,6 +190,13 @@ export class PlayerServiceProvider {
       return this.storage.set('player', player).then(res => {
         return res;
       });
+    }
+  }
+
+  establecerEquipo(equipo: any) {
+    if (this.player) {
+      this.player.equipo = equipo;
+      this.savePlayer();
     }
   }
 

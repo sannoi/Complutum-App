@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
+import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { ItemModel } from '../../models/item.model';
 
 @Component({
@@ -16,8 +17,8 @@ export class InventoryPage {
 
   constructor(
     public navCtrl: NavController,
-    public alertCtrl: AlertController,
     public navParams: NavParams,
+    private alertService: AlertServiceProvider,
     private playerService: PlayerServiceProvider,
     private itemsService: ItemsServiceProvider) {
   }
@@ -36,24 +37,20 @@ export class InventoryPage {
 
   clickItem(item: any) {
     if (item && item.tipo == "modificador") {
-      let alert = this.alertCtrl.create({
-        title: "Usar Objeto",
-        message: "¿Seguro que quieres usar el objeto " + item.nombre + "?",
-        buttons: [
-          {
-            text: "No",
-            role: "cancel",
-            handler: () => {}
-          },
-          {
-            text: "Sí",
-            handler: () => {
-              this.itemsService.playerUsarItem(item);
-            }
+      let buttons = [
+        {
+          text: "No",
+          role: "cancel",
+          handler: () => {}
+        },
+        {
+          text: "Sí",
+          handler: () => {
+            this.itemsService.playerUsarItem(item);
           }
-        ]
-      });
-      alert.present();
+        }
+      ];
+      this.alertService.push('Usar Objeto', null, '¿Seguro que quieres usar el objeto ' + item.nombre + '?', buttons, false);
     }
   }
 

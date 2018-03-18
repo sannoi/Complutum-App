@@ -6,7 +6,6 @@ export let config = {
     online: false,
     url_base: 'https://web.mideas.es/mideas_devel',
     url_realtime: '/api/mplay/usuario/usuariosCercanos.json',
-    //url_statics: '/api/sitios/sitio/realtime.json',
     url_statics: '/api/mplay/usuario/atracciones.json',
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
     modificadores: {
@@ -16,7 +15,7 @@ export let config = {
   },
   jugador: {
     xp_inicial: 25,
-    monedas_iniciales: 15,
+    monedas_iniciales: 125,
     xp_mascotas_iniciales: 1750,
     iv_mascotas_iniciales: {
       min: {
@@ -53,6 +52,7 @@ export let config = {
   },
   avatares: {
     energia_maxima: 100,
+    xp_nuevo_enemigo_derrotado: 500,
     xp_nueva_mascota: 250,
     despedir_mascota: {
       xp: 25,

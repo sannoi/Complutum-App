@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { Storage } from '@ionic/storage';
-import { NavController, ModalController, LoadingController, Events, AlertController, FabContainer,Platform } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, Events, FabContainer,Platform } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
@@ -10,6 +10,7 @@ import { StatsServiceProvider } from '../../providers/stats-service/stats-servic
 import { MapServiceProvider } from '../../providers/map-service/map-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { AvatarModel } from '../../models/avatar.model'
 import * as moment from 'moment';
 
@@ -45,7 +46,6 @@ export class MapaPage {
 
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
-    public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public storage: Storage,
     public events: Events,
@@ -57,6 +57,7 @@ export class MapaPage {
     private statsService: StatsServiceProvider,
     private mapService: MapServiceProvider,
     private itemsService: ItemsServiceProvider,
+    private alertService: AlertServiceProvider,
     private toastService: ToastServiceProvider) {
     this.markers_enemigos = new Array<any>();
     this.markers_trampas = new Array<any>();
@@ -117,13 +118,7 @@ export class MapaPage {
   }
 
   mostrarMeteo() {
-    let alert = this.alertCtrl.create({
-      title: 'Meteorología',
-      subTitle: 'El tiempo atmosférico es: <b>' + this.mapService.entorno.meteo + '</b>',
-      message: '<div align="center"><img src="' + this.mapService.entorno.icono + '"></div>Temperatura: <b>' + this.mapService.entorno.temp + 'ºC</b><br>Localización: <b>' + this.mapService.entorno.localizacion.poblacion + ', ' + this.mapService.entorno.localizacion.pais + '</b><br>Terreno: <b>' + this.mapService.entorno.terreno.join(', ') + '</b>',
-      buttons: ['Vale']
-    });
-    alert.present();
+    this.alertService.push('Meteorología', 'El tiempo atmosférico es: <b>' + this.mapService.entorno.meteo + '</b>', '<div align="center"><img src="' + this.mapService.entorno.icono + '"></div>Temperatura: <b>' + this.mapService.entorno.temp + 'ºC</b><br>Localización: <b>' + this.mapService.entorno.localizacion.poblacion + ', ' + this.mapService.entorno.localizacion.pais + '</b><br>Terreno: <b>' + this.mapService.entorno.terreno.join(', ') + '</b>', ["Vale"], true);
   }
 
   abrirTienda() {
@@ -174,7 +169,7 @@ export class MapaPage {
         });
 
         // make a marker for each feature and add to the map
-        var trampa_marker = new mapboxgl.Marker(el)
+        var trampa_marker = new mapboxgl.Marker(el, { offset: [0, -40] })
           .setLngLat(feature.geometry.coordinates)
           .addTo(this.map);
 
@@ -211,32 +206,27 @@ export class MapaPage {
   }
 
   anadirRecompensaTrampa(trampa: any) {
-    let alert = this.alertCtrl.create({
-      title: '¡Has capturado una nueva mascota!',
-      message: 'Parece que una de tus trampas ha conseguido atrapar algo.',
-      enableBackdropDismiss: false,
-      buttons: [
-        {
-          text: '¡Quiero verlo!',
-          handler: () => {
-            var xp = this.configService.xpAcumuladosNivel(this.configService.config.jugador.mascota_nueva.nivel_maximo - 1);
-            if (xp <= 0) {
-              xp = 1;
-            } else if (xp > this.playerService.player.xp) {
-              xp = this.configService.xpAcumuladosNivel(this.playerService.player.nivel - 1);
-            }
+    let buttons = [
+      {
+        text: '¡Quiero verlo!',
+        handler: () => {
+          var xp = this.configService.xpAcumuladosNivel(this.configService.config.jugador.mascota_nueva.nivel_maximo - 1);
+          if (xp <= 0) {
+            xp = 1;
+          } else if (xp > this.playerService.player.xp) {
+            xp = this.configService.xpAcumuladosNivel(this.playerService.player.nivel - 1);
+          }
 
-            var _idx_trampa_activa = this.playerService.player.trampas_activas.indexOf(trampa);
-            if (_idx_trampa_activa > -1) {
-              this.playerService.anadirMascota(trampa.avatar.id, xp, null, trampa.obj.propiedades.xp, trampa.obj.propiedades.iv_rango);
-              this.playerService.player.trampas_activas.splice(_idx_trampa_activa, 1);
-              this.playerService.savePlayer();
-            }
+          var _idx_trampa_activa = this.playerService.player.trampas_activas.indexOf(trampa);
+          if (_idx_trampa_activa > -1) {
+            this.playerService.anadirMascota(trampa.avatar.id, xp, null, trampa.obj.propiedades.xp, trampa.obj.propiedades.iv_rango);
+            this.playerService.player.trampas_activas.splice(_idx_trampa_activa, 1);
+            this.playerService.savePlayer();
           }
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+    this.alertService.push('¡Has capturado una nueva mascota!', 'Parece que una de tus trampas ha conseguido atrapar algo.', null, buttons, false);
   }
 
   borrarMarkerTrampa(id: any) {
@@ -275,7 +265,7 @@ export class MapaPage {
       });
 
       // make a marker for each feature and add to the map
-      var enemigo_marker = new mapboxgl.Marker(el)
+      var enemigo_marker = new mapboxgl.Marker(el, { offset: [0, -40] })
         .setLngLat(feature.geometry.coordinates)
         .addTo(this.map);
 
@@ -336,18 +326,6 @@ export class MapaPage {
           });
           modal.present();
         }
-        /*if (feature.properties.obj && feature.properties.obj.parametros.tipo == "torneo") {
-          let modal = this.modalCtrl.create('TournamentDefaultPage', { torneo: feature.properties.obj }, {
-            enableBackdropDismiss: false
-          });
-          modal.present();
-        } else {
-          feature.properties.imagenes = JSON.parse(feature.properties.imagenes);
-          let modal = this.modalCtrl.create('PlaceDetailPage', { lugar: feature.properties, coordenadas: { lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] } }, {
-            enableBackdropDismiss: false
-          });
-          modal.present();
-        }*/
       } else if (feature.properties.tipo == 'Trampa') {
         var trampa = this.markers_trampas.find(function(x) {
           return x.id === feature.id;
@@ -393,6 +371,23 @@ export class MapaPage {
                 this.playerService.player.mascotas[_idx_luchador].anadirEstadistica('batallas_ganadas', 1, 'number');
                 this.playerService.savePlayer();
               }
+              var _stat_enemigo = this.statsService.recuperarEstadistica(data['enemigo']['id_original'] + '_derrotados');
+              if (!_stat_enemigo) {
+                let btnsNuevo = [
+                  {
+                    text: '¡Qué bien!',
+                    handler: () => {
+                      if (this.configService.config.avatares.xp_nuevo_enemigo_derrotado > 0) {
+                        this.playerService.addXp(this.configService.config.avatares.xp_nuevo_enemigo_derrotado).then(_exp => {
+                          this.toastService.push('+' + _exp + ' XP ' + this.playerService.player.nombre);
+                        });
+                      }
+                    }
+                  }
+                ];
+                this.alertService.push('Nuevo enemigo', '<div align="center"><img src="' + data['enemigo']['icono'] + '"></div><h5 align="center">' + data['enemigo']['nombre'] + '</h5>', 'Has registrado un nuevo luchador en la base de datos.', btnsNuevo, false);
+              }
+
               this.statsService.anadirEstadistica('batallas_ganadas', 1, 'number');
               this.statsService.anadirEstadistica(data['enemigo']['id_original'] + '_derrotados', 1, 'number')
             } else if (data['resultado'] == 'perdedor') {
@@ -448,41 +443,30 @@ export class MapaPage {
     modal.onDidDismiss(data => {
       if (data && data.item) {
         if (data.item.tipo == 'trampa') {
-          let alert = this.alertCtrl.create({
-            title: 'Colocar trampa',
-            message: '¿Seguro que quieres colocar una ' + data.item.nombre + ' en tu ubicación actual?',
-            enableBackdropDismiss: false,
-            buttons: [
-              {
-                text: 'No',
-                role: 'cancel',
-                handler: () => { }
-              },
-              {
-                text: 'Sí',
-                handler: () => {
-                  this.itemsService.playerBorrarItem(data.item.id, 1).then(res => {
-                    if (res) {
-                      this.playerService.plantarTrampa(data.item, this.mapService.coordenadas, this.mapService.entorno).then(trampa => {
-                        if (trampa && trampa['obj'] && trampa['coordenadas']) {
-                          let alrt = this.alertCtrl.create({
-                            title: 'Trampa colocada',
-                            message: 'Has colocado una ' + trampa['obj'].nombre + ' en las coordenadas (' + trampa['coordenadas'].lat + ', ' + trampa['coordenadas'].lng + '). Comprueba si has cazado algo dentro de un tiempo.',
-                            enableBackdropDismiss: false,
-                            buttons: ['Vale']
-                          });
-                          alrt.present();
-                        } else {
-                          this.itemsService.playerAnadirItem(data.item, 1);
-                        }
-                      });
-                    }
-                  });
-                }
+          let buttons = [
+            {
+              text: 'No',
+              role: 'cancel',
+              handler: () => { }
+            },
+            {
+              text: 'Sí',
+              handler: () => {
+                this.itemsService.playerBorrarItem(data.item.id, 1).then(res => {
+                  if (res) {
+                    this.playerService.plantarTrampa(data.item, this.mapService.coordenadas, this.mapService.entorno).then(trampa => {
+                      if (trampa && trampa['obj'] && trampa['coordenadas']) {
+                        this.alertService.push('Trampa colocada', 'Has colocado una ' + trampa['obj'].nombre + ' en las coordenadas (' + trampa['coordenadas'].lat + ', ' + trampa['coordenadas'].lng + '). Comprueba si has cazado algo dentro de un tiempo.', null, ["Vale"], false);
+                      } else {
+                        this.itemsService.playerAnadirItem(data.item, 1);
+                      }
+                    });
+                  }
+                });
               }
-            ]
-          });
-          alert.present();
+            }
+          ];
+          this.alertService.push('Colocar trampa', '¿Seguro que quieres colocar una ' + data.item.nombre + ' en tu ubicación actual?', null, buttons, false);
         }
       }
     });
@@ -664,7 +648,7 @@ export class MapaPage {
       el.style.backgroundImage = 'url(assets/imgs/player_default.png)';
 
       // make a marker for each feature and add to the map
-      this.marker = new mapboxgl.Marker(el)
+      this.marker = new mapboxgl.Marker(el, { offset: [0, -25] })
         .setLngLat([this.Coordinates.longitude, this.Coordinates.latitude])
         .addTo(this.map);
 
@@ -673,7 +657,6 @@ export class MapaPage {
       if (this.playerService.player && this.playerService.player.nivel) {
         this.url_statics += '&nivel=' + this.playerService.player.nivel;
       }
-      console.log(this.url_statics);
 
       this.map.on('load', function() {
         este.edificios();
@@ -697,7 +680,6 @@ export class MapaPage {
       }
 
       this.map.on('styledataloading', function(styledata) {
-        console.log("style map loaded!", styledata);
         este.map.on('data', loadSource);
       });
 
@@ -711,7 +693,6 @@ export class MapaPage {
         if (_pos && _pos['coords']) {
           this.Coordinates = _pos['coords'];
           this.mapService.establecerCoordenadas({ lat: this.Coordinates.latitude, lng: this.Coordinates.longitude });
-          //this.map.setCenter([this.Coordinates.longitude, this.Coordinates.latitude]);
           if (this.centrado_marker) {
             this.map.easeTo({ center: [this.Coordinates.longitude, this.Coordinates.latitude], zoom: this.map.getZoom() });
           }

@@ -5,6 +5,7 @@ import { ItemModel } from './item.model';
 export class PlayerModel {
   public nombre: string;
   public icono: string = 'assets/imgs/player_default.png';
+  public equipo: any;
   public xp: number;
   public nivel: number;
   public monedas: number;
@@ -23,6 +24,7 @@ export class PlayerModel {
     let player_nuevo = new PlayerModel(this.configService);
     player_nuevo.nombre = player.nombre;
     player_nuevo.icono = player.icono;
+    player_nuevo.equipo = player.equipo;
     player_nuevo.xp = player.xp;
     player_nuevo.monedas = player.monedas;
     player_nuevo.nivel = this.configService.nivelXp(player.xp);

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Platform, ModalController, AlertController, Events } from 'ionic-angular';
+import { Platform, ModalController, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { ConfigServiceProvider } from '../providers/config-service/config-service';
 import { StatsServiceProvider } from '../providers/stats-service/stats-service';
+import { AlertServiceProvider } from '../providers/alert-service/alert-service';
 import { ToastServiceProvider } from '../providers/toast-service/toast-service';
 import { PlayerServiceProvider } from '../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../providers/items-service/items-service';
@@ -29,9 +30,9 @@ export class MyApp {
     splashScreen: SplashScreen,
     public events: Events,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
     private configService: ConfigServiceProvider,
     private statsService: StatsServiceProvider,
+    private alertService: AlertServiceProvider,
     private toastService: ToastServiceProvider,
     private playerService: PlayerServiceProvider,
     private itemsService: ItemsServiceProvider) {
@@ -48,12 +49,7 @@ export class MyApp {
 
   checkEvents() {
     this.events.subscribe('player:nivel_conseguido', (data) => {
-      let alert = this.alertCtrl.create({
-        title: '¡Has subido de nivel!',
-        subTitle: '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel,
-        buttons: ['Continuar']
-      });
-      alert.present();
+      this.alertService.push('¡Has subido de nivel!', '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel, null, ['Continuar'], false);
       console.log('Evento player nivel conseguido', data);
     });
 
@@ -116,20 +112,16 @@ export class MyApp {
     this.events.subscribe('player:limite_velocidad_alcanzado', (data) => {
       if (data && data['velocidad'] && !this.velocidad_notificada) {
         this.velocidad_notificada = true;
-        let alert = this.alertCtrl.create({
-          title: "Demasiado rápido",
-          message: "Vas demasiado rápido y no es recomendable jugar mientras conduces.",
-          buttons: [{
-            text: "Soy el copiloto",
-            handler: () => {
-              var este = this;
-              setTimeout(function(){
-                este.velocidad_notificada = false;
-              }, 10 * 60 * 1000)
-            }
-          }]
-        });
-        alert.present();
+        let buttons = [{
+          text: "Soy el copiloto",
+          handler: () => {
+            var este = this;
+            setTimeout(function(){
+              este.velocidad_notificada = false;
+            }, 10 * 60 * 1000)
+          }
+        }];
+        this.alertService.push('Demasiado rápido', 'Vas demasiado rápido y no es recomendable jugar mientras conduces.', null, buttons, false);
       }
 
     });
@@ -189,20 +181,29 @@ export class MyApp {
           if (res) {
             this.playerService.setPlayer(res);
             this.statsService.anadirEstadistica("fecha_inicio", moment().format(), "date");
-            let alert = this.alertCtrl.create({
-              title: 'Bienvenida',
-              subTitle: '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.',
-              message: 'Un <b>Mew</b> es ahora tu compañero de aventuras. Úsalo para pelear contra otros luchadores.',
-              buttons: [
-                {
-                  text: 'Adelante',
-                  handler: () => {
-                    this.playerService.mascotasIniciales();
-                  }
+            let buttons = [
+              {
+                text: 'Adelante',
+                handler: () => {
+                  this.playerService.mascotasIniciales();
                 }
-              ]
-            });
-            alert.present();
+              }
+            ];
+            let btns = [];
+            for (var i = 0; i < this.configService.equipos.length; i++) {
+              var _equipo = this.configService.equipos[i];
+              let _btn = {
+                text: _equipo.nombre,
+                handler: () => {
+                  console.log('Bando: ' + _equipo.nombre);
+                  this.playerService.establecerEquipo(_equipo);
+                  this.alertService.push('Bando seleccionado', 'Has elegido el bando de los ' + _equipo.nombre + '. Colabora con otros integrantes de tu bando para conquistar tu ciudad.', null, ['Vamos a ello'], false);
+                }
+              };
+              btns.push(_btn);
+            }
+            this.alertService.push('Bienvenido', '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.', 'Un <b>Mew</b> es ahora tu compañero de aventuras. Úsalo para pelear contra otros luchadores.', buttons, false);
+            this.alertService.push('Elige un Bando', 'Ahora debes elegir un bando:', null, btns, false);
           } else {
             this.openNewPlayer();
           }

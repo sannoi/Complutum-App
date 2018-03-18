@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 
@@ -19,35 +20,31 @@ export class ShopPage {
   constructor(
     public navCtrl: NavController,
     public viewCtrl: ViewController,
-    public alertCtrl: AlertController,
     public navParams: NavParams,
     public configService: ConfigServiceProvider,
     public itemsService: ItemsServiceProvider,
     public playerService: PlayerServiceProvider,
+    public alertService: AlertServiceProvider,
     public toastService: ToastServiceProvider) {
     this.player = navParams.get("player");
     this.items = configService.tienda.items;
   }
 
   comprarItem(item: any) {
-    let alert = this.alertCtrl.create({
-      title: 'Comprar ' + item.nombre + ' x' + item.cantidad,
-      subTitle: 'Vas a adquirir ' + item.cantidad + ' ' + item.nombre,
-      buttons: [
-        {
-          text: 'En otro momento',
-          role: 'cancel',
-          handler: () => {}
-        },
-        {
-          text: 'Comprar por ' + item.precio + ' monedas',
-          handler: () => {
-            this.comprar(item);
-          }
+    let buttons = [
+      {
+        text: 'En otro momento',
+        role: 'cancel',
+        handler: () => {}
+      },
+      {
+        text: 'Comprar por ' + item.precio + ' monedas',
+        handler: () => {
+          this.comprar(item);
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+    this.alertService.push('Comprar ' + item.nombre + ' x' + item.cantidad, 'Vas a adquirir ' + item.cantidad + ' ' + item.nombre, null, buttons, false);
   }
 
   comprar(item: any) {

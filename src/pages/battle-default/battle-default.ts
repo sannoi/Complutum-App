@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/interval';
@@ -9,6 +9,7 @@ import { ConfigServiceProvider } from '../../providers/config-service/config-ser
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
+import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { AvatarModel } from '../../models/avatar.model';
 
 @IonicPage()
@@ -64,9 +65,9 @@ export class BattleDefaultPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public toastService: ToastServiceProvider,
+    public alertService: AlertServiceProvider,
     public configService: ConfigServiceProvider,
     public battleService: BattleServiceProvider,
     public playerService: PlayerServiceProvider) {
@@ -99,33 +100,28 @@ export class BattleDefaultPage {
   }
 
   alertaInicial() {
-    let alert = this.alertCtrl.create({
-      title: 'Pelear contra ' + this.enemigo.nombre,
-      message: 'Vas a luchar contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel + ' con tu ' + this.luchador.nombre + ' de nivel ' + this.luchador.nivel + '. ¿Qué quieres hacer?',
-      enableBackdropDismiss: false,
-      buttons: [
-        {
-          text: 'Huir',
-          role: 'cancel',
-          handler: () => {
-            this.huir();
-          }
-        },
-        {
-          text: 'Cambiar luchador',
-          handler: () => {
-            this.cambiarLuchador();
-          }
-        },
-        {
-          text: '¡Pelear!',
-          handler: () => {
-            this.comenzarBatalla();
-          }
+    let buttons = [
+      {
+        text: 'Huir',
+        role: 'cancel',
+        handler: () => {
+          this.huir();
         }
-      ]
-    });
-    alert.present();
+      },
+      {
+        text: 'Cambiar luchador',
+        handler: () => {
+          this.cambiarLuchador();
+        }
+      },
+      {
+        text: '¡Pelear!',
+        handler: () => {
+          this.comenzarBatalla();
+        }
+      }
+    ];
+    this.alertService.push('Pelear contra ' + this.enemigo.nombre, null, 'Vas a luchar contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel + ' con tu ' + this.luchador.nombre + ' de nivel ' + this.luchador.nivel + '. ¿Qué quieres hacer?', buttons, false);
   }
 
   cambiarLuchador() {
@@ -388,69 +384,55 @@ export class BattleDefaultPage {
     this.batalla_iniciada = false;
     this.batalla_ganada = true;
 
-    let alert = this.alertCtrl.create({
-      title: '¡Victoria!',
-      subTitle: '¡Enhorabuena! Has derrotado a ' + this.enemigo.nombre + '!',
-      enableBackdropDismiss: false,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana).then(() => {
-              this.addCoins(this.configService.config.batalla.monedas_gana);
-              this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
-            });
-          }
+    let buttons = [
+      {
+        text: 'OK',
+        handler: () => {
+          this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana).then(() => {
+            this.addCoins(this.configService.config.batalla.monedas_gana);
+            this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
+          });
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+    this.alertService.push('¡Victoria', '¡Enhorabuena! Has derrotado a ' + this.enemigo.nombre + '!', null, buttons, false);
   }
 
   batallaPerdida() {
     this.batalla_perdida = true;
     this.batalla_iniciada = false;
 
-    let alert = this.alertCtrl.create({
-      title: '¡Has perdido!',
-      subTitle: 'Tu ' + this.luchador.nombre + ' se ha rendido y has perdido la pelea.',
-      enableBackdropDismiss: false,
-      buttons: [
-        {
-          text: 'Otra vez será',
-          handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde).then(() => {
-              this.addCoins(this.configService.config.batalla.monedas_pierde);
-              this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
-            });
-          }
+    let buttons = [
+      {
+        text: 'Otra vez será',
+        handler: () => {
+          this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde).then(() => {
+            this.addCoins(this.configService.config.batalla.monedas_pierde);
+            this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
+          });
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+
+    this.alertService.push('Has perdido', 'Tu ' + this.luchador.nombre + ' se ha rendido y has perdido la pelea.', null, buttons, false);
   }
 
   batallaTiempoAgotado() {
     this.batalla_tiempo_agotado = true;
     this.batalla_iniciada = false;
 
-    let alert = this.alertCtrl.create({
-      title: 'Tiempo agotado!',
-      subTitle: 'Se ha agotado el tiempo de la batalla',
-      enableBackdropDismiss: false,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado).then(() => {
-              this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
-              this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
-            });
-          }
+    let buttons = [
+      {
+        text: 'OK',
+        handler: () => {
+          this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado).then(() => {
+            this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
+            this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
+          });
         }
-      ]
-    });
-    alert.present();
+      }
+    ];
+    this.alertService.push('Tiempo agotado!', 'Se ha agotado el tiempo de la batalla', null, buttons, false);
   }
 
   addCoins(monedas: number) {

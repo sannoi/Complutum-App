@@ -28,6 +28,7 @@ import { MapServiceProvider } from '../providers/map-service/map-service';
 import { StatsServiceProvider } from '../providers/stats-service/stats-service';
 import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
 import { WikidataServiceProvider } from '../providers/wikidata-service/wikidata-service';
+import { AlertServiceProvider } from '../providers/alert-service/alert-service';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,9 @@ import { WikidataServiceProvider } from '../providers/wikidata-service/wikidata-
     MapServiceProvider,
     StatsServiceProvider,
     SettingsServiceProvider,
-    WikidataServiceProvider
+    WikidataServiceProvider,
+    AlertServiceProvider,
+    AlertServiceProvider
   ]
 })
 export class AppModule {}

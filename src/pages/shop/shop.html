@@ -17,8 +17,8 @@
         <ion-col col-4 *ngFor="let item of items" text-center>
           <button (click)="comprarItem(item)">
           <img [src]="item.icono">
-          <h6><b>{{item.nombre}}</b><br>x{{item.cantidad}}</h6>
-          <p text-left><ion-icon name="cash"></ion-icon> <b>{{item.precio}}</b></p>
+          <h6>{{item.nombre}}<br>x{{item.cantidad}}</h6>
+          <p><ion-icon name="cash"></ion-icon> <b>{{item.precio}}</b></p>
         </button>
         </ion-col>
       </ion-row>
