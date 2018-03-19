@@ -102,6 +102,13 @@ export class MapaPage {
   }
 
   checkEvents() {
+    this.events.subscribe('player:cambiar_icono', (data) => {
+      if (this.map && this.marker) {
+        var el = this.marker._element;
+        el.style.backgroundImage = 'url(' + data.icono + ')';
+      }
+    });
+
     this.events.subscribe('app:alerts_pendientes', (data) => {
       if (data && data.publicar) {
         if (this.alerts_esperando && this.alerts_esperando.length > 0) {

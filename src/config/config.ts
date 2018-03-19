@@ -14,6 +14,12 @@ export let config = {
     }
   },
   jugador: {
+    avatares: [
+      { icono: 'assets/imgs/avatares/marty.png', nombre: 'Marty McFly' },
+      { icono: 'assets/imgs/avatares/chuck_norris.jpg', nombre: 'Chuck Norris' },
+      { icono: 'assets/imgs/avatares/indy.jpg', nombre: 'Indiana Jones' },
+      { icono: 'assets/imgs/avatares/bruce_lee.jpg', nombre: 'Bruce Lee' }
+    ],
     xp_inicial: 25,
     monedas_iniciales: 125,
     xp_mascotas_iniciales: 1750,

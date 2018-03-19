@@ -217,6 +217,7 @@ export class MyApp {
           if (res) {
             this.playerService.setPlayer(res);
             this.statsService.anadirEstadistica("fecha_inicio", moment().format(), "date");
+            this.events.publish('player:cambiar_icono', { icono: res.icono });
             let buttons = [
               {
                 text: 'Adelante',
@@ -225,14 +226,8 @@ export class MyApp {
                 }
               }
             ];
-            let btns = [];
-            for (var i = 0; i < this.configService.equipos.length; i++) {
-              var _equipo = this.configService.equipos[i];
-              var _btn = this.generarBotonEquipo(_equipo);
-              btns.push(_btn);
-            }
-            this.alertService.push('Bienvenido', '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.', 'Un <b>Mew</b> es ahora tu compañero de aventuras. Úsalo para pelear contra otros luchadores.', buttons, false);
-            this.alertService.push('Elige un Bando', 'Ahora debes elegir un bando:', null, btns, false);
+            this.alertService.push('Bienvenido', '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.', 'Un luchador se ha unido a ti y es tu compañero de aventuras. Úsalo para pelear contra otros luchadores.', buttons, false);
+            //this.alertService.push('Elige un Bando', 'Ahora debes elegir un bando:', null, btns, false);
           } else {
             this.openNewPlayer();
           }

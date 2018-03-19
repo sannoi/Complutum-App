@@ -410,9 +410,15 @@ export class PlayerServiceProvider {
   }
 
   mascotasIniciales(player?: any) {
-    if (this.configService.config.jugador.mascotas_iniciales && this.configService.config.jugador.mascotas_iniciales.length > 0) {
-      for (var i = 0; i < this.configService.config.jugador.mascotas_iniciales.length; i++) {
-        var _avatar = this.configService.encontrarLuchador(this.configService.config.jugador.mascotas_iniciales[i]);
+    var _mascotas = this.configService.config.jugador.mascotas_iniciales;
+    if (player && player['equipo'] && player['equipo']['mascotas_iniciales'] && player['equipo']['mascotas_iniciales'].length > 0) {
+      _mascotas = player['equipo']['mascotas_iniciales'];
+    } else if (!player && this.player && this.player['equipo'] && this.player['equipo']['mascotas_iniciales'] && this.player['equipo']['mascotas_iniciales'].length > 0) {
+      _mascotas = this.player['equipo']['mascotas_iniciales'];
+    }
+    if (_mascotas && _mascotas.length > 0) {
+      for (var i = 0; i < _mascotas.length; i++) {
+        var _avatar = this.configService.encontrarLuchador(_mascotas[i]);
         if (_avatar) {
           this.anadirMascota(_avatar.id, this.configService.config.jugador.xp_mascotas_iniciales, player, null, this.configService.config.jugador.iv_mascotas_iniciales);
         }
