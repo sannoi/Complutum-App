@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/interval';
@@ -64,6 +64,7 @@ export class BattleDefaultPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public events: Events,
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
     public toastService: ToastServiceProvider,
@@ -95,6 +96,7 @@ export class BattleDefaultPage {
     console.log('Batalla contra un ' + this.enemigo.nombre + ' de nivel ' + this.enemigo.nivel);
 
     if (this.luchador && this.enemigo) {
+      this.playerService.ocupado = true;
       this.alertaInicial();
     }
   }
@@ -390,6 +392,8 @@ export class BattleDefaultPage {
         handler: () => {
           this.addXp(this.configService.config.batalla.xp_avatar_gana, this.configService.config.batalla.xp_player_gana).then(() => {
             this.addCoins(this.configService.config.batalla.monedas_gana);
+            this.playerService.ocupado = false;
+            this.events.publish('app:alerts_pendientes', { publicar: true });
             this.viewCtrl.dismiss({ resultado: 'ganador', enemigo: this.enemigo, luchador: this.luchador });
           });
         }
@@ -408,6 +412,8 @@ export class BattleDefaultPage {
         handler: () => {
           this.addXp(this.configService.config.batalla.xp_avatar_pierde, this.configService.config.batalla.xp_player_pierde).then(() => {
             this.addCoins(this.configService.config.batalla.monedas_pierde);
+            this.playerService.ocupado = false;
+            this.events.publish('app:alerts_pendientes', { publicar: true });
             this.viewCtrl.dismiss({ resultado: 'perdedor', enemigo: this.enemigo, luchador: this.luchador });
           });
         }
@@ -427,6 +433,8 @@ export class BattleDefaultPage {
         handler: () => {
           this.addXp(this.configService.config.batalla.xp_avatar_tiempo_agotado, this.configService.config.batalla.xp_player_tiempo_agotado).then(() => {
             this.addCoins(this.configService.config.batalla.monedas_tiempo_agotado);
+            this.playerService.ocupado = false;
+            this.events.publish('app:alerts_pendientes', { publicar: true });
             this.viewCtrl.dismiss({ resultado: 'tiempo_agotado', enemigo: this.enemigo, luchador: this.luchador });
           });
         }
@@ -464,6 +472,8 @@ export class BattleDefaultPage {
 
   huir() {
     this.batalla_iniciada = false;
+    this.playerService.ocupado = false;
+    this.events.publish('app:alerts_pendientes', { publicar: true });
     this.viewCtrl.dismiss();
   }
 

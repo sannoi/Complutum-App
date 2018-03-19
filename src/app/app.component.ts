@@ -24,6 +24,8 @@ export class MyApp {
 
   private velocidad_notificada: boolean = false;
 
+  private alerts_esperando: Array<any>;
+
   constructor(
     platform: Platform,
     statusBar: StatusBar,
@@ -36,6 +38,7 @@ export class MyApp {
     private toastService: ToastServiceProvider,
     private playerService: PlayerServiceProvider,
     private itemsService: ItemsServiceProvider) {
+    this.alerts_esperando = new Array<any>();
     this.checkEvents();
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -48,8 +51,30 @@ export class MyApp {
   }
 
   checkEvents() {
+    this.events.subscribe('app:alerts_pendientes', (data) => {
+      if (data && data.publicar) {
+        if (this.alerts_esperando && this.alerts_esperando.length > 0) {
+          for (var i= 0; i < this.alerts_esperando.length; i++) {
+            this.alertService.push_obj(this.alerts_esperando[i]);
+          }
+          this.alerts_esperando = new Array<any>();
+        }
+      }
+    });
+
     this.events.subscribe('player:nivel_conseguido', (data) => {
-      this.alertService.push('¡Has subido de nivel!', '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel, null, ['Continuar'], false);
+      if (!this.playerService.ocupado) {
+        this.alertService.push('¡Has subido de nivel!', '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel, null, ['Continuar'], false);
+      } else {
+        let _alert_nivel = {
+          title: '¡Has subido de nivel!',
+          subTitle: '¡Enhorabuena ' + data.player.nombre + '! Has alcanzado el nivel ' + data.nivel,
+          message: null,
+          buttons: ['Continuar'],
+          backdropDismiss: false
+        };
+        this.alerts_esperando.push(_alert_nivel);
+      }
       console.log('Evento player nivel conseguido', data);
     });
 
@@ -83,12 +108,12 @@ export class MyApp {
             if (this.configService.config.avatares.despedir_mascota.monedas > 0) {
               this.playerService.anadirMonedas(this.configService.config.avatares.despedir_mascota.monedas);
               if (data.mascota.id_original) {
-                var ref = this.configService.luchadores.find(function(x){
+                var ref = this.configService.luchadores.find(function(x) {
                   return x.id === data.mascota.id_original;
                 });
                 if (ref && ref.items_despedir && ref.items_despedir.length > 0) {
                   for (var i = 0; i < ref.items_despedir.length; i++) {
-                    var refItem = this.configService.items.find(function(x){
+                    var refItem = this.configService.items.find(function(x) {
                       return x.id === ref.items_despedir[i].id;
                     });
 
@@ -112,18 +137,29 @@ export class MyApp {
     this.events.subscribe('player:limite_velocidad_alcanzado', (data) => {
       if (data && data['velocidad'] && !this.velocidad_notificada) {
         this.velocidad_notificada = true;
+
         let buttons = [{
           text: "Soy el copiloto",
           handler: () => {
             var este = this;
-            setTimeout(function(){
+            setTimeout(function() {
               este.velocidad_notificada = false;
             }, 10 * 60 * 1000)
           }
         }];
-        this.alertService.push('Demasiado rápido', 'Vas demasiado rápido y no es recomendable jugar mientras conduces.', null, buttons, false);
+        if (!this.playerService.ocupado) {
+          this.alertService.push('Demasiado rápido', 'Vas demasiado rápido y no es recomendable jugar mientras conduces.', null, buttons, false);
+        } else {
+          let _alert_rapido = {
+            title: 'Demasiado rápido',
+            subTitle: 'Vas demasiado rápido y no es recomendable jugar mientras conduces.',
+            message: null,
+            buttons: buttons,
+            backdropDismiss: false
+          };
+          this.alerts_esperando.push(_alert_rapido);
+        }
       }
-
     });
 
     this.events.subscribe('player:monedas_anadidas', (data) => {
@@ -192,14 +228,7 @@ export class MyApp {
             let btns = [];
             for (var i = 0; i < this.configService.equipos.length; i++) {
               var _equipo = this.configService.equipos[i];
-              let _btn = {
-                text: _equipo.nombre,
-                handler: () => {
-                  console.log('Bando: ' + _equipo.nombre);
-                  this.playerService.establecerEquipo(_equipo);
-                  this.alertService.push('Bando seleccionado', 'Has elegido el bando de los ' + _equipo.nombre + '. Colabora con otros integrantes de tu bando para conquistar tu ciudad.', null, ['Vamos a ello'], false);
-                }
-              };
+              var _btn = this.generarBotonEquipo(_equipo);
               btns.push(_btn);
             }
             this.alertService.push('Bienvenido', '¡Hola ' + res.nombre + '! Ahora empieza a luchar con todo lo que encuentres.', 'Un <b>Mew</b> es ahora tu compañero de aventuras. Úsalo para pelear contra otros luchadores.', buttons, false);
@@ -212,5 +241,17 @@ export class MyApp {
         this.openNewPlayer();
       }
     });
+  }
+
+  generarBotonEquipo(equipo: any) {
+    let btn = {
+      text: equipo.nombre,
+      handler: () => {
+        console.log('Bando: ' + equipo.nombre);
+        this.playerService.establecerEquipo(equipo);
+        this.alertService.push('Bando seleccionado', 'Has elegido el bando de los <b>' + equipo.nombre + '</b>. Colabora con otros integrantes de tu bando para conquistar tu ciudad.', null, ['Vamos a ello'], false);
+      }
+    };
+    return btn;
   }
 }

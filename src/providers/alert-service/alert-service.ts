@@ -31,6 +31,29 @@ export class AlertServiceProvider {
     }
   }
 
+  push_obj(obj) {
+    let alert = this.alertCtrl.create({
+      title: obj['title'],
+      subTitle: obj['subTitle'],
+      message: obj['message'],
+      enableBackdropDismiss: obj['backdropDismiss'],
+      buttons: obj['buttons']
+    });
+
+    alert.onDidDismiss(() => {
+      this.alerts.shift()
+      if (this.alerts.length > 0) {
+        this.show()
+      }
+    })
+
+    this.alerts.push(alert)
+
+    if (this.alerts.length === 1) {
+      this.show()
+    }
+  }
+
   show() {
     this.alerts[0].present();
   }

@@ -13,6 +13,8 @@ export class PlayerServiceProvider {
 
   public player: PlayerModel;
 
+  public ocupado: boolean = false;
+
   private modificadores: Array<any>;
 
   constructor(private storage: Storage, public platform: Platform, public events: Events, private configService: ConfigServiceProvider, private statsService: StatsServiceProvider) {
@@ -422,11 +424,12 @@ export class PlayerServiceProvider {
     let items_iniciales = new Array<ItemModel> ();
     if (this.configService.config.jugador.items_iniciales && this.configService.config.jugador.items_iniciales.length > 0) {
       for (var i = 0; i < this.configService.config.jugador.items_iniciales.length; i++) {
-        var idx = this.configService.config.jugador.items_iniciales[i].item;
+        //var idx = this.configService.config.jugador.items_iniciales[i].item;
+        var _item_ref = this.configService.encontrarItem(this.configService.config.jugador.items_iniciales[i].item);
         var cantidad = this.configService.config.jugador.items_iniciales[i].cantidad;
-        if (this.configService.items[idx]) {
+        if (_item_ref) {
           let item_nuevo = new ItemModel();
-          item_nuevo = item_nuevo.parse_reference(this.configService.items[idx],cantidad);
+          item_nuevo = item_nuevo.parse_reference(_item_ref,cantidad);
           items_iniciales.push(item_nuevo);
           this.statsService.anadirEstadistica('items_conseguidos', cantidad, 'number');
           this.statsService.anadirEstadistica(item_nuevo.id + '_items_conseguidos', cantidad, 'number');

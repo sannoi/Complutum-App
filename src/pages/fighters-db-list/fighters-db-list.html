@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Base de Datos</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="db-counter" text-center *ngIf="luchadores">
+    Descubiertos: {{contar()}}
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-3 *ngFor="let item of luchadores" text-center>
+        <div *ngIf="descubierto(item)">
+          <button (click)="detallesLuchador(item)">
+            <img [src]="item.icono">
+          </button>
+        </div>
+        <div *ngIf="!descubierto(item)">
+          <button>
+            <img class="unknown-img" [src]="configService.config.avatares.imagen_desconocido">
+          </button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-fab bottom center>
+    <button ion-fab mini color="primary" (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+  </ion-fab>
+</ion-content>

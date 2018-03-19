@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, AlertController, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController, Events } from 'ionic-angular';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { StatsServiceProvider } from '../../providers/stats-service/stats-service';
 import { BattleServiceProvider } from '../../providers/battle-service/battle-service';
@@ -31,6 +31,7 @@ export class TournamentDefaultPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public events: Events,
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
     public toastService: ToastServiceProvider,
@@ -88,6 +89,7 @@ export class TournamentDefaultPage {
   }
 
   dismiss() {
+    this.playerService.ocupado = false;
     this.viewCtrl.dismiss();
   }
 
@@ -186,6 +188,7 @@ export class TournamentDefaultPage {
 
   rutinaTorneo() {
     if (this.torneo.enemigos && this.torneo.enemigos[this.enemigos_derrotados]) {
+      this.playerService.ocupado = true;
       this.torneo_iniciado = true;
       var _siguiente = -1;
       if (this.torneo.enemigos[this.enemigos_derrotados + 1]) {
@@ -194,6 +197,7 @@ export class TournamentDefaultPage {
       this.comenzarBatalla(this.torneo.enemigos[this.enemigos_derrotados].id_original, this.torneo.enemigos[this.enemigos_derrotados].xp, _siguiente);
     }
     if ((!this.torneo.enemigos || this.torneo.enemigos.length <= 0) && this.torneo.jefes && this.torneo.jefes.length > 0) {
+      this.playerService.ocupado = true;
       this.torneo_iniciado = true;
       var _siguiente_jefe = -1;
       if (this.torneo.jefes[this.jefes_derrotados + 1]) {
@@ -337,6 +341,8 @@ export class TournamentDefaultPage {
         text: "Muy bien",
         handler: () => {
           this.cobrarGanancias();
+          this.playerService.ocupado = false;
+          this.events.publish('app:alerts_pendientes', { publicar: true });
           this.viewCtrl.dismiss();
         }
       }
@@ -350,6 +356,10 @@ export class TournamentDefaultPage {
     this.statsService.anadirEstadistica('torneos_perdidos', 1, 'number');
 
     this.alertService.push('Has perdido el Torneo', 'Alguno de tus luchadores ha perdido su combate. Vuelve a intentarlo más adelante.', null, ['Vale'], false);
+
+    this.playerService.ocupado = false;
+    this.events.publish('app:alerts_pendientes', { publicar: true });
+
   }
 
   textoGanancia(ganancia: any) {

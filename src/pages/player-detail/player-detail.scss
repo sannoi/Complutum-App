@@ -1,16 +1,47 @@
 page-player-detail {
-  .player-img img {
-    border-radius: 50%;
-    width: 150px;
-    max-width: 100%;
-    margin-top: 20px;
-    border: 5px solid color($colors, secondary);
+  .player-header {
+    padding-bottom: 10px;
+    color: #fff;
+    h4 {
+      text-shadow: 1px 1px 1px black;
+    }
+  }
+  .player-img {
+    position: relative;
+    img {
+      border-radius: 50%;
+      width: 150px;
+      max-width: 100%;
+      margin-top: 20px;
+      border: 5px solid #ffffff;
+    }
+    ion-icon.equipo-icono {
+      background-color: #fff;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 26px;
+      line-height: 30px;
+      position: absolute;
+      bottom: 10px;
+      right: 25px;
+    }
   }
   .player-nivel-progreso {
     width: 300px;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .player-monedas {
+    ion-icon[name=cash] {
+      font-size: 1em;
+      background-color: black;
+      padding: 3px 4px;
+      border-radius: 50%;
+      color: orange;
+    }
   }
 
   .player-stats {
@@ -32,6 +63,7 @@ page-player-detail {
     ion-col p {
       margin-top: 0.5rem;
       margin-bottom: 1rem;
+      line-height: 1rem;
     }
     ion-icon {
       font-size: 4rem;

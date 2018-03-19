@@ -7,8 +7,9 @@
 
 
 <ion-content no-padding>
-  <div class="player-header" *ngIf="player" text-center>
+  <div class="player-header" *ngIf="player" text-center [ngStyle]="{'background': 'linear-gradient(' + configService.ConvertHexToRGBA(player.equipo.color, 0.75) + ', ' + configService.ConvertHexToRGBA(player.equipo.color, 0.3) + ')'}">
     <div class="player-img">
+      <ion-icon name="{{player.equipo.icono}}" [style.color]="player.equipo.color" [style.border]="'2px solid ' + player.equipo.color" class="equipo-icono"></ion-icon>
       <img [src]="player.icono">
     </div>
     <div class="player-nivel">
@@ -19,7 +20,7 @@
     </div>
 
     <div class="player-monedas">
-      <ion-icon name="cash"></ion-icon> {{player.monedas}}
+      <h4><ion-icon name="cash"></ion-icon> {{player.monedas}}</h4>
     </div>
 
   </div>
@@ -75,25 +76,19 @@
         <ion-grid>
           <ion-row>
             <ion-col col-4 text-center>
-              <ion-card color="light">
                 <ion-icon name="globe"></ion-icon>
                 <h4>{{estadistica('distancia_recorrida')/1000 | number : '1.1-1'}} Kms.</h4>
                 <p><small>Distancia recorrida</small></p>
-              </ion-card>
             </ion-col>
             <ion-col col-4 text-center>
-              <ion-card color="light">
                 <ion-icon name="trophy"></ion-icon>
                 <h4>{{estadistica('batallas_ganadas') | number : '1.0-0'}}</h4>
                 <p><small>Combates ganados</small></p>
-              </ion-card>
             </ion-col>
             <ion-col col-4 text-center>
-              <ion-card color="light">
                 <ion-icon name="podium"></ion-icon>
                 <h4>{{estadistica('torneos_ganados') | number : '1.0-0'}}</h4>
                 <p><small>Torneos ganados</small></p>
-              </ion-card>
             </ion-col>
           </ion-row>
         </ion-grid>

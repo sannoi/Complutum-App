@@ -44,6 +44,8 @@ export class MapaPage {
 
   private map_inicializado: boolean;
 
+  private alerts_esperando: Array<any>;
+
   constructor(public navCtrl: NavController,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
@@ -59,6 +61,7 @@ export class MapaPage {
     private itemsService: ItemsServiceProvider,
     private alertService: AlertServiceProvider,
     private toastService: ToastServiceProvider) {
+    this.alerts_esperando = new Array<any>();
     this.markers_enemigos = new Array<any>();
     this.markers_trampas = new Array<any>();
     this.checkEvents();
@@ -99,6 +102,17 @@ export class MapaPage {
   }
 
   checkEvents() {
+    this.events.subscribe('app:alerts_pendientes', (data) => {
+      if (data && data.publicar) {
+        if (this.alerts_esperando && this.alerts_esperando.length > 0) {
+          for (var i= 0; i < this.alerts_esperando.length; i++) {
+            this.alertService.push_obj(this.alerts_esperando[i]);
+          }
+          this.alerts_esperando = new Array<any>();
+        }
+      }
+    });
+
     this.events.subscribe('mapa:nuevos_enemigos', (data) => {
       if (data && data.length > 0) {
         for (var i = 0; i < data.length; i++) {
@@ -123,6 +137,13 @@ export class MapaPage {
 
   abrirTienda() {
     let modal = this.modalCtrl.create('ShopPage', { player: this.playerService.player }, {
+      enableBackdropDismiss: false
+    });
+    modal.present();
+  }
+
+  abrirDB() {
+    let modal = this.modalCtrl.create('FightersDbListPage', { }, {
       enableBackdropDismiss: false
     });
     modal.present();
@@ -226,7 +247,18 @@ export class MapaPage {
         }
       }
     ];
-    this.alertService.push('¡Has capturado una nueva mascota!', 'Parece que una de tus trampas ha conseguido atrapar algo.', null, buttons, false);
+    if (!this.playerService.ocupado) {
+      this.alertService.push('¡Has capturado una nueva mascota!', 'Parece que una de tus trampas ha conseguido atrapar algo.', null, buttons, false);
+    } else {
+      let _alert_trampa = {
+        title: '¡Has capturado una nueva mascota!',
+        subTitle: 'Parece que una de tus trampas ha conseguido atrapar algo.',
+        message: null,
+        buttons: buttons,
+        backdropDismiss: false
+      };
+      this.alerts_esperando.push(_alert_trampa);
+    }
   }
 
   borrarMarkerTrampa(id: any) {
@@ -659,9 +691,9 @@ export class MapaPage {
       }
 
       this.map.on('load', function() {
-        este.edificios();
         este.trampasIniciales();
         este.realtime();
+        este.edificios();
         este.map_inicializado = true;
       });
 
@@ -673,8 +705,8 @@ export class MapaPage {
 
       var loadSource = () => {
         if (este.map.isStyleLoaded()) {
-          este.edificios();
           este.realtime();
+          este.edificios();
           este.map.off('data', loadSource);
         }
       }

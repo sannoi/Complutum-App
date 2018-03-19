@@ -65,22 +65,6 @@ export class FighterDetailPage {
     }
   }
 
-  ConvertHexToRGBA(hex: string, opacity?: number): string {
-    opacity = opacity || 1;
-
-    opacity < 0 ? opacity = 0 : opacity = opacity;
-    opacity > 1 ? opacity = 1 : opacity = opacity;
-
-    hex = hex.replace('#', '');
-
-    let r = parseInt(hex.substring(0, 2), 16);
-    let g = parseInt(hex.substring(2, 4), 16);
-    let b = parseInt(hex.substring(4, 6), 16);
-
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
-
-  }
-
   xpAvatar() {
     var _acumulados = this.configService.xpAcumuladosNivel(this.luchador.nivel - 1);
     var _necesarios = this.configService.xpRelativosNivel(this.luchador.nivel);

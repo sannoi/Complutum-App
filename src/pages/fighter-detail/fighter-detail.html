@@ -11,7 +11,7 @@
         <progress-bar [progress]="saludLuchador" [color]="configService.config.colores.salud" [text]="saludText()"></progress-bar>
       </div>
     </div>
-    <div class="avatar-img" [ngStyle]="{'background': 'linear-gradient(' + ConvertHexToRGBA(luchador.tipo.color, 0.75) + ', ' + ConvertHexToRGBA(luchador.tipo.color, 0.3) + ')'}">
+    <div class="avatar-img" [ngStyle]="{'background': 'linear-gradient(' + configService.ConvertHexToRGBA(luchador.tipo.color, 0.75) + ', ' + configService.ConvertHexToRGBA(luchador.tipo.color, 0.3) + ')'}">
       <img [src]="luchador.icono">
     </div>
     <ion-toolbar class="avatar-poder">

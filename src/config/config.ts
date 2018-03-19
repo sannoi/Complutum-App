@@ -9,8 +9,8 @@ export let config = {
     url_statics: '/api/mplay/usuario/atracciones.json',
     url_info_entorno: '/api/mplay/usuario/infoEntorno.json',
     modificadores: {
-      xp_multiplicador: 2,
-      tiempo_trampas_multiplicador: 0.01
+      xp_multiplicador: 1,
+      tiempo_trampas_multiplicador: 1
     }
   },
   jugador: {
@@ -31,16 +31,12 @@ export let config = {
     },
     mascotas_iniciales: ['mew'],
     items_iniciales: [
-      { item: 0, cantidad: 30 },
-      { item: 1, cantidad: 20 },
-      { item: 2, cantidad: 15 },
-      { item: 3, cantidad: 5 },
-      { item: 4, cantidad: 1 },
-      { item: 5, cantidad: 10 },
-      { item: 6, cantidad: 5 },
-      { item: 7, cantidad: 2 },
-      { item: 8, cantidad: 1 },
-      { item: 9, cantidad: 3 }
+      { item: 'medicina-sm', cantidad: 20 },
+      { item: 'camara-fotos', cantidad: 1 },
+      { item: 'trampa-sm', cantidad: 5 },
+      { item: 'trampa-md', cantidad: 2 },
+      { item: 'baya-suerte', cantidad: 3 },
+      { item: 'acreditacion-torneo', cantidad: 3 }
     ],
     niveles_xp: AppNiveles.niveles,
     inventario: {
@@ -48,9 +44,13 @@ export let config = {
     },
     mascota_nueva: {
       nivel_maximo: 20
+    },
+    modificadores: {
+      max_activos: 1
     }
   },
   avatares: {
+    imagen_desconocido: 'assets/imgs/fighters/unknown.png',
     energia_maxima: 100,
     xp_nuevo_enemigo_derrotado: 500,
     xp_nueva_mascota: 250,

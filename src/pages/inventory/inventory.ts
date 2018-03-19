@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
+import { ConfigServiceProvider } from '../../providers/config-service/config-service';
 import { ItemModel } from '../../models/item.model';
 
 @Component({
@@ -18,6 +19,7 @@ export class InventoryPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    private configService: ConfigServiceProvider,
     private alertService: AlertServiceProvider,
     private playerService: PlayerServiceProvider,
     private itemsService: ItemsServiceProvider) {
@@ -37,20 +39,25 @@ export class InventoryPage {
 
   clickItem(item: any) {
     if (item && item.tipo == "modificador") {
-      let buttons = [
-        {
-          text: "No",
-          role: "cancel",
-          handler: () => {}
-        },
-        {
-          text: "Sí",
-          handler: () => {
-            this.itemsService.playerUsarItem(item);
+      var _mods_activos = this.playerService.player.modificadores_activos;
+      if (_mods_activos && _mods_activos.length >= this.configService.config.jugador.modificadores.max_activos) {
+        this.alertService.push('Límite de modificadores', 'No puedes usar más modificadores hasta que se consuman los que están activos.', null, ['Vale'], false);
+      } else {
+        let buttons = [
+          {
+            text: "No",
+            role: "cancel",
+            handler: () => {}
+          },
+          {
+            text: "Sí",
+            handler: () => {
+              this.itemsService.playerUsarItem(item);
+            }
           }
-        }
-      ];
-      this.alertService.push('Usar Objeto', null, '¿Seguro que quieres usar el objeto ' + item.nombre + '?', buttons, false);
+        ];
+        this.alertService.push('Usar Objeto', null, '¿Seguro que quieres usar el objeto ' + item.nombre + '?', buttons, false);
+      }
     }
   }
 
