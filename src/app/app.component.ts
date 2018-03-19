@@ -43,7 +43,8 @@ export class MyApp {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
+      //statusBar.styleDefault();
+      statusBar.backgroundColorByHexString('#43a7ff');
       splashScreen.hide();
 
       this.checkPlayer();
@@ -200,6 +201,7 @@ export class MyApp {
         console.log('No se han encontrado datos de jugador');
         this.openNewPlayer();
       } else {
+        this.events.publish('player:cambiar_icono', { icono: res.icono, color: res.equipo.color });
         console.log('Datos de jugador cargados');
       }
     });
@@ -217,7 +219,7 @@ export class MyApp {
           if (res) {
             this.playerService.setPlayer(res);
             this.statsService.anadirEstadistica("fecha_inicio", moment().format(), "date");
-            this.events.publish('player:cambiar_icono', { icono: res.icono });
+            this.events.publish('player:cambiar_icono', { icono: res.icono, color: res.equipo.color });
             let buttons = [
               {
                 text: 'Adelante',

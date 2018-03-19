@@ -18,7 +18,11 @@ export let config = {
       { icono: 'assets/imgs/avatares/marty.png', nombre: 'Marty McFly' },
       { icono: 'assets/imgs/avatares/chuck_norris.jpg', nombre: 'Chuck Norris' },
       { icono: 'assets/imgs/avatares/indy.jpg', nombre: 'Indiana Jones' },
-      { icono: 'assets/imgs/avatares/bruce_lee.jpg', nombre: 'Bruce Lee' }
+      { icono: 'assets/imgs/avatares/bruce_lee.jpg', nombre: 'Bruce Lee' },
+      { icono: 'assets/imgs/avatares/leia.jpg', nombre: 'Leia' },
+      { icono: 'assets/imgs/avatares/wonder.jpg', nombre: 'Wonder Woman' },
+      { icono: 'assets/imgs/avatares/tormenta.jpg', nombre: 'Tormenta' },
+      { icono: 'assets/imgs/avatares/curie.jpg', nombre: 'Marie Curie' }
     ],
     xp_inicial: 25,
     monedas_iniciales: 125,
@@ -96,6 +100,7 @@ export let config = {
     limite_velocidad: 65,
     tiempo_refresco_entorno: 30,
     tiempo_aparicion_enemigos: 15,
+    porcentaje_ningun_enemigo: 33,
     tiempo_desaparicion_enemigos: 45,
     radio_vision: 2.5,
     radio_interaccion: 0.05

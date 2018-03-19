@@ -106,6 +106,7 @@ export class MapaPage {
       if (this.map && this.marker) {
         var el = this.marker._element;
         el.style.backgroundImage = 'url(' + data.icono + ')';
+        el.style.borderColor = data.color;
       }
     });
 
@@ -573,7 +574,7 @@ export class MapaPage {
               "type": "symbol",
               "source": "drone",
               "layout": {
-                "symbol-spacing": 100,
+                "symbol-spacing": 1,
                 "icon-image": "sitio",
                 "icon-anchor": "bottom",
                 "icon-size": 0.2
@@ -586,7 +587,7 @@ export class MapaPage {
               "type": "symbol",
               "source": "drone",
               "layout": {
-                "symbol-spacing": 100,
+                "symbol-spacing": 1,
                 "icon-image": "torneo",
                 "icon-anchor": "bottom",
                 "icon-size": 0.2
@@ -684,7 +685,12 @@ export class MapaPage {
       // create a HTML element for each feature
       var el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundImage = 'url(assets/imgs/player_default.png)';
+      if (this.playerService.player && this.playerService.player.icono) {
+        el.style.backgroundImage = 'url(' + this.playerService.player.icono + ')';
+        el.style.borderColor = this.playerService.player.equipo.color;
+      } else {
+        el.style.backgroundImage = 'url(assets/imgs/player_default.png)';
+      }
 
       // make a marker for each feature and add to the map
       this.marker = new mapboxgl.Marker(el, { offset: [0, -25] })

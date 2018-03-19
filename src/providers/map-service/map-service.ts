@@ -129,7 +129,12 @@ export class MapServiceProvider {
   }
 
   encontrarEnemigosOffline() {
-    if (this.entorno) {
+    var _test_sin_enemigos = Math.floor(Math.random() * 100);
+    var _sin_enemigos = false;
+    if (_test_sin_enemigos <= this.configService.config.mapa.porcentaje_ningun_enemigo) {
+      _sin_enemigos = true;
+    }
+    if (this.entorno && !_sin_enemigos) {
       var este = this;
       var avatares = this.configService.luchadores.filter(function(x) {
         var tipo_obj = este.configService.encontrarTipo(x.tipo);
@@ -169,7 +174,7 @@ export class MapServiceProvider {
         }
       }
     } else {
-      console.log("entorno no cargado");
+      console.log("entorno no cargado o sin enemigos");
     }
 
     return new Promise((response, fail) => {
