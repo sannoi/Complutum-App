@@ -2,31 +2,31 @@ export let items = [
   {
     id: "medicina-sm",
     nombre: "Medicina Pequeña",
-    descripcion: "Restaura 10 puntos de salud de un luchador",
+    descripcion: "Restaura 20 puntos de salud de un luchador",
     icono: "assets/imgs/items/Item_0101.png",
     tipo: "salud",
     propiedades: {
-      restaurar_salud: 10
+      restaurar_salud: 20
     }
   },
   {
     id: "medicina-md",
     nombre: "Medicina Mediana",
-    descripcion: "Restaura 25 puntos de salud de un luchador",
+    descripcion: "Restaura 50 puntos de salud de un luchador",
     icono: "assets/imgs/items/Item_0102.png",
     tipo: "salud",
     propiedades: {
-      restaurar_salud: 25
+      restaurar_salud: 50
     }
   },
   {
     id: "medicina-xl",
     nombre: "Medicina Grande",
-    descripcion: "Restaura 50 puntos de salud de un luchador",
+    descripcion: "Restaura 200 puntos de salud de un luchador",
     icono: "assets/imgs/items/Item_0103.png",
     tipo: "salud",
     propiedades: {
-      restaurar_salud: 50
+      restaurar_salud: 200
     }
   },
   {
@@ -170,6 +170,72 @@ export let items = [
     tipo: "pase",
     propiedades: {
       tipo_torneo: 'defecto'
+    }
+  },
+  {
+    id: "arma-rapida-voltiazo",
+    nombre: "Mochila Voltiazo",
+    descripcion: "Otorga el ataque eléctrico Voltiazo a cualquier luchador",
+    icono: "assets/imgs/items/mochila.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'rapido',
+      ataque: 'voltiazo'
+    }
+  },
+  {
+    id: "arma-rapida-chispa",
+    nombre: "Mochila Chispa",
+    descripcion: "Otorga el ataque eléctrico Chispa a cualquier luchador",
+    icono: "assets/imgs/items/mochila.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'rapido',
+      ataque: 'chispa'
+    }
+  },
+  {
+    id: "arma-fuerte-electrocanon",
+    nombre: "Caramelo Electrocañón",
+    descripcion: "Otorga el ataque eléctrico Electrocañón a cualquier luchador",
+    icono: "assets/imgs/items/Item_1301.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'fuerte',
+      ataque: 'electrocanon'
+    }
+  },
+  {
+    id: "arma-rapida-puya_venenosa",
+    nombre: "Mochila Puya Venenosa",
+    descripcion: "Otorga el ataque venenoso Puya Venenosa a cualquier luchador",
+    icono: "assets/imgs/items/mochila.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'rapido',
+      ataque: 'puya_venenosa'
+    }
+  },
+  {
+    id: "arma-rapida-alarido",
+    nombre: "Mochila Alarido",
+    descripcion: "Otorga el ataque venenoso Alarido a cualquier luchador",
+    icono: "assets/imgs/items/mochila.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'rapido',
+      ataque: 'alarido'
+    }
+  },
+  {
+    id: "arma-fuerte-terremoto",
+    nombre: "Caramelo Terremoto",
+    descripcion: "Otorga el ataque venenoso Terremoto a cualquier luchador",
+    icono: "assets/imgs/items/Item_1301.png",
+    tipo: "cambiar-ataque",
+    propiedades: {
+      tipo_ataque: 'fuerte',
+      ataque: 'terremoto'
     }
   }
 ];

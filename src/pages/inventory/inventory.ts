@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { PlayerServiceProvider } from '../../providers/player-service/player-service';
 import { ItemsServiceProvider } from '../../providers/items-service/items-service';
 import { AlertServiceProvider } from '../../providers/alert-service/alert-service';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
+import { ToastServiceProvider } from '../../providers/toast-service/toast-service';
 import { ItemModel } from '../../models/item.model';
 
 @Component({
@@ -19,6 +20,8 @@ export class InventoryPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public modalCtrl: ModalController,
+    private toastService: ToastServiceProvider,
     private configService: ConfigServiceProvider,
     private alertService: AlertServiceProvider,
     private playerService: PlayerServiceProvider,
@@ -30,11 +33,60 @@ export class InventoryPage {
   }
 
   disableItem(item: any) {
-    if (item.tipo != 'modificador') {
+    if (item.tipo != 'modificador' && item.tipo != 'cambiar-ataque') {
       return 'disabled';
     } else {
       return '';
     }
+  }
+
+  borrarItem(item: any) {
+    let buttons = [
+      {
+        text: 'Olvídalo',
+        role: 'cancel',
+        handler: () => {}
+      },
+      {
+        text: 'Sí',
+        handler: data => {
+          if (data.cantidad >= item.cantidad) {
+            let buttons2 = [
+              {
+                text: 'No',
+                handler: () => {}
+              },
+              {
+                text: 'Sí',
+                handler: () => {
+                  this.itemsService.playerBorrarItem(item.id, item.cantidad);
+                }
+              }
+            ];
+            this.alertService.push('Vaciar ' + item.nombre, 'Vas a tirar todas las unidades de ' + item.nombre + '. ¿Quieres continuar?', null, buttons2, false);
+          } else {
+            this.itemsService.playerBorrarItem(item.id, data.cantidad);
+          }
+        }
+      }
+    ];
+    let inputs = [
+      {
+        name: 'cantidad',
+        placeholder: 'Cantidad',
+        value: 1,
+        type: 'number'
+      }
+    ];
+    let alert_obj = {
+      title: null,
+      subTitle: '¿Tirar ' + item.nombre + '?',
+      message: null,
+      backdropDismiss: false,
+      inputs: inputs,
+      buttons: buttons
+    };
+    this.alertService.push_obj(alert_obj);
   }
 
   clickItem(item: any) {
@@ -58,6 +110,37 @@ export class InventoryPage {
         ];
         this.alertService.push('Usar Objeto', null, '¿Seguro que quieres usar el objeto ' + item.nombre + '?', buttons, false);
       }
+    } else if (item && item.tipo == "cambiar-ataque") {
+      let modal = this.modalCtrl.create('FightersSelectPage');
+      modal.present();
+
+      modal.onDidDismiss((data) => {
+        if (data) {
+          this.itemsService.playerBorrarItem(item.id, 1).then(res => {
+            if (res) {
+              if (item.propiedades.tipo_ataque == 'rapido') {
+                console.log('Cambiar ataque debil de ' + data.avatar.nombre + ' a ' + item.propiedades.ataque);
+                var _ataque = this.configService.encontrarAtaque(item.propiedades.ataque, 'debil');
+                if (_ataque && this.playerService.player.mascotas[data.avatar_idx]) {
+                  this.playerService.player.mascotas[data.avatar_idx].ataque = _ataque;
+                  this.playerService.savePlayer().then(res => {
+                    this.toastService.push(data.avatar.nombre + ' ahora usa ' + _ataque.nombre);
+                  });
+                }
+              } else if (item.propiedades.tipo_ataque == 'fuerte') {
+                console.log('Cambiar ataque fuerte de ' + data.avatar.nombre + ' a ' + item.propiedades.ataque);
+                var _ataque_fuerte = this.configService.encontrarAtaque(item.propiedades.ataque, 'fuerte');
+                if (_ataque_fuerte && this.playerService.player.mascotas[data.avatar_idx]) {
+                  this.playerService.player.mascotas[data.avatar_idx].especial = _ataque_fuerte;
+                  this.playerService.savePlayer().then(res => {
+                    this.toastService.push(data.avatar.nombre + ' ahora usa ' + _ataque_fuerte.nombre);
+                  });
+                }
+              }
+            }
+          });
+        }
+      });
     }
   }
 
@@ -84,6 +167,14 @@ export class InventoryPage {
     } else {
       return this.items;
     }
+  }
+
+  contar() {
+    var _c = 0;
+    for (var i = 0; i < this.items.length; i++) {
+      _c = _c + this.items[i].cantidad;
+    }
+    return _c.toString() + '/' + this.configService.config.jugador.inventario.max_items.toString();
   }
 
 }

@@ -45,7 +45,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       //statusBar.styleDefault();
       statusBar.backgroundColorByHexString('#43a7ff');
-      splashScreen.hide();
+      //splashScreen.hide();
 
       this.checkPlayer();
     });
@@ -123,6 +123,8 @@ export class MyApp {
                       this.itemsService.playerAnadirItem(refItem, ref.items_despedir[i].cantidad).then(res1 => {
                         if (res1) {
                           this.toastService.push("+" + _cantidad + " " + refItem.nombre);
+                        } else {
+                          this.toastService.push("No tienes espacio en el inventario");
                         }
                       });
                     }

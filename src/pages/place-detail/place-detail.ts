@@ -61,8 +61,13 @@ export class PlaceDetailPage {
       for (var i = 0; i < this.items.length; i++) {
         var _item = this.configService.encontrarItem(this.items[i].item);
         if (_item) {
-          this.itemsService.playerAnadirItem(_item, this.items[i].cantidad);
-          this.toastService.push('+' + this.items[i].cantidad + ' ' + _item.nombre);
+          this.itemsService.playerAnadirItem(_item, this.items[i].cantidad).then(res => {
+            if (res) {
+              this.toastService.push('+' + this.items[i].cantidad + ' ' + _item.nombre);
+            } else {
+              this.toastService.push("No tienes espacio en el inventario");
+            }
+          });
         }
       }
       this.sin_items = true;

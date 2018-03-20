@@ -180,6 +180,8 @@ export class HomePage {
     this.itemsService.playerAnadirItem(this.configService.items[idx], cantidad).then(res => {
       if (res) {
         this.toastService.push('+' + cantidad + ' ' + this.configService.items[idx].nombre);
+      } else {
+        this.toastService.push("No tienes espacio en el inventario");
       }
     });
   }

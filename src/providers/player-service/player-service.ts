@@ -110,7 +110,7 @@ export class PlayerServiceProvider {
   loadPlayer() {
     return this.storage.get('player').then(res => {
       if (res) {
-        let player_nuevo = new PlayerModel(this.configService);
+        let player_nuevo = new PlayerModel();
         res = player_nuevo.parse(res);
         this.player = res;
       }
@@ -129,7 +129,7 @@ export class PlayerServiceProvider {
   }
 
   newPlayer(data: any) {
-    let player = new PlayerModel(this.configService);
+    let player = new PlayerModel();
     if (!data || !data.nombre || data.nombre.trim() == '') {
       return new Promise<boolean>((resolve, reject) => {
         resolve(false);

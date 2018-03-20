@@ -67,8 +67,14 @@ export class TournamentDefaultPage {
       for (var i = 0; i < this.items.length; i++) {
         var _item = this.configService.encontrarItem(this.items[i].item);
         if (_item) {
-          this.itemsService.playerAnadirItem(_item, this.items[i].cantidad);
-          this.toastService.push('+' + this.items[i].cantidad + ' ' + _item.nombre);
+          var _cantidad = this.items[i].cantidad;
+          this.itemsService.playerAnadirItem(_item, _cantidad).then(res => {
+            if (res) {
+              this.toastService.push('+' + _cantidad + ' ' + _item.nombre);
+            } else {
+              this.toastService.push("No tienes espacio en el inventario");
+            }
+          });
         }
       }
       this.sin_items = true;
@@ -394,7 +400,13 @@ export class TournamentDefaultPage {
     } else if (ganancia.tipo == 'item' && ganancia['item']) {
       var _item = this.configService.encontrarItem(ganancia['item']);
       if (_item) {
-        this.itemsService.playerAnadirItem(_item, ganancia.cantidad);
+        this.itemsService.playerAnadirItem(_item, ganancia.cantidad).then(res => {
+          if (res) {
+            this.toastService.push("+" + ganancia.cantidad + " " + _item.nombre);
+          } else {
+            this.toastService.push("No tienes espacio en el inventario");
+          }
+        });
       }
     }
   }

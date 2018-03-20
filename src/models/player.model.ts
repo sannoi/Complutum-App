@@ -15,13 +15,14 @@ export class PlayerModel {
   public trampas_activas: Array<any>;
   public modificadores_activos: Array<any>;
 
-  //private configService: ConfigServiceProvider;
+  private configService: ConfigServiceProvider;
 
-  constructor(private configService: ConfigServiceProvider) {
+  constructor() {
+    this.configService = new ConfigServiceProvider();
   }
 
   public parse(player: any) {
-    let player_nuevo = new PlayerModel(this.configService);
+    let player_nuevo = new PlayerModel();
     player_nuevo.nombre = player.nombre;
     player_nuevo.icono = player.icono;
     player_nuevo.equipo = player.equipo;

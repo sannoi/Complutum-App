@@ -10,14 +10,20 @@
 </ion-header>
 <ion-content>
   <ion-searchbar *ngIf="searchbar_visible" placeholder="Buscar..." (ionInput)="filtrarItems($event)"></ion-searchbar>
+  <div class="db-counter" text-center *ngIf="items">
+    {{contar()}}
+  </div>
   <ion-list>
-    <button ion-item *ngFor="let item of items" [disabled]="disableItem(item)" (click)="clickItem(item)">
-      <ion-thumbnail item-start>
-        <img [src]="item.icono">
-        <ion-badge bottom right>x{{item.cantidad}}</ion-badge>
-      </ion-thumbnail>
-      <h2>{{item.nombre}}</h2>
-      <p>{{item.descripcion}}</p>
-    </button>
+    <div *ngFor="let item of items" style="position: relative;">
+      <button ion-item [disabled]="disableItem(item)" (click)="clickItem(item)">
+        <ion-thumbnail item-start>
+          <img [src]="item.icono">
+          <ion-badge bottom right>x{{item.cantidad}}</ion-badge>
+        </ion-thumbnail>
+        <h2>{{item.nombre}}</h2>
+        <p>{{item.descripcion}}</p>
+      </button>
+      <a class="trash" href="javascipt:;" (click)="borrarItem(item)"><ion-icon name="trash" color="danger"></ion-icon></a>
+    </div>
   </ion-list>
 </ion-content>

@@ -13,6 +13,12 @@ export class ItemsServiceProvider {
     return this.playerService.getPlayer().then(player => {
       if (player.items && player.items.length > 0) {
 
+        var total = this.contarItems(player);
+
+        if (total >= this.configService.config.jugador.inventario.max_items) {
+          return false;
+        }
+
         var found = false;
 
         for (var i = 0; i < player.items.length; i++) {
@@ -72,6 +78,16 @@ export class ItemsServiceProvider {
       }
       return false;
     });
+  }
+
+  contarItems(player: any) {
+    var _c = 0;
+    if (player && player.items && player.items.length > 0) {
+      for (var i = 0; i < player.items.length; i++) {
+        _c = _c + player.items[i].cantidad;
+      }
+    }
+    return _c;
   }
 
   recuperarItemRandom(items: any) {

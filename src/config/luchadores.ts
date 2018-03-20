@@ -188,7 +188,7 @@ export let luchadores = [
     nombre: 'Mewtwo',
     icono: 'assets/imgs/fighters/pokemon_icon_150_00.png',
     tipo: 'normal',
-    rareza: 5,
+    rareza: 1,
     salud: 193,
     propiedades: {
       ataque: 300,

@@ -25,7 +25,7 @@ export let config = {
       { icono: 'assets/imgs/avatares/curie.jpg', nombre: 'Marie Curie' }
     ],
     xp_inicial: 25,
-    monedas_iniciales: 125,
+    monedas_iniciales: 10,
     xp_mascotas_iniciales: 1750,
     iv_mascotas_iniciales: {
       min: {
@@ -50,7 +50,7 @@ export let config = {
     ],
     niveles_xp: AppNiveles.niveles,
     inventario: {
-      max_items: 200
+      max_items: 250
     },
     mascota_nueva: {
       nivel_maximo: 20

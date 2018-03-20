@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js'
 import { Storage } from '@ionic/storage';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { NavController, ModalController, LoadingController, Events, FabContainer,Platform } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { ConfigServiceProvider } from '../../providers/config-service/config-service';
@@ -47,6 +48,7 @@ export class MapaPage {
   private alerts_esperando: Array<any>;
 
   constructor(public navCtrl: NavController,
+    splashScreen: SplashScreen,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     public storage: Storage,
@@ -535,6 +537,8 @@ export class MapaPage {
     this.itemsService.playerAnadirItem(this.configService.items[idx], cantidad).then(res => {
       if (res) {
         this.toastService.push('+' + cantidad + ' ' + this.configService.items[idx].nombre);
+      } else {
+        this.toastService.push("No tienes espacio en el inventario");
       }
     });
   }
@@ -661,7 +665,7 @@ export class MapaPage {
           'fill-extrusion-opacity': this.configService.config.mapa.edificios.opacidad
         }
       });
-    } else if (this.map.getLayer('3d-buildings')) {
+    } else if (this.map.getLayer('3d-buildings') && (!this.configService.config.mapa.edificios.activo || !this.settings.mapa.edificios)) {
       this.map.removeLayer('3d-buildings');
     }
   }
@@ -708,6 +712,7 @@ export class MapaPage {
         este.realtime();
         este.edificios();
         este.map_inicializado = true;
+        this.splashScreen.hide();
       });
 
       this.map.on('move', function(e) {

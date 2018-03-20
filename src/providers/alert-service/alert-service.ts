@@ -8,12 +8,13 @@ export class AlertServiceProvider {
 
   constructor(public alertCtrl: AlertController) { }
 
-  push(title, subtitle, message, buttons, backdropDismiss?) {
+  push(title, subtitle, message, buttons, backdropDismiss?, inputs?) {
     let alert = this.alertCtrl.create({
       title: title,
       subTitle: subtitle,
       message: message,
       enableBackdropDismiss: backdropDismiss,
+      inputs: inputs,
       buttons: buttons
     });
 
@@ -37,6 +38,7 @@ export class AlertServiceProvider {
       subTitle: obj['subTitle'],
       message: obj['message'],
       enableBackdropDismiss: obj['backdropDismiss'],
+      inputs: obj['inputs'],
       buttons: obj['buttons']
     });
 

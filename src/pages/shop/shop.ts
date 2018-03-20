@@ -59,6 +59,7 @@ export class ShopPage {
               if (result) {
                 this.toastService.push('+' + item.cantidad + ' ' + _item.nombre);
               } else {
+                this.toastService.push("No tienes espacio en el inventario");
                 this.playerService.anadirMonedas(item.precio);
               }
             });
