@@ -15,7 +15,7 @@
   </div>
   <ion-list>
     <div *ngFor="let item of items" style="position: relative;">
-      <button ion-item [disabled]="disableItem(item)" (click)="clickItem(item)">
+      <button ion-item [disabled]="disableItem(item)" (click)="clickItem(item)" text-wrap>
         <ion-thumbnail item-start>
           <img [src]="item.icono">
           <ion-badge bottom right>x{{item.cantidad}}</ion-badge>
