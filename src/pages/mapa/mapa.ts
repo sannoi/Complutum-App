@@ -712,7 +712,9 @@ export class MapaPage {
         este.realtime();
         este.edificios();
         este.map_inicializado = true;
-        this.splashScreen.hide();
+        if (this.splashScreen) {
+          this.splashScreen.hide();
+        }
       });
 
       this.map.on('move', function(e) {
